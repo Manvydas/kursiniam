@@ -1,4 +1,5 @@
 library("quantmod")
+library("forecast")
 
 istraukimas <- function(salis,folderio_pav,failo_pav){
   setwd(folderio_pav)
@@ -25,6 +26,8 @@ setwd("creative/clean data")
 
 omx=read.csv("omx.csv")
 data=omx[,c(2,5)]
+data[,1]
+class(data)
 data=xts(data[, -2], order.by=as.Date(data[,2]))
 monthly.omx <- data[ endpoints(data, on="months", k=1), ]
 
@@ -91,6 +94,16 @@ infliacija = data[,c(1,5)]
 setwd('..')
 
 
-tslm(monthly.omx~ilgalaikio_vartojimo_prekės+apyvarta+statybu_pasitikejimas+paslaugu_pasitikejimas+vartotoju_pasitikejimas+mazmeninis_pasitikejimas
+# prasibandymai ir problemos
+class(monthly.omx)
+
+monthly.omx["2011/"]
+
+#(blogas)
+mod=lm(monthly.omx~ilgalaikio_vartojimo_prekės+apyvarta+statybu_pasitikejimas+paslaugu_pasitikejimas+vartotoju_pasitikejimas+mazmeninis_pasitikejimas
      +pramones_pasitikejimas+verslo_aktyvumas+turimos_akcijos+uzsakymu_lukesciai+darbolygio_lukesciai+infliacija)
 
+#auto arima?
+fit <- auto.arima(monthly.omx, xreg=cbind(apyvarta[-c(length(apyvarta),length(apyvarta)-1),2]))
+#tslm?
+fit <- tslm(y ~ x) 
