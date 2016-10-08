@@ -1,9 +1,19 @@
-library(quantmod)
-library(forecast)
-library(ggplot2)
-library(dplyr)
-library(zoo)
+---
+title: '2016-10-08'
+author: "Manvydas Sokolovas"
+date: "10/8/2016"
+output: beamer_presentation
+---
 
+Reikiamos bibliotekos:
+```{r}
+library("quantmod")
+library("forecast")
+library("xts")
+```
+
+Duomenų ištraukimo funkcija:
+```{r}
 istraukimas <- function(salis,folderio_pav,failo_pav,indikatorius,versija){
   setwd(folderio_pav)
   data=read.csv(failo_pav)
@@ -25,128 +35,162 @@ istraukimas <- function(salis,folderio_pav,failo_pav,indikatorius,versija){
   else{print("klaida del versiju pasirinkimo")}
 }
 
+```
 
-setwd("creative/clean data")      
 
-#istraukiami Lietuvos duomenys
+Nustatoma direktorija:
+```{r}
+setwd("..")   
+setwd("duomenys")    
+```
 
+Nuskaitomi OMX Vilnius duomenys:
+```{r}
 omx=read.csv("omx.csv")
-data=omx[,c(2,5)]
-data=xts(data[, -2], order.by=as.Date(data[,2],"%m/%d/%Y"))
-monthly.omx <- data[ endpoints(data, on="months", k=1), ]                       # pakeiciami i menesinius duomenis
-                                                                                # neapatikrinta ar gerai pakeicia
+duom=omx[,c(2,5)]
+colnames(duom) <- c("Verte", "Data")
 
-startpoints <- function (x, on = "months", k = 1) {                             #paima nuo menesio pradzios
-  head(endpoints(x, on, k) + 1, -1)
-}
-
-period.starts = startpoints(data, 'months', k=1)
-data[period.starts,]
+ts <- xts(duom$Verte, as.Date(duom$Data, "%m/%d/%Y"))
+ts_m = apply.monthly(ts, mean)
+ts_m2 = apply.monthly(ts, first)
+```
 
 
-
+Ilgalaikio vartojimo prekės:
+```{r}
 salis="Lithuania"
-indikatorius=NA                                                                 #pirmuose duomenyse nera indikatoriaus pasirinkimu
-
+indikatorius = NA                                                         # kol kas indikatoriaus nebus
 folderio_pav="Turnover in industry - consumer durables"
 failo_pav="sts_intv_m_1_Data.csv"
 ilgalaikio_vartojimo_prekės=istraukimas(salis,folderio_pav,failo_pav,indikatorius,1)
+colnames(ilgalaikio_vartojimo_prekes) <- c("Data", "ilg_vart_prek")
+```
 
+
+Apyvarta:
+```{r}
 folderio_pav="Turnover and volume of sales in wholesale and retail trade - monthly data"
 failo_pav="sts_trtu_m_1_Data.csv" 
-apyvarta=istraukimas(salis,folderio_pav,failo_pav,indikatorius,1)                              #didmeninės ir mažmeninės prekybos apyvarta ir pardavimų apimtis 
+apyvarta=istraukimas(salis,folderio_pav,failo_pav,indikatorius,1)                 #didmeninės ir mažmeninės prekybos apyvarta ir pardavimų apimtis 
+colnames(apyvarta) <- c("Data", "Apyvarta")
+```
 
+
+Statybų pasitikėjimas:
+```{r}
 indikatorius="Construction confidence indicator"
 folderio_pav="Sentiment indicators - monthly data"
 failo_pav="ei_bssi_m_r2_1_Data.csv"
 statybu_pasitikejimas=istraukimas(salis,folderio_pav,failo_pav,indikatorius,2)
+colnames(statybu_pasitikejimas) <- c("Data", "statyb_pasitik")
+```
 
+
+Paslaugų pasitikėjimas:
+```{r}
 indikatorius="Services Confidence Indicator"
 folderio_pav="Sentiment indicators - monthly data"
 failo_pav="ei_bssi_m_r2_1_Data.csv"
 paslaugu_pasitikejimas=istraukimas(salis,folderio_pav,failo_pav,indikatorius,2)
+colnames(paslaugu_pasitikejimas) <- c("Data", "paslaugu_pasitik")
+```
 
+
+Vartotojų pasitikėjimas:
+```{r}
 indikatorius="Consumer confidence indicator"
 folderio_pav="Sentiment indicators - monthly data"
 failo_pav="ei_bssi_m_r2_1_Data.csv"
 vartotoju_pasitikejimas=istraukimas(salis,folderio_pav,failo_pav,indikatorius,2)
+colnames(vartotoju_pasitikejimas) <- c("Data", "vartot_pasitik")
+```
 
 
+Mažmeninis pasitikėjimas:
+```{r}
 indikatorius="Retail confidence indicator"
 folderio_pav="Sentiment indicators - monthly data"
 failo_pav="ei_bssi_m_r2_1_Data.csv"
 mazmeninis_pasitikejimas=istraukimas(salis,folderio_pav,failo_pav,indikatorius,2) #mažmeninės prekybos pasitikėjimo rodiklis
+colnames(mazmeninis_pasitikejimas) <- c("Data", "mazm_pasitik")
+```
 
+
+Pramonės pasitikėjimas:
+```{r}
 indikatorius="Industrial confidence indicator"
 folderio_pav="Sentiment indicators - monthly data"
 failo_pav="ei_bssi_m_r2_1_Data.csv"
-pramones_pasitikejimas=istraukimas(salis,folderio_pav,failo_pav,indikatorius,2) 
+pramones_pasitikejimas=istraukimas(salis,folderio_pav,failo_pav,indikatorius,2)
+colnames(pramones_pasitikejimas) <- c("Data", "pram_pasitik")
+```
 
+
+Verslo aktyvumas:
+```{r}
 indikatorius="Business activity (sales) development over the past 3 months"
 folderio_pav="Mazmenine prekyba"
 failo_pav="ei_bsrt_m_r2_1_Data.csv"
-verslo_aktyvumas=istraukimas(salis,folderio_pav,failo_pav,indikatorius,3)            
+verslo_aktyvumas=istraukimas(salis,folderio_pav,failo_pav,indikatorius,3)
+colnames(verslo_aktyvumas) <- c("Data", "versl_aktyv")
+```
 
+
+Turimos akcijos:
+```{r}
 indikatorius="Volume of stocks currently hold"
 folderio_pav="Mazmenine prekyba"
 failo_pav="ei_bsrt_m_r2_1_Data.csv"
-turimos_akcijos=istraukimas(salis,folderio_pav,failo_pav,indikatorius,3)             
+turimos_akcijos=istraukimas(salis,folderio_pav,failo_pav,indikatorius,3)
+colnames(turimos_akcijos) <- c("Data", "turimos_akc")
+```
 
+
+Užsakymų lūkesčiai:
+```{r}
 indikatorius="Expectations of the number of orders placed with suppliers over the next 3 months"
 folderio_pav="Mazmenine prekyba"
 failo_pav="ei_bsrt_m_r2_1_Data.csv"
-uzsakymu_lukesciai=istraukimas(salis,folderio_pav,failo_pav,indikatorius,3)           
+uzsakymu_lukesciai=istraukimas(salis,folderio_pav,failo_pav,indikatorius,3)
+colnames(uzsakymu_lukesciai) <- c("Data", "uzsak_luk")
+```
 
+
+Darbo Lygio lūkesčiai:
+```{r}
 indikatorius="Employment expectations over the next 3 months"
 folderio_pav="Mazmenine prekyba"
 failo_pav="ei_bsrt_m_r2_1_Data.csv"
-darbolygio_lukesciai=istraukimas(salis,folderio_pav,failo_pav,indikatorius,3)               
+darbo_lygio_lukesciai=istraukimas(salis,folderio_pav,failo_pav,indikatorius,3)
+colnames(darbo_lygio_lukesciai) <- c("Data", "darb_lyg_luk")
+```
 
+
+Infliacija:
+```{r}
 setwd("Infliacija")
 data = read.csv("prc_hicp_mv12r_1_Data.csv")
 data = data[data$GEO == salis,]
 infliacija = data[,c(1,5)]
 setwd('..')
-
-setwd("Nedarbas")
-data = read.csv("ei_lmhu_m_1_Data.csv")
-data = data[data$GEO == salis,]
-nedarbas = data[,c(1,6)]
-setwd('..')
+colnames(infliacija) <- c("Data", "Infliacija")
+```
 
 
+Sujungiami duomenys į vieną lentelę:
+```{r}
+lentele <- cbind(ts_m, apyvarta[,2], darbo_lygio_lukesciai[,2], infliacija[,2], mazmeninis_pasitikejimas[,2], paslaugu_pasitikejimas[,2], pramones_pasitikejimas[,2], statybu_pasitikejimas[,2], turimos_akcijos[,2], uzsakymu_lukesciai[,2], vartotoju_pasitikejimas[,2], verslo_aktyvumas[,2] )
 
-#cia galima nekreipt demesio
-#kintamieji=c(ilgalaikio_vartojimo_prekės,apyvarta,statybu_pasitikejimas,paslaugu_pasitikejimas,vartotoju_pasitikejimas,mazmeninis_pasitikejimas,
-#pramones_pasitikejimas,verslo_aktyvumas,turimos_akcijos,uzsakymu_lukesciai,darbolygio_lukesciai,infliacija,nedarbas)
-#for(i in kintamieji)
-#  i %>% class %>% print
+duomenys <- lentele[1:(dim(lentele)[1]-1),]
+viskas <- cbind(duomenys,ilgalaikio_vartojimo_prekes[,2])
 
-
-
-
-laiko_formatavimas <- function(data){
-  data[,1] = data[,1] %>% as.yearmon(format="%YM%m") %>% as.Date()
-  return(data[,1])
-}
-
-
-ilgalaikio_vartojimo_prekės[,1] = laiko_formatavimas(ilgalaikio_vartojimo_prekės)           # nesuprantu kaip naudot tapply
-
-
-
-
-data[laikas,]
-
-
-
-y <- factor(rep(letters[1:5], each = 4))
-
-data=xts(data[, -2], order.by=as.Date(data[,2],"%m/%d/%Y"))
+colnames(lentele) <- c("ts_m", "apyvarta", "darbo_lygio_lukesciai", "infliacija", "mazmeninis_pasitikejimas", "paslaugu_pasitikejimas", "pramones_pasitikejimas", "statybu_pasitikejimas", "turimos_akcijos", "uzsakymu_lukesciai", "vartotoju_pasitikejimas", "verslo_aktyvumas", "ilgalaikio_vartojimo_prekes" )
+```
 
 # prasibandymai ir problemos
-ggplot() + 
-  geom_point(mapping = aes(x = monthly.omx , y = infliacija))
+class(monthly.omx)
+
+monthly.omx["2011/"]
 
 #(blogas)
 mod=lm(monthly.omx~ilgalaikio_vartojimo_prekės+apyvarta+statybu_pasitikejimas+paslaugu_pasitikejimas+vartotoju_pasitikejimas+mazmeninis_pasitikejimas
