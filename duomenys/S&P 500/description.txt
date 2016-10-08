@@ -1,0 +1,3 @@
+GSPC: S&P 500 Index. The S&P 500, or the Standard & Poor's 500, is an 
+American stock market index based on the market capitalizations of 500 
+large companies having common stock listed on the NYSE or NASDAQ.
