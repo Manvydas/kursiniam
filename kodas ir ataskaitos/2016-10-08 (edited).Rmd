@@ -2,7 +2,9 @@
 title: '2016-10-08'
 author: "Manvydas Sokolovas"
 date: "10/8/2016"
-output: beamer_presentation
+output:
+  beamer_presentation:
+    keep_tex: yes
 ---
 
 Reikiamos bibliotekos:
@@ -18,24 +20,21 @@ Duomenų ištraukimo funkcija:
 istraukimas <- function(salis,folderio_pav,failo_pav,indikatorius,versija){
   setwd(folderio_pav)
   data=read.csv(failo_pav)
+  
   data = data[data$S_ADJ=="Unadjusted data (i.e. neither seasonally adjusted nor calendar adjusted data)",]
   data = data[data$GEO == salis,]
   setwd('..')
   if(versija == 1){
     data = data[data$UNIT=="Index, 2010=100",]
-    return(data[,c(1,7)])
+    return(select(data,TIME,Value))
   }
   if(versija == 2){
     data = data[data$INDIC == indikatorius,]
-    return(data[,c(1,5)])
+    return(select(data,TIME,Value))
   }
-  if(versija == 3){
-    data = data[data$INDIC == indikatorius,]
-    return(data[,c(1,6)])
-  }
+  
   else{print("klaida del versiju pasirinkimo")}
 }
-
 ```
 
 
@@ -44,12 +43,14 @@ Nuskaitomi OMX Vilnius duomenys:
 setwd("..")   
 setwd("duomenys")  
 omx=read.csv("omx.csv")
-duom=omx[,c(2,5)]
-colnames(duom) <- c("Verte", "Data")
+duom=select(omx,OMX.raw,OMXV.Value)
+colnames(duom) <- c("Data", "Verte")
 
 ts <- xts(duom$Verte, as.Date(duom$Data, "%m/%d/%Y"))
 ts_m = apply.monthly(ts, mean)
 ts_m2 = apply.monthly(ts, first)
+colnames(OMX) <- c( "OMX")
+colnames(OMX2) <- c("OMX")
 ```
 
 
@@ -144,7 +145,7 @@ setwd("duomenys")
 indikatorius="Business activity (sales) development over the past 3 months"
 folderio_pav="Mazmenine prekyba"
 failo_pav="ei_bsrt_m_r2_1_Data.csv"
-verslo_aktyvumas=istraukimas(salis,folderio_pav,failo_pav,indikatorius,3)
+verslo_aktyvumas=istraukimas(salis,folderio_pav,failo_pav,indikatorius,2)
 colnames(verslo_aktyvumas) <- c("Data", "versl_aktyv")
 ```
 
@@ -156,7 +157,7 @@ setwd("duomenys")
 indikatorius="Volume of stocks currently hold"
 folderio_pav="Mazmenine prekyba"
 failo_pav="ei_bsrt_m_r2_1_Data.csv"
-turimos_akcijos=istraukimas(salis,folderio_pav,failo_pav,indikatorius,3)
+turimos_akcijos=istraukimas(salis,folderio_pav,failo_pav,indikatorius,2)
 colnames(turimos_akcijos) <- c("Data", "turimos_akc")
 ```
 
@@ -168,7 +169,7 @@ setwd("duomenys")
 indikatorius="Expectations of the number of orders placed with suppliers over the next 3 months"
 folderio_pav="Mazmenine prekyba"
 failo_pav="ei_bsrt_m_r2_1_Data.csv"
-uzsakymu_lukesciai=istraukimas(salis,folderio_pav,failo_pav,indikatorius,3)
+uzsakymu_lukesciai=istraukimas(salis,folderio_pav,failo_pav,indikatorius,2)
 colnames(uzsakymu_lukesciai) <- c("Data", "uzsak_luk")
 ```
 
@@ -180,7 +181,7 @@ setwd("duomenys")
 indikatorius="Employment expectations over the next 3 months"
 folderio_pav="Mazmenine prekyba"
 failo_pav="ei_bsrt_m_r2_1_Data.csv"
-darbo_lygio_lukesciai=istraukimas(salis,folderio_pav,failo_pav,indikatorius,3)
+darbo_lygio_lukesciai=istraukimas(salis,folderio_pav,failo_pav,indikatorius,2)
 colnames(darbo_lygio_lukesciai) <- c("Data", "darb_lyg_luk")
 ```
 
@@ -200,25 +201,36 @@ colnames(infliacija) <- c("Data", "Infliacija")
 S&P 500:
 ```{r}
 setwd("..")   
-setwd("duomenys")  
-folderio_pav="S&P500"
-failo_pav="YAHOO-INDEX_GSPC.csv"
+setwd("duomenys/S&P 500")  
 data = read.csv("YAHOO-INDEX_GSPC.csv")
-select(data,Date,Adjusted.Close)
-S&P500 = data[,c(1,5)]
+SP500=select(data,Date,Adjusted.Close)
+
 setwd('..')
-colnames(infliacija) <- c("Data", "Infliacija")
+colnames(SP500) <- c("Data", "SP500")
+```
+
+S&P 350 Europe:
+```{r}
+setwd("..")   
+setwd("duomenys/S&P 350 Europe")  
+data = read.csv("GOOG-NYSEARCA_IEV.csv")
+SP350=select(data,Date,Close)
+
+setwd('..')
+colnames(SP350) <- c("Data", "SP350")
+
+
+data=merge(SP350, SP500, by = "Data",all=T)
+dataset=Reduce(function(x, y) merge(x, y, all=TRUE), list(apyvarta, darbo_lygio_lukesciai, infliacija, mazmeninis_pasitikejimas, paslaugu_pasitikejimas, pramones_pasitikejimas, statybu_pasitikejimas, turimos_akcijos, uzsakymu_lukesciai, vartotoju_pasitikejimas, verslo_aktyvumas, ilgalaikio_vartojimo_prekes ))
 ```
 
 
 Sujungiami duomenys į vieną lentelę:
-``{r}
-lentele <- cbind(ts_m, apyvarta[,2], darbo_lygio_lukesciai[,2], infliacija[,2], mazmeninis_pasitikejimas[,2], paslaugu_pasitikejimas[,2], pramones_pasitikejimas[,2], statybu_pasitikejimas[,2], turimos_akcijos[,2], uzsakymu_lukesciai[,2], vartotoju_pasitikejimas[,2], verslo_aktyvumas[,2] )
+```{r}
 
-duomenys <- lentele[1:(dim(lentele)[1]-1),]
-viskas <- cbind(duomenys,ilgalaikio_vartojimo_prekes[,2])
+data=merge(SP350, SP500, by = "Data",all=T)
+dataset=Reduce(function(x, y) merge(x, y, all=TRUE), list(apyvarta, darbo_lygio_lukesciai, infliacija, mazmeninis_pasitikejimas, paslaugu_pasitikejimas, pramones_pasitikejimas, statybu_pasitikejimas, turimos_akcijos, uzsakymu_lukesciai, vartotoju_pasitikejimas, verslo_aktyvumas, ilgalaikio_vartojimo_prekes ))
 
-colnames(lentele) <- c("ts_m", "apyvarta", "darbo_lygio_lukesciai", "infliacija", "mazmeninis_pasitikejimas", "paslaugu_pasitikejimas", "pramones_pasitikejimas", "statybu_pasitikejimas", "turimos_akcijos", "uzsakymu_lukesciai", "vartotoju_pasitikejimas", "verslo_aktyvumas", "ilgalaikio_vartojimo_prekes" )
 ```
 
 # prasibandymai ir problemos
