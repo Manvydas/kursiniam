@@ -186,17 +186,26 @@ darbo_lygio_lukesciai=istraukimas(salis,folderio_pav,failo_pav,indikatorius,2)
 colnames(darbo_lygio_lukesciai) <- c("Data", "darb_lyg_luk")
 ```
 
+Nedarbas:
+```{r}
+setwd("..")   
+setwd("duomenys/nedarbas")  
+data = read.csv("ei_lmhu_m_1_Data.csv")
+data = data[data$GEO == salis,]
+nedarbas = select(data,TIME,Value)
+colnames(nedarbas) <- c("Data", "nedarbas")
+setwd("..") 
+```
 
 Infliacija:
 ```{r}
 setwd("..")   
-setwd("duomenys")  
-setwd("Infliacija")
+setwd("duomenys/infliacija")  
 data = read.csv("prc_hicp_mv12r_1_Data.csv")
 data = data[data$GEO == salis,]
-infliacija = data[,c(1,5)]
-setwd('..')
+infliacija = select(data,TIME,Value)
 colnames(infliacija) <- c("Data", "Infliacija")
+setwd("..") 
 ```
 
 S&P 500:
@@ -205,9 +214,8 @@ setwd("..")
 setwd("duomenys/S&P 500")  
 data = read.csv("YAHOO-INDEX_GSPC.csv")
 SP500=select(data,Date,Adjusted.Close)
-
-setwd('..')
 colnames(SP500) <- c("Data", "SP500")
+setwd("..") 
 ```
 
 S&P 350 Europe:
@@ -216,13 +224,8 @@ setwd("..")
 setwd("duomenys/S&P 350 Europe")  
 data = read.csv("GOOG-NYSEARCA_IEV.csv")
 SP350=select(data,Date,Close)
-
-setwd('..')
 colnames(SP350) <- c("Data", "SP350")
 
-
-data=merge(SP350, SP500, by = "Data",all=T)
-dataset=Reduce(function(x, y) merge(x, y, all=TRUE), list(apyvarta, darbo_lygio_lukesciai, infliacija, mazmeninis_pasitikejimas, paslaugu_pasitikejimas, pramones_pasitikejimas, statybu_pasitikejimas, turimos_akcijos, uzsakymu_lukesciai, vartotoju_pasitikejimas, verslo_aktyvumas, ilgalaikio_vartojimo_prekes ))
 ```
 
 
@@ -232,8 +235,7 @@ Sujungiami duomenys į vieną lentelę:
 data=full_join(SP350,SP500,by="Data")
 data = data %>% arrange(-row_number())
 
-dataset=Reduce(function(x, y) merge(x, y, all=TRUE), list(apyvarta, darbo_lygio_lukesciai, infliacija, mazmeninis_pasitikejimas, paslaugu_pasitikejimas, pramones_pasitikejimas, statybu_pasitikejimas, turimos_akcijos, uzsakymu_lukesciai, vartotoju_pasitikejimas, verslo_aktyvumas, ilgalaikio_vartojimo_prekes ))
-
+dataset=Reduce(function(x, y) merge(x, y, all=TRUE), list(apyvarta, darbo_lygio_lukesciai,nedarbas, infliacija, mazmeninis_pasitikejimas, paslaugu_pasitikejimas, pramones_pasitikejimas, statybu_pasitikejimas, turimos_akcijos, uzsakymu_lukesciai, vartotoju_pasitikejimas, verslo_aktyvumas, ilgalaikio_vartojimo_prekes ))
 
 Data=dataset[,1]
 dataset=dataset[,-1]
