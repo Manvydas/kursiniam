@@ -1,0 +1,3 @@
+ Each confidence indicator is calculated as the simple arithmetic 
+average of the (seasonally adjusted) balances of answers to specific 
+questions chosen from the full set of questions in each individual survey.

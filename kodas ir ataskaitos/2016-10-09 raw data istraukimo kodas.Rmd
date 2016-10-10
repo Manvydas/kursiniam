@@ -3,8 +3,9 @@ title: '2016-10-08'
 author: "Paulius Kostickis ir Manvydas Sokolovas"
 date: "10/8/2016"
 output:
-  beamer_presentation:
+  pdf_document:
     keep_tex: yes
+    latex_engine: xelatex
 ---
 
 Reikiamos bibliotekos:
@@ -55,7 +56,7 @@ colnames(ts_m) <- c("OMX")
 ```
 
 
-Ilgalaikio vartojimo prekės:
+Kasyba ir karjerų eksploatacija:
 ```{r}
 setwd("..")   
 setwd("duomenys")  
@@ -63,19 +64,19 @@ salis="Lithuania"
 indikatorius = NA                                                         # kol kas indikatoriaus nebus
 folderio_pav="Turnover in industry - consumer durables"
 failo_pav="sts_intv_m_1_Data.csv"
-ilgalaikio_vartojimo_prekės=istraukimas(salis,folderio_pav,failo_pav,indikatorius,1)
-colnames(ilgalaikio_vartojimo_prekes) <- c("Data", "ilg_vart_prek")
+kasyba_karjerai=istraukimas(salis,folderio_pav,failo_pav,indikatorius,1)
+colnames(kasyba_karjerai) <- c("Data", "kasyba_karje")
 ```
 
 
-Apyvarta:
+Mažmeninė prekyba:
 ```{r}
 setwd("..")   
 setwd("duomenys")  
 folderio_pav="Turnover and volume of sales in wholesale and retail trade - monthly data"
 failo_pav="sts_trtu_m_1_Data.csv" 
-apyvarta=istraukimas(salis,folderio_pav,failo_pav,indikatorius,1)                 #didmeninės ir mažmeninės prekybos apyvarta ir pardavimų apimtis 
-colnames(apyvarta) <- c("Data", "Apyvarta")
+mazmenine_prekyba=istraukimas(salis,folderio_pav,failo_pav,indikatorius,1)                 #didmeninės ir mažmeninės prekybos apyvarta ir pardavimų apimtis 
+colnames(mazmenine_prekyba) <- c("Data", "mazmenine_prekyba")
 ```
 
 
@@ -235,7 +236,7 @@ Sujungiami duomenys į vieną lentelę:
 data=full_join(SP350,SP500,by="Data")
 data = data %>% arrange(-row_number())
 
-dataset=Reduce(function(x, y) merge(x, y, all=TRUE), list(apyvarta, darbo_lygio_lukesciai,nedarbas, infliacija, mazmeninis_pasitikejimas, paslaugu_pasitikejimas, pramones_pasitikejimas, statybu_pasitikejimas, turimos_akcijos, uzsakymu_lukesciai, vartotoju_pasitikejimas, verslo_aktyvumas, ilgalaikio_vartojimo_prekes ))
+dataset=Reduce(function(x, y) merge(x, y, all=TRUE), list(kasyba_karjerai, darbo_lygio_lukesciai,nedarbas, infliacija, mazmeninis_pasitikejimas, paslaugu_pasitikejimas, pramones_pasitikejimas, statybu_pasitikejimas, turimos_akcijos, uzsakymu_lukesciai, vartotoju_pasitikejimas, verslo_aktyvumas, mazmenine_prekyba ))
 
 Data=dataset[,1]
 dataset=dataset[,-1]
@@ -246,8 +247,9 @@ colnames(OMX)=c("OMX")
 datafin=cbind( OMX,datafin)
 rownames(datafin) <- NULL
 rawdata=cbind( Data,datafin)
-setwd("..")   
-setwd("..")   
-setwd("kodas ir ataskaitos")
+
+#setwd("..")   
+#setwd("..")   
+#setwd("kodas ir ataskaitos")
 write.csv(rawdata, file = "rawdata.csv",row.names=FALSE)
 ```

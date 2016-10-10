@@ -1,0 +1,8 @@
+http://ec.europa.eu/eurostat/cache/metadata/en/ei_bcs_esms.htm
+
+
+
+4. Unit of measure	
+The data are published as balance i.e. the difference between positive and
+ negative answers (in percentage points of total answers), as index, as 
+confidence indicators (arithmetic average of balances).
