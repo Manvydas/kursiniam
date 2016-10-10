@@ -1,0 +1,122 @@
+---
+title: "Untitled"
+author: "Manvydas Sokolovas ir Paulius Kostickis"
+date: "10/10/2016"
+output: 
+  pdf_document: 
+    latex_engine: xelatex
+---
+
+
+Reikiamos bibliotekos:
+```{r}
+library("quantmod")
+library("forecast")
+library("xts")
+library("dplyr")
+```
+
+
+```{r}
+data=read.csv("rawdata.csv")
+
+data[ data == ":" ] = NA
+data=data[complete.cases(data),]
+rownames(data)<-NULL
+
+
+
+acf(data)
+plot(data)
+```
+
+
+```{r}
+panel.hist <- function(x, ...)    #ši funkcija reikalinga grafikų lentelei išbrėžti (histogramos pateikimui)                        
+{
+  usr <- par("usr"); on.exit(par(usr))
+  par(usr = c(usr[1:2], 0, 1.5) )
+  h <- hist(x, plot = FALSE)
+  breaks <- h$breaks; nB <- length(breaks)
+  y <- h$counts; y <- y/max(y)
+  rect(breaks[-nB], 0, breaks[-1], y, col = "cyan", ...)
+}
+
+panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor,...)    #ši funkcija reikalinga grafikų lentelei
+    #išbrėžti (koreliacijos koeficiento radimui)
+{
+  usr <- par("usr"); on.exit(par(usr))
+  par(usr = c(0, 1, 0, 1))
+  r <- abs(cor(x, y))
+  txt <- format(c(r, 0.123456789), digits = digits)[1]
+  txt <- paste0(prefix, txt)
+  if(missing(cex.cor)) cex.cor <- 0.8/strwidth(txt)
+  text(0.5, 0.5, txt, cex = 3)
+}
+
+pairs(data,upper.panel=panel.smooth,diag.panel=panel.hist, lower.panel=panel.cor)
+```
+
+```{r}
+panel.hist <- function(x, ...)    #ši funkcija reikalinga grafikų lentelei išbrėžti (histogramos pateikimui)                        
+{
+  usr <- par("usr"); on.exit(par(usr))
+  par(usr = c(usr[1:2], 0, 1.5) )
+  h <- hist(x, plot = FALSE)
+  breaks <- h$breaks; nB <- length(breaks)
+  y <- h$counts; y <- y/max(y)
+  rect(breaks[-nB], 0, breaks[-1], y, col = "cyan", ...)
+}
+
+panel.cor2 <- function(x, y, digits=2, cex.cor)
+{
+  usr <- par("usr"); on.exit(par(usr))
+  par(usr = c(0, 1, 0, 1))
+  r <- abs(cor(x, y))
+  txt <- format(c(r, 0.123456789), digits=digits)[1]
+  test <- cor.test(x,y)
+  Signif <- ifelse(round(test$p.value,3)<0.001,"p<0.001",paste("p=",round(test$p.value,3)))  
+  text(0.5, 0.25, paste("r=",txt))
+  text(.5, .75, Signif)
+}
+
+
+panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor,...)    #ši funkcija reikalinga grafikų lentelei
+    #išbrėžti (koreliacijos koeficiento radimui)
+{
+  usr <- par("usr"); on.exit(par(usr))
+  par(usr = c(0, 1, 0, 1))
+  r <- abs(cor(x, y))
+  txt <- format(c(r, 0.123456789), digits = digits)[1]
+  txt <- paste0(prefix, txt)
+  if(missing(cex.cor)) cex.cor <- 0.8/strwidth(txt)
+  text(0.5, 0.5, txt, cex = 3)
+}
+
+pairs(data,upper.panel=panel.cor2,diag.panel=panel.hist, lower.panel=panel.cor)
+```
+
+# prasibandymai ir problemos
+
+#(blogas)
+mod=lm(monthly.omx~ilgalaikio_vartojimo_prekės+apyvarta+statybu_pasitikejimas+paslaugu_pasitikejimas+vartotoju_pasitikejimas+mazmeninis_pasitikejimas
+     +pramones_pasitikejimas+verslo_aktyvumas+turimos_akcijos+uzsakymu_lukesciai+darbolygio_lukesciai+infliacija)
+
+#auto arima?
+fit <- auto.arima(monthly.omx, xreg=cbind(apyvarta[-c(length(apyvarta),length(apyvarta)-1),2]))
+#tslm?
+fit <- tslm(y ~ x) 
+
+```
+
+
+# prasibandymai ir problemos
+
+#(blogas)
+mod=lm(monthly.omx~ilgalaikio_vartojimo_prekės+apyvarta+statybu_pasitikejimas+paslaugu_pasitikejimas+vartotoju_pasitikejimas+mazmeninis_pasitikejimas
+     +pramones_pasitikejimas+verslo_aktyvumas+turimos_akcijos+uzsakymu_lukesciai+darbolygio_lukesciai+infliacija)
+
+#auto arima?
+fit <- auto.arima(monthly.omx, xreg=cbind(apyvarta[-c(length(apyvarta),length(apyvarta)-1),2]))
+#tslm?
+fit <- tslm(y ~ x) 
