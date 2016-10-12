@@ -40,7 +40,6 @@ istraukimas <- function(salis,folderio_pav,failo_pav,indikatorius,versija){
   
   else{print("klaida del versiju pasirinkimo")}
 }
-
 ```
 
 
@@ -57,6 +56,29 @@ ts_m = apply.monthly(ts, last)
 colnames(ts_m) <- c("OMX")
 ```
 
+Gamintojų kainos:
+```{r}
+setwd("..")   
+setwd("duomenys")  
+salis="Lithuania"
+indikatorius = NA                                                         # kol kas indikatoriaus nebus
+folderio_pav="Domestic producer prices - total industry (excluding construction)"
+failo_pav="sts_inppd_m_1_Data.csv"
+gamintoju_kainos=istraukimas(salis,folderio_pav,failo_pav,indikatorius,1)
+colnames(gamintoju_kainos) <- c("Data", "gam_kain")
+```
+
+Industrinė produkcija:
+```{r}
+setwd("..")   
+setwd("duomenys")  
+salis="Lithuania"
+indikatorius = NA                                                         # kol kas indikatoriaus nebus
+folderio_pav="Production in industry - monthly data"
+failo_pav="sts_inpr_m_1_Data.csv"
+industrine_produkcija=istraukimas(salis,folderio_pav,failo_pav,indikatorius,1)
+colnames(industrine_produkcija) <- c("Data", "industr_prod")
+```
 
 Ilgalaikio vartojimo prekės:
 ```{r}

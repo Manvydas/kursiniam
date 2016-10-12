@@ -9,28 +9,24 @@ output:
 
 
 Reikiamos bibliotekos:
-```{r}
+```{r, message=FALSE}
 library("quantmod")
 library("forecast")
 library("xts")
 library("dplyr")
+library("tidyverse")
 ```
 
-
+Nuskaitoma lentelė:
 ```{r}
 data=read.csv("rawdata.csv")
 
 data[ data == ":" ] = NA
 data=data[complete.cases(data),]
 rownames(data)<-NULL
-
-
-
-acf(data)
-plot(data)
 ```
 
-
+r ir grafikai:
 ```{r}
 panel.hist <- function(x, ...)    #ši funkcija reikalinga grafikų lentelei išbrėžti (histogramos pateikimui)                        
 {
@@ -57,6 +53,7 @@ panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor,...)    #ši funkci
 pairs(data,upper.panel=panel.smooth,diag.panel=panel.hist, lower.panel=panel.cor)
 ```
 
+r ir p:
 ```{r}
 panel.hist <- function(x, ...)    #ši funkcija reikalinga grafikų lentelei išbrėžti (histogramos pateikimui)                        
 {
@@ -96,27 +93,95 @@ panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor,...)    #ši funkci
 pairs(data,upper.panel=panel.cor2,diag.panel=panel.hist, lower.panel=panel.cor)
 ```
 
-# prasibandymai ir problemos
+r, p ir grafikai:
+```{r}
+panel.hist <- function(x, ...)    #ši funkcija reikalinga grafikų lentelei išbrėžti (histogramos pateikimui)                        
+{
+  usr <- par("usr"); on.exit(par(usr))
+  par(usr = c(usr[1:2], 0, 1.5) )
+  h <- hist(x, plot = FALSE)
+  breaks <- h$breaks; nB <- length(breaks)
+  y <- h$counts; y <- y/max(y)
+  rect(breaks[-nB], 0, breaks[-1], y, col = "cyan", ...)
+}
 
-#(blogas)
-mod=lm(monthly.omx~ilgalaikio_vartojimo_prekės+apyvarta+statybu_pasitikejimas+paslaugu_pasitikejimas+vartotoju_pasitikejimas+mazmeninis_pasitikejimas
-     +pramones_pasitikejimas+verslo_aktyvumas+turimos_akcijos+uzsakymu_lukesciai+darbolygio_lukesciai+infliacija)
+panel.cor2 <- function(x, y, digits=2, cex.cor)
+{
+  usr <- par("usr"); on.exit(par(usr))
+  par(usr = c(0, 1, 0, 1))
+  r <- abs(cor(x, y))
+  txt <- format(c(r, 0.123456789), digits=digits)[1]
+  test <- cor.test(x,y)
+  Signif <- ifelse(round(test$p.value,3)<0.001,"p<0.001",paste("p=",round(test$p.value,3)))  
+  text(0.5, 0.25, cex=2, paste("r=",txt))
+  text(.5, .75, cex=2, Signif)
+}
 
-#auto arima?
-fit <- auto.arima(monthly.omx, xreg=cbind(apyvarta[-c(length(apyvarta),length(apyvarta)-1),2]))
-#tslm?
-fit <- tslm(y ~ x) 
 
+pairs(data,upper.panel=panel.smooth,diag.panel=panel.hist, lower.panel=panel.cor2)
+```
+#Pabandyt taikyt Fisherio raw testa. Ar koreliacija reiksminga pagal kintamuju skaiciu
+
+
+Duomenų klasės pakeitimas į numeric:
+```{r}
+data1 <- data
+eil_nr <- 1:17
+klase_pries <- cbind(data.frame(sapply(data, class)), eil_nr);  colnames(klase_pries) <- c("Klase pries","Stulpelio nr.")
+stulpeliai = c(5, 7, 10, 15);
+
+data1[,stulpeliai] <- as.numeric( as.character( unlist( data1[ , stulpeliai])))
+
+data1[stulpeliai] <- as.numeric(as.matrix(data1[stulpeliai]))
+klase_po <- cbind(data.frame(sapply(data1, class)), klase_pries) ; colnames(klase_po) <- c("Klase po", "Klase pries", "Stulpelio nr.")
+```
+
+Standartizavimas:
+```{r}
+norm.duom <- scale(data1[,2:17])
+
+# patikriname ar tikrai gavome vidurkį 0 ir variaciją 1:
+colMeans(norm.duom)
+apply(norm.duom, 2, sd)
+```
+
+r, p ir grafikai:
+```{r}
+panel.hist <- function(x, ...)    #ši funkcija reikalinga grafikų lentelei išbrėžti (histogramos pateikimui)                        
+{
+  usr <- par("usr"); on.exit(par(usr))
+  par(usr = c(usr[1:2], 0, 1.5) )
+  h <- hist(x, plot = FALSE)
+  breaks <- h$breaks; nB <- length(breaks)
+  y <- h$counts; y <- y/max(y)
+  rect(breaks[-nB], 0, breaks[-1], y, col = "cyan", ...)
+}
+
+panel.cor2 <- function(x, y, digits=2, cex.cor)
+{
+  usr <- par("usr"); on.exit(par(usr))
+  par(usr = c(0, 1, 0, 1))
+  r <- abs(cor(x, y))
+  txt <- format(c(r, 0.123456789), digits=digits)[1]
+  test <- cor.test(x,y)
+  Signif <- ifelse(round(test$p.value,3)<0.001,"p<0.001",paste("p=",round(test$p.value,3)))  
+  text(0.5, 0.25, cex=2, paste("r=",txt))
+  text(.5, .75, cex=2, Signif)
+}
+
+
+pairs(norm.duom,upper.panel=panel.smooth,diag.panel=panel.hist, lower.panel=panel.cor2)
 ```
 
 
-# prasibandymai ir problemos
 
-#(blogas)
-mod=lm(monthly.omx~ilgalaikio_vartojimo_prekės+apyvarta+statybu_pasitikejimas+paslaugu_pasitikejimas+vartotoju_pasitikejimas+mazmeninis_pasitikejimas
-     +pramones_pasitikejimas+verslo_aktyvumas+turimos_akcijos+uzsakymu_lukesciai+darbolygio_lukesciai+infliacija)
 
-#auto arima?
-fit <- auto.arima(monthly.omx, xreg=cbind(apyvarta[-c(length(apyvarta),length(apyvarta)-1),2]))
-#tslm?
-fit <- tslm(y ~ x) 
+Atvaizdavimas:
+```{r, error=TRUE}
+ggplot(data=norm.duom) + 
+  geom_point(mapping = aes(x = OMX, y = SP350))
+#???????????????????????
+```
+
+
+
