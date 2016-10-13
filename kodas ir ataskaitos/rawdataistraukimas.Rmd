@@ -1,7 +1,7 @@
 ---
-title: '2016-10-08'
-author: "Paulius Kostickis ir Manvydas Sokolovas"
-date: "10/8/2016"
+title: "rawdataistraukimas"
+author: "Manvydas Sokolovas ir Paulius Kostickis"
+date: "10/13/2016"
 output:
   pdf_document:
     keep_tex: yes
@@ -14,6 +14,7 @@ library("quantmod")
 library("forecast")
 library("xts")
 library("dplyr")
+library("data.table")
 ```
 
 Duomenų ištraukimo funkcija:
@@ -219,7 +220,7 @@ setwd("duomenys/infliacija")
 data = read.csv("prc_hicp_mv12r_1_Data.csv")
 data = data[data$GEO == salis,]
 infliacija = select(data,TIME,Value)
-colnames(infliacija) <- c("Data", "Infliacija")
+colnames(infliacija) <- c("Data", "infliacija")
 setwd("..") 
 ```
 
@@ -267,6 +268,7 @@ euribor$Data=as.yearmon(euribor$Data, format = "%Y%b")
 euribor$Data=format(euribor$Data, "%YM%m")
 ```
 
+Industrinė produkcija:
 ```{r}
 setwd("..")   
 setwd("duomenys")  
@@ -277,13 +279,31 @@ colnames(industrine_produkcija) <- c("Data", "ip")
 
 ```
 
+Valiutos kursas:
+```{r}
+setwd("..")   
+setwd("duomenys")  
+failo_pav="eur_us.csv"
+setwd("euras doleris")  
+kursas=read.csv(skip=4,failo_pav)
+colnames(kursas)=c("Data","kursas")
+kursas=kursas %>% arrange(-row_number())
+
+kursas <- xts(kursas$kursas, as.Date(kursas$Data, "%Y-%m-%d"))
+kursas_m = apply.monthly(kursas, last)
+kursas_m = data.frame(kursas_m)
+kursas_m = setDT(kursas_m, keep.rownames = TRUE)
+colnames(kursas_m) = c("Data", "kursas")
+kursas_m$Data <- format(as.Date(kursas_m$Data), "%YM%m")
+```
+
 Sujungiami duomenys į vieną lentelę:
 ```{r}
 
 data=full_join(SP350,SP500,by="Data")
 data = data %>% arrange(-row_number())
 
-dataset=Reduce(function(x, y) merge(x, y, all=TRUE), list(kasyba_karjerai, darbo_lygio_lukesciai,nedarbas, infliacija, mazmeninis_pasitikejimas, paslaugu_pasitikejimas, pramones_pasitikejimas, statybu_pasitikejimas, turimos_akcijos, uzsakymu_lukesciai, vartotoju_pasitikejimas, verslo_aktyvumas, mazmenine_prekyba,euribor[-length(euribor),],gamintoju_kainos,industrine_produkcija ))
+dataset=Reduce(function(x, y) merge(x, y, all=TRUE), list(kasyba_karjerai, darbo_lygio_lukesciai,nedarbas, infliacija, mazmeninis_pasitikejimas, paslaugu_pasitikejimas, pramones_pasitikejimas, statybu_pasitikejimas, turimos_akcijos, uzsakymu_lukesciai, vartotoju_pasitikejimas, verslo_aktyvumas, mazmenine_prekyba,euribor[-length(euribor),], gamintoju_kainos, industrine_produkcija, kursas_m[-length(kursas_m),]))
 Data=dataset$Data
 dataset=dataset %>% select(-Data)
 OMX=data.frame(ts_m)
@@ -293,9 +313,10 @@ datafin=cbind( OMX,datafin )
 rownames(datafin) <- NULL
 Data=Data %>% head(n)
 rawdata=cbind( Data,datafin)
-
+``
 setwd("..")   
 setwd("..")   
 setwd("kodas ir ataskaitos")
 write.csv(rawdata, file = "rawdata.csv",row.names=FALSE)
 ```
+
