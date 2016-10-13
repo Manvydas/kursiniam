@@ -20,11 +20,10 @@ library("gridExtra")
 
 Nuskaitomi duomenys:
 ```{r}
-data=read.csv("rawdata.csv")
-data
-data[ data == ":" ] = NA
-data=data[complete.cases(data),]
-rownames(data)<-NULL
+duom=read.csv("rawdata.csv")
+duom[ duom == ":" ] = NA
+duom=duom[complete.cases(duom),]
+rownames(duom)<-NULL
 ```
 
 
