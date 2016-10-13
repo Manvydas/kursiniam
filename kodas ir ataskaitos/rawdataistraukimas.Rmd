@@ -1,0 +1,301 @@
+---
+title: "rawdataistraukimas"
+author: "Manvydas Sokolovas ir Paulius Kostickis"
+date: "10/13/2016"
+output:
+  pdf_document:
+    keep_tex: yes
+    latex_engine: xelatex
+---
+
+Reikiamos bibliotekos:
+```{r}
+library("quantmod")
+library("forecast")
+library("xts")
+library("dplyr")
+```
+
+Duomenų ištraukimo funkcija:
+```{r}
+istraukimas <- function(salis,folderio_pav,failo_pav){            
+  setwd(folderio_pav)
+  data=read.csv(failo_pav)
+  
+  data = data[data$S_ADJ=="Unadjusted data (i.e. neither seasonally adjusted nor calendar adjusted data)",]
+  data = data[data$GEO == salis,]
+  setwd('..')
+  
+  data = data[data$UNIT=="Index, 2010=100",]
+  return(select(data,TIME,Value))
+}
+
+istraukimas2 <- function(salis,folderio_pav,failo_pav,indikatorius){            
+  setwd(folderio_pav)
+  data=read.csv(failo_pav)
+  
+  data = data[data$S_ADJ=="Unadjusted data (i.e. neither seasonally adjusted nor calendar adjusted data)",]
+  data = data[data$GEO == salis,]
+  setwd('..')
+  
+
+  data = data[data$INDIC == indikatorius,]
+  return(select(data,TIME,Value))
+}
+
+istraukimas3 <- function(salis,folderio_pav,failo_pav){            
+  setwd(folderio_pav)
+  data=read.csv(failo_pav)
+  
+  data = data[data$S_ADJ=="Unadjusted data (i.e. neither seasonally adjusted nor calendar adjusted data)",]
+  data = data[data$GEO == salis,]
+  setwd('..')
+  
+  data = data[data$UNIT=="Percentage change over previous period",]
+  return(select(data,TIME,Value))
+}
+```
+
+
+Nuskaitomi OMX Vilnius duomenys:
+```{r}
+setwd("..")   
+setwd("duomenys")  
+omx=read.csv("omx.csv")
+duom=select(omx,OMX.raw,OMXV.Value)
+colnames(duom) <- c("Data", "Verte")
+
+ts <- xts(duom$Verte, as.Date(duom$Data, "%m/%d/%Y"))
+ts_m = apply.monthly(ts, last)
+colnames(ts_m) <- c("OMX")
+```
+
+
+Kasyba ir karjerų eksploatacija:
+```{r}
+setwd("..")   
+setwd("duomenys")  
+salis="Lithuania"
+folderio_pav="Turnover in industry - consumer durables"
+failo_pav="sts_intv_m_1_Data.csv"
+kasyba_karjerai=istraukimas(salis,folderio_pav,failo_pav)
+colnames(kasyba_karjerai) <- c("Data", "kk")
+```
+
+
+Mažmeninė prekyba, išskyrus variklinių transporto priemonių ir motociklų prekybą(defliuotas):
+```{r}
+setwd("..")   
+setwd("duomenys")  
+folderio_pav="Turnover and volume of sales in wholesale and retail trade - monthly data"
+failo_pav="sts_trtu_m_1_Data.csv" 
+mazmenine_prekyba=istraukimas(salis,folderio_pav,failo_pav)   
+colnames(mazmenine_prekyba) <- c("Data", "mp")
+```
+
+
+Statybų pasitikėjimas:
+```{r}
+setwd("..")   
+setwd("duomenys")  
+indikatorius="Construction confidence indicator"
+folderio_pav="Sentiment indicators - monthly data"
+failo_pav="ei_bssi_m_r2_1_Data.csv"
+statybu_pasitikejimas=istraukimas2(salis,folderio_pav,failo_pav,indikatorius)
+colnames(statybu_pasitikejimas) <- c("Data", "shope")
+```
+
+
+Paslaugų pasitikėjimas:
+```{r}
+setwd("..")   
+setwd("duomenys")  
+indikatorius="Services Confidence Indicator"
+folderio_pav="Sentiment indicators - monthly data"
+failo_pav="ei_bssi_m_r2_1_Data.csv"
+paslaugu_pasitikejimas=istraukimas2(salis,folderio_pav,failo_pav,indikatorius)
+colnames(paslaugu_pasitikejimas) <- c("Data", "phope")
+```
+
+
+Vartotojų pasitikėjimas:
+```{r}
+setwd("..")   
+setwd("duomenys")  
+indikatorius="Consumer confidence indicator"
+folderio_pav="Sentiment indicators - monthly data"
+failo_pav="ei_bssi_m_r2_1_Data.csv"
+vartotoju_pasitikejimas=istraukimas2(salis,folderio_pav,failo_pav,indikatorius)
+colnames(vartotoju_pasitikejimas) <- c("Data", "vhope")
+```
+
+
+Mažmeninis pasitikėjimas:
+```{r}
+setwd("..")   
+setwd("duomenys")  
+indikatorius="Retail confidence indicator"
+folderio_pav="Sentiment indicators - monthly data"
+failo_pav="ei_bssi_m_r2_1_Data.csv"
+mazmeninis_pasitikejimas=istraukimas2(salis,folderio_pav,failo_pav,indikatorius) #mažmeninės prekybos pasitikėjimo rodiklis
+colnames(mazmeninis_pasitikejimas) <- c("Data", "mhope")
+```
+
+
+Pramonės pasitikėjimas:
+```{r}
+setwd("..")   
+setwd("duomenys")  
+indikatorius="Industrial confidence indicator"
+folderio_pav="Sentiment indicators - monthly data"
+failo_pav="ei_bssi_m_r2_1_Data.csv"
+pramones_pasitikejimas=istraukimas2(salis,folderio_pav,failo_pav,indikatorius)
+colnames(pramones_pasitikejimas) <- c("Data", "pramhope")
+```
+
+
+Verslo plėtra per 3 mėnesius:
+```{r}
+setwd("..")   
+setwd("duomenys")  
+indikatorius="Business activity (sales) development over the past 3 months"
+folderio_pav="lukseciai ir turimos akcijos ir verslo pletra"
+failo_pav="ei_bsrt_m_r2_1_Data.csv"
+verslo_aktyvumas=istraukimas2(salis,folderio_pav,failo_pav,indikatorius)
+colnames(verslo_aktyvumas) <- c("Data", "vp")
+```
+
+
+Turimos akcijos:
+```{r}
+setwd("..")   
+setwd("duomenys")  
+indikatorius="Volume of stocks currently hold"
+folderio_pav="lukseciai ir turimos akcijos ir verslo pletra"
+failo_pav="ei_bsrt_m_r2_1_Data.csv"
+turimos_akcijos=istraukimas2(salis,folderio_pav,failo_pav,indikatorius)
+colnames(turimos_akcijos) <- c("Data", "ta")
+```
+
+
+Užsakymų lūkesčiai:
+```{r}
+setwd("..")   
+setwd("duomenys")  
+indikatorius="Expectations of the number of orders placed with suppliers over the next 3 months"
+folderio_pav="lukseciai ir turimos akcijos ir verslo pletra"
+failo_pav="ei_bsrt_m_r2_1_Data.csv"
+uzsakymu_lukesciai=istraukimas2(salis,folderio_pav,failo_pav,indikatorius)
+colnames(uzsakymu_lukesciai) <- c("Data", "ul")
+```
+
+
+Darbo Lygio lūkesčiai:
+```{r}
+setwd("..")   
+setwd("duomenys")  
+indikatorius="Employment expectations over the next 3 months"
+folderio_pav="lukseciai ir turimos akcijos ir verslo pletra"
+failo_pav="ei_bsrt_m_r2_1_Data.csv"
+darbo_lygio_lukesciai=istraukimas2(salis,folderio_pav,failo_pav,indikatorius)
+colnames(darbo_lygio_lukesciai) <- c("Data", "dll")
+```
+
+Nedarbas:
+```{r}
+setwd("..")   
+setwd("duomenys/nedarbas")  
+data = read.csv("ei_lmhu_m_1_Data.csv")
+data = data[data$GEO == salis,]
+nedarbas = select(data,TIME,Value)
+colnames(nedarbas) <- c("Data", "nedarbas")
+setwd("..") 
+```
+
+Infliacija:
+```{r}
+setwd("..")   
+setwd("duomenys/infliacija")  
+data = read.csv("prc_hicp_mv12r_1_Data.csv")
+data = data[data$GEO == salis,]
+infliacija = select(data,TIME,Value)
+colnames(infliacija) <- c("Data", "Infliacija")
+setwd("..") 
+```
+
+S&P 500:
+```{r}
+setwd("..")   
+setwd("duomenys/S&P 500")  
+data = read.csv("YAHOO-INDEX_GSPC.csv")
+SP500=select(data,Date,Adjusted.Close)
+colnames(SP500) <- c("Data", "SP500")
+setwd("..") 
+```
+
+S&P 350 Europe:
+```{r}
+setwd("..")   
+setwd("duomenys/S&P 350 Europe")  
+data = read.csv("GOOG-NYSEARCA_IEV.csv")
+SP350=select(data,Date,Close)
+colnames(SP350) <- c("Data", "SP350")
+
+```
+
+Gamintojų kainų lygis:
+```{r}
+setwd("..")   
+setwd("duomenys")  
+folderio_pav="Domestic producer prices - total industry (excluding construction)"
+failo_pav="sts_inppd_m_1_Data.csv"
+gamintoju_kainos=istraukimas3(salis,folderio_pav,failo_pav)
+colnames(gamintoju_kainos) <- c("Data", "gkl")
+
+```
+
+Euribor:
+```{r}
+setwd("..")   
+setwd("duomenys")  
+failo_pav="euribor.csv"
+setwd("Euribor 3-month - Historical close, average of observations through period")  
+euribor=read.csv(skip=4,failo_pav)
+colnames(euribor)=c("Data","euribor")
+euribor=euribor %>% arrange(-row_number())
+euribor$Data=as.yearmon(euribor$Data, format = "%Y%b")
+euribor$Data=format(euribor$Data, "%YM%m")
+```
+
+```{r}
+setwd("..")   
+setwd("duomenys")  
+folderio_pav="Production in industry - monthly data"
+failo_pav="sts_inpr_m_1_Data.csv"
+industrine_produkcija=istraukimas(salis,folderio_pav,failo_pav)
+colnames(industrine_produkcija) <- c("Data", "ip")
+
+```
+
+Sujungiami duomenys į vieną lentelę:
+```{r}
+
+data=full_join(SP350,SP500,by="Data")
+data = data %>% arrange(-row_number())
+
+dataset=Reduce(function(x, y) merge(x, y, all=TRUE), list(kasyba_karjerai, darbo_lygio_lukesciai,nedarbas, infliacija, mazmeninis_pasitikejimas, paslaugu_pasitikejimas, pramones_pasitikejimas, statybu_pasitikejimas, turimos_akcijos, uzsakymu_lukesciai, vartotoju_pasitikejimas, verslo_aktyvumas, mazmenine_prekyba,euribor[-length(euribor),],gamintoju_kainos,industrine_produkcija ))
+Data=dataset$Data
+dataset=dataset %>% select(-Data)
+OMX=data.frame(ts_m)
+n=nrow(OMX)
+datafin=cbind(data[1:n,] %>% select(c(SP350,SP500)), dataset[1:n,])
+datafin=cbind( OMX,datafin )
+rownames(datafin) <- NULL
+Data=Data %>% head(n)
+rawdata=cbind( Data,datafin)
+
+setwd("..")   
+setwd("..")   
+setwd("kodas ir ataskaitos")
+write.csv(rawdata, file = "rawdata.csv",row.names=FALSE)
+```

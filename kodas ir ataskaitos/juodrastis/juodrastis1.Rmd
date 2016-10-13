@@ -1,0 +1,31 @@
+---
+title: "juodrastis1"
+author: "Manvydas Sokolovas ir Paulius Kostickis"
+date: "10/13/2016"
+output: 
+  pdf_document: 
+    latex_engine: xelatex
+---
+
+<br>
+
+Reikiamos bibliotekos:
+```{r, message=FALSE}
+library("quantmod")
+library("forecast")
+library("xts")
+library("dplyr")
+library("gridExtra")
+```
+
+Nuskaitomi duomenys:
+```{r}
+data=read.csv("rawdata.csv")
+data
+data[ data == ":" ] = NA
+data=data[complete.cases(data),]
+rownames(data)<-NULL
+```
+
+
+
