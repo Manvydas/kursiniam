@@ -45,20 +45,6 @@ panel.cor2 <- function(x, y, digits=2, cex.cor)
   text(0.5, 0.25, paste("r=",txt))
   text(.5, .75, Signif)
 }
-
-
-pairs(data,upper.panel=panel.smooth,diag.panel=panel.hist, lower.panel=panel.cor2)
-
-panel.hist <- function(x, ...)    #ši funkcija reikalinga grafikų lentelei išbrėžti (histogramos pateikimui)                        
-{
-  usr <- par("usr"); on.exit(par(usr))
-  par(usr = c(usr[1:2], 0, 1.5) )
-  h <- hist(x, plot = FALSE)
-  breaks <- h$breaks; nB <- length(breaks)
-  y <- h$counts; y <- y/max(y)
-  rect(breaks[-nB], 0, breaks[-1], y, col = "cyan", ...)
-}
-
 panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor,...)    #ši funkcija reikalinga grafikų lentelei
     #išbrėžti (koreliacijos koeficiento radimui)
 {
@@ -71,31 +57,17 @@ panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor,...)    #ši funkci
   text(0.5, 0.5, txt, cex = 3)
 }
 
-pairs(data,upper.panel=panel.smooth,diag.panel=panel.hist, lower.panel=panel.cor2)
-
-
 
 data2=apply(data[,-1],2,as.numeric)
 rownames(data2)=data[,1]
 data2=data.frame(data2)
 data2$nedarbas=data2$nedarbas/10
 
-mod=lm(log(OMX)~log(SP350)+mazmenine_prekyba+kasyba_karje+statyb_pasitik+paslaugu_pasitik+vartot_pasitik+mazm_pasitik
-     +pram_pasitik+versl_aktyv+turimos_akc+uzsak_luk+darb_lyg_luk+Infliacija,data=data2)
-summary(mod)
+
+data3=data.frame(diff(as.matrix(data2)))
 
 
-data3=data.frame(diff(as.matrix(data2[,4:length(data2[1,])])))
-data3 =cbind( data2[-1,1:3],data3)
-mod2=lm(log(OMX)~log(SP350)+mazmenine_prekyba+kasyba_karje+statyb_pasitik+paslaugu_pasitik+vartot_pasitik+mazm_pasitik
-     +pram_pasitik+versl_aktyv+turimos_akc+uzsak_luk+darb_lyg_luk+Infliacija,data=data3)
-summary(mod2)
-
-
-data4=data.frame(diff(as.matrix(data2)))
-
-mod3=lm(log(OMX)~log(SP350)+mazmenine_prekyba+kasyba_karje+statyb_pasitik+paslaugu_pasitik+vartot_pasitik+mazm_pasitik
-     +pram_pasitik+versl_aktyv+turimos_akc+uzsak_luk+darb_lyg_luk+Infliacija,data=data4)
+mod3=lm(log(OMX)~log(SP350)+mp+vp+ta+ul+dll+mhope+shope+phope+vhope+pramhope+euribor+nedarbas+infliacija,data=data3)
 summary(mod3)
 pairs(data4,upper.panel=panel.smooth,diag.panel=panel.hist, lower.panel=panel.cor2)         #su diferencijuotais duomenim
 ```

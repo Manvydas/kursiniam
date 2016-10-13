@@ -1,8 +1,8 @@
-"DATASET: Import prices in industry - monthly data [sts_inpi_m]"
+"DATASET: Producer prices in industry, domestic market - monthly data [sts_inppd_m]"
 
-"LAST UPDATE: 22.09.16 03:20:40"
+"LAST UPDATE: 10.10.16 02:25:38"
 
-"EXTRACTION DATE: 26.09.16 15:09:50"
+"EXTRACTION DATE: 10.10.16 12:09:05"
 
 "SOURCE OF DATA: Eurostat"
 
@@ -207,6 +207,7 @@
 "2016M06"
 "2016M07"
 "2016M08"
+"2016M09"
 
 "GEO"
 "Estonia"
@@ -214,10 +215,10 @@
 "Lithuania"
 
 "INDIC_BT"
-"Import price index"
+"Domestic output price index - in national currency"
 
 "NACE_R2"
-"Mining and quarrying; manufacturing; electricity, gas, steam and air conditioning supply"
+"Industry (except construction, sewerage, waste management and remediation activities)"
 
 "S_ADJ"
 "Unadjusted data (i.e. neither seasonally adjusted nor calendar adjusted data)"
