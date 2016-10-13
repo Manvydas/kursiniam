@@ -267,6 +267,15 @@ euribor$Data=as.yearmon(euribor$Data, format = "%Y%b")
 euribor$Data=format(euribor$Data, "%YM%m")
 ```
 
+```{r}
+setwd("..")   
+setwd("duomenys")  
+folderio_pav="Production in industry - monthly data"
+failo_pav="sts_inpr_m_1_Data.csv"
+industrine_produkcija=istraukimas(salis,folderio_pav,failo_pav)
+colnames(industrine_produkcija) <- c("Data", "ip")
+
+```
 
 Sujungiami duomenys į vieną lentelę:
 ```{r}
@@ -274,7 +283,7 @@ Sujungiami duomenys į vieną lentelę:
 data=full_join(SP350,SP500,by="Data")
 data = data %>% arrange(-row_number())
 
-dataset=Reduce(function(x, y) merge(x, y, all=TRUE), list(kasyba_karjerai, darbo_lygio_lukesciai,nedarbas, infliacija, mazmeninis_pasitikejimas, paslaugu_pasitikejimas, pramones_pasitikejimas, statybu_pasitikejimas, turimos_akcijos, uzsakymu_lukesciai, vartotoju_pasitikejimas, verslo_aktyvumas, mazmenine_prekyba,euribor[-length(euribor),],gamintoju_kainos ))
+dataset=Reduce(function(x, y) merge(x, y, all=TRUE), list(kasyba_karjerai, darbo_lygio_lukesciai,nedarbas, infliacija, mazmeninis_pasitikejimas, paslaugu_pasitikejimas, pramones_pasitikejimas, statybu_pasitikejimas, turimos_akcijos, uzsakymu_lukesciai, vartotoju_pasitikejimas, verslo_aktyvumas, mazmenine_prekyba,euribor[-length(euribor),],gamintoju_kainos,industrine_produkcija ))
 Data=dataset$Data
 dataset=dataset %>% select(-Data)
 OMX=data.frame(ts_m)

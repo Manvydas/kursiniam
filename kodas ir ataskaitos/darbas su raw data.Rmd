@@ -67,9 +67,9 @@ data2$nedarbas=data2$nedarbas/10
 data3=data.frame(diff(as.matrix(data2)))
 
 
-mod3=lm(log(OMX)~log(SP350)+mp+vp+ta+ul+dll+mhope+shope+phope+vhope+pramhope+euribor+nedarbas+infliacija,data=data3)
+mod3=lm(log(OMX)~log(SP350)+mp+vp+ta+ul+dll+mhope+shope+phope+vhope+pramhope+euribor+nedarbas+infliacija+gkl,data=data3)
 summary(mod3)
-pairs(data4,upper.panel=panel.smooth,diag.panel=panel.hist, lower.panel=panel.cor2)         #su diferencijuotais duomenim
+pairs(data3,upper.panel=panel.smooth,diag.panel=panel.hist, lower.panel=panel.cor2)         #su diferencijuotais duomenim
 ```
 
 
