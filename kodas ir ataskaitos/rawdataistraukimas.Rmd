@@ -10,8 +10,6 @@ output:
 
 Reikiamos bibliotekos:
 ```{r}
-library("quantmod")
-library("forecast")
 library("xts")
 library("dplyr")
 library("data.table")

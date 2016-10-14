@@ -9,12 +9,12 @@ output:
 
 Reikiamos bibliotekos:
 ```{r}
-library("quantmod")
+#library("quantmod")
 library("forecast")
-library("xts")
-library("dplyr")
-library("fpp")
-library("dynlm")
+#library("xts")
+#library("dplyr")
+#library("fpp")
+#library("dynlm")
 ```
 
 
@@ -64,12 +64,17 @@ data2=apply(data[,-1],2,as.numeric)
 rownames(data2)=data[,1]
 data2=data.frame(data2)
 data2$nedarbas=data2$nedarbas/10
-data2[,c("OMX","SP350","SP500")] = apply(data2[,c("OMX","SP350","SP500")],1,log)
+data2[,c("OMX","SP350","SP500","kursas","kk","mp","gkl","ip")] = apply(data2[,c("OMX","SP350","SP500","kursas","kk","mp","gkl","ip")],1,log)        
+#logaritmuojant atsiranda NA del neigiamo skaiciaus
 
-diffeile = data.frame(sapply(data2,ndiffs))
+data3=data.frame(diff(as.matrix(data2)))
+diffeile = data.frame(sapply(data3,ndiffs))
 
 
 data3=data.frame(diff(as.matrix(data2)))
+
+
+
 data2[-nrow(data2),4:ncol(data2)]=data3[,4:ncol(data3)]
 data2=data2[-nrow(data2),]
 Box.test(data3$OMX,type="Ljung-Box")$p.value
