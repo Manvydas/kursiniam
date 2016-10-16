@@ -16,8 +16,9 @@ library("dplyr")
 library("fpp")
 #library("dynlm")
 library("MASS")
-
-
+library("ggplot2")
+library("labeling")
+install.packages("labeling")
 ```
 
 
@@ -71,21 +72,27 @@ data2$nedarbas=data2$nedarbas/10
 #gkl turi neigiamas reikšmes, negalime logaritmuot, palieku šią problema nors bandžiau spręst (praleisti)
 #min_abs_gkl=data2$gkl + data2$gkl %>% min() %>% abs()    #kad galetume logaritmuot, pridedu maziausio skaiciaus moduli
 #data2$gkl = data2$gkl + min_abs_gkl
+data5=data2
 
+data5[,c("OMX","SP350","SP500")] = apply(data5[,c("OMX","SP350","SP500")],2,log)    #logaritmuojama akcijų kainos, kursas   
+data5[,c("OMX","SP350","SP500")]=data5[,c("OMX","SP350","SP500")]*100
 
 data2[,c("OMX","SP350","SP500","kursas","kk","mp","ip")] = apply(data2[,c("OMX","SP350","SP500","kursas","kk","mp","ip")],2,log)    #logaritmuojama indeksai, akcijų kainos, kursas  
 
+data2[,c("OMX","SP350","SP500","kursas","kk","mp","ip")]=data2[,c("OMX","SP350","SP500","kursas","kk","mp","ip")]*100
 
-data5[,c("OMX","SP350","SP500","kursas")] = apply(data2[,c("OMX","SP350","SP500","kursas")],2,log)    #logaritmuojama akcijų kainos, kursas     
-data5=data.frame(diff(as.matrix(data5)))  
+  
+euribor2=data5$euribor[-1]/12
+data5=data.frame(diff(as.matrix(data5)))
+data5$euribor=euribor
 #data2[ data2 == "-Inf" ] = NA          šis kodas susijęs su gkl logaritmavimu (praleisti)
 #data3=data2[complete.cases(data2),]
 
 data2$euribor=data2$euribor/12
 
-data3=data.frame(diff(as.matrix(data2)))           
 
-
+data3=data.frame(diff(as.matrix(data2)))  
+data3$gkl = data$gkl[-1]    #gamintoju kainu lygio nereik diferencijuot nes jau yra pokytis %
 
 ###########
 
@@ -140,10 +147,13 @@ AIC(modfinal)
 AIC(modfinal2)
 str(modfinal)
 
-mod3=lm(OMX~SP350+mp+ta+ul+dll+mhope+shope+phope+vhope+pramhope+euribor+nedarbas+infliacija,data=data3)
-model5.stepAIC <- stepAIC(mod5, direction=c("both"))
-mod4=lm(formula = OMX ~ SP350 + ul + phope + pramhope + nedarbas + infliacija, data = data3)
+### data3
+mod3=lm(OMX~SP350+mp+ta+ul+dll+mhope+shope+phope+vhope+pramhope+euribor+gkl+nedarbas+infliacija,data=data3)
+model5.stepAIC <- stepAIC(mod3, direction=c("both"))
+mod4=lm(formula = OMX ~ SP350 + ul+ phope + pramhope + nedarbas + infliacija, data = data3)
 summary(mod4)
+
+###
 
 mod_pramhope = lm(formula = pramhope ~ mp+ta+ul+dll+mhope+shope+phope+vhope+euribor+nedarbas+infliacija, data = data3)
 pramhope.stepAIC <- stepAIC(mod_pramhope, direction=c("both"))
@@ -169,11 +179,15 @@ summary(mod_mp)
 modfinal=lm(OMX~SP350  + pramhope  + infliacija, data = data3)
 summary(modfinal)
 
+#### data5
+
 mod5=lm(OMX~SP350+mp+ta+ul+dll+mhope+shope+phope+vhope+pramhope+euribor+nedarbas+infliacija,data=data5)
 model5.stepAIC <- stepAIC(mod5, direction=c("both"))
-mod6=lm(formula = OMX ~ SP350 + pramhope  + infliacija, data = data5)
+mod6=lm(formula = OMX ~ SP350  + phope + pramhope + nedarbas + infliacija, data = data5)
 summary(mod6)
 
+
+####
 test=data3[,c("OMX","mhope","shope","phope","vhope","pramhope")]
 pairs(test,upper.panel=panel.smooth,diag.panel=panel.hist, lower.panel=panel.cor2) 
 
@@ -182,6 +196,40 @@ pairs(test2,upper.panel=panel.smooth,diag.panel=panel.hist, lower.panel=panel.co
 
 
 pairs(data3,upper.panel=panel.smooth,diag.panel=panel.hist, lower.panel=panel.cor2)         #su diferencijuotais duomenim
+
+
+ggplot(data=data3)+
+  geom_point(mapping = aes(x = OMX, y = SP350))
+
+par(mfrow=c(1,1))
+
+pairs(data3[,c("OMX","SP350","SP500")],upper.panel=panel.smooth,diag.panel=panel.hist, lower.panel=panel.cor2)
+pairs(data3[,c("OMX","shope","phope")],upper.panel=panel.smooth,diag.panel=panel.hist, lower.panel=panel.cor2)
+
+pairs(data5[,c("OMX","SP350","SP500")],upper.panel=panel.smooth,diag.panel=panel.hist, lower.panel=panel.cor2)
+pairs(data5[,c("OMX","shope","phope")],upper.panel=panel.smooth,diag.panel=panel.hist, lower.panel=panel.cor2)
+
+
+#grafikui
+
+Data = rownames(data3)
+class(Data)
+Data=as.yearmon(Data, "%YM%m")
+
+
+library(ggplot2)
+library(reshape2)
+
+
+
+data3=cbind(data3,Data)
+
+ggplot(data3) + geom_line(aes(x=Data,y=OMX),color="RED") +geom_line(aes(x=Data,y=SP350))+ylab("% pokytis")+xlab("metai")
+
+dd = melt(data3[,c("OMX","SP350","SP500","Data")], id=c("Data"))
+ggplot(dd) + geom_line(aes(x=Data, y=value, colour=variable)) +
+  scale_colour_manual(values=c(1:4))+ylab("% pokytis")+ggtitle("akciju indeksu menesiniai % pokyciai")
+
 ```
 
 
