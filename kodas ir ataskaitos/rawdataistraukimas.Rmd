@@ -295,26 +295,3 @@ colnames(kursas_m) = c("Data", "kursas")
 kursas_m$Data <- format(as.Date(kursas_m$Data), "%YM%m")
 ```
 
-Sujungiami duomenys į vieną lentelę:
-```{r}
-
-data=full_join(SP350,SP500,by="Data")
-data = data %>% arrange(-row_number())
-
-dataset=Reduce(function(x, y) merge(x, y, all=TRUE), list(kasyba_karjerai, darbo_lygio_lukesciai,nedarbas, infliacija, mazmeninis_pasitikejimas, paslaugu_pasitikejimas, pramones_pasitikejimas, statybu_pasitikejimas, turimos_akcijos, uzsakymu_lukesciai, vartotoju_pasitikejimas, verslo_aktyvumas, mazmenine_prekyba,euribor[-length(euribor),], gamintoju_kainos, industrine_produkcija, kursas_m[-length(kursas_m),]))
-Data=dataset$Data
-dataset=dataset %>% select(-Data)
-OMX=data.frame(ts_m)
-n=nrow(OMX)
-datafin=cbind(data[1:n,] %>% select(c(SP350,SP500)), dataset[1:n,])
-datafin=cbind( OMX,datafin )
-rownames(datafin) <- NULL
-Data=Data %>% head(n)
-rawdata=cbind( Data,datafin)
-``
-setwd("..")   
-setwd("..")   
-setwd("kodas ir ataskaitos")
-write.csv(rawdata, file = "rawdata.csv",row.names=FALSE)
-```
-
