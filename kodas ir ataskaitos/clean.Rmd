@@ -15,6 +15,7 @@ library("forecast")
 library("xts")
 library("dplyr")
 library("tidyverse")
+library("ggplot2")
 ```
 
 Nuskaitoma lentelė:
@@ -145,7 +146,7 @@ colMeans(norm.duom)
 apply(norm.duom, 2, sd)
 ```
 
-r, p ir grafikai:
+r, p ir grafikai po standartizavimo:
 ```{r}
 panel.hist <- function(x, ...)    #ši funkcija reikalinga grafikų lentelei išbrėžti (histogramos pateikimui)                        
 {
