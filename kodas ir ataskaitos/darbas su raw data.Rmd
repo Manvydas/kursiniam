@@ -18,9 +18,8 @@ library("fpp")
 library("MASS")
 library("ggplot2")
 library("labeling")
-install.packages("labeling")
-```
 
+```
 
 ```{r}
 data=read.csv("rawdata.csv")
@@ -84,7 +83,7 @@ data2[,c("OMX","SP350","SP500","kursas","kk","mp","ip")]=data2[,c("OMX","SP350",
   
 euribor2=data5$euribor[-1]/12
 data5=data.frame(diff(as.matrix(data5)))
-data5$euribor=euribor
+data5$euribor=euribor2
 #data2[ data2 == "-Inf" ] = NA          šis kodas susijęs su gkl logaritmavimu (praleisti)
 #data3=data2[complete.cases(data2),]
 
@@ -95,165 +94,3 @@ data3=data.frame(diff(as.matrix(data2)))
 data3$gkl = data$gkl[-1]    #gamintoju kainu lygio nereik diferencijuot nes jau yra pokytis %
 
 ###########
-
-data3[,c("OMX","SP350","SP500","kursas","kk","mp","ip")] = data3[,c("OMX","SP350","SP500","kursas","kk","mp","ip")] *100
-
-data4=data3
-data4[,c("OMX","SP350","SP500","kursas","kk","mp","gkl","ip")] = apply(data4[,c("OMX","SP350","SP500","kursas","kk","mp","gkl","ip")],2,function(i)i=(exp(i)-1)*100)              #įdomumo prasme atstatyti duomenys iš logaritmo  
-
-#data4$gkl=data4$gkl - min_abs_gkl      #blogas kodas susijęs su gkl (praleisti)
-
-diffeile = data.frame(sapply(data3,ndiffs))   #dėl įdomumo ar testas rekomenduoja dar diferencijuot
-apply(data3 , 2, function(i){kpss.test(i)$p.value>0.05})   #stacionarumo testas praeitas, H0 - kad stacionarūs duomenys - gera ypatybė
-
-data3$euribor=data3$euribor/12
-data3$OMX=data3$OMX-data3$euribor
-data3$SP350=data3$SP350-data3$euribor
-data3$SP500=data3$SP500-data3$euribor
-
-(exp(-0.036206)-1)*100            # pamąstymai apie logaritmo transformacija, matoma šioka tokia paklaida, sakant, 
-                                  # jog kiek x procentų pakinta, x*beta procentų pakinta y.
-log(100)*0.5
-c=2.302585
-a=(exp(2.302585)-1)*100
-log(101)*0.5
-d=2.30756
-b=(exp(2.30756)-1)*100
-(b-a)/a
-exp(d/c)
-
-
-T=pramhope*0.1+nedarbas*0.30+infliacija*0.30+gkl*0.30
-
-
-# visi kintamieji: SP350+SP500+mp+vp+ta+ul+dll+mhope+shope+phope+vhope+pramhope+euribor+nedarbas+infliacija+gkl
-
-hope=data3$pramhope+data3$mhope+data3$shope+data3$vhope+data3$pramhope        # tiesiog su pramhope geriau gaunasi...
-lukesciai=data3$ul+data3$dll
-makro= data3$nedarbas+data3$infliacija+data3$kursas
-summary(lm(OMX~SP350+hope+lukesciai+makro,data=data3))
-summary(lm(OMX~SP350+hope+nedarbas+infliacija+euribor+kursas,data=data3))
-
-modhope=lm(hope~SP350+mp+vp+ta+ul+dll+euribor+nedarbas+infliacija+gkl,data=data3)
-modhope.stepAIC <- stepAIC(modhope, direction=c("both"))
-modhope =lm( hope ~ mp + vp + ul + euribor + infliacija,data=data3)
-summary(modhope)
-
-modfinal=lm(OMX~SP350+hope+infliacija,data=data3)  #euribor del koreliacijos itraukiu
-modfinal2=lm(OMX~SP350,data=data3)
-summary(modfinal)
-summary(modfinal2)
-AIC(modfinal)
-AIC(modfinal2)
-str(modfinal)
-
-### data3
-mod3=lm(OMX~SP350+mp+ta+ul+dll+mhope+shope+phope+vhope+pramhope+euribor+gkl+nedarbas+infliacija,data=data3)
-model5.stepAIC <- stepAIC(mod3, direction=c("both"))
-mod4=lm(formula = OMX ~ SP350 + ul+ phope + pramhope + nedarbas + infliacija, data = data3)
-summary(mod4)
-
-###
-
-mod_pramhope = lm(formula = pramhope ~ mp+ta+ul+dll+mhope+shope+phope+vhope+euribor+nedarbas+infliacija, data = data3)
-pramhope.stepAIC <- stepAIC(mod_pramhope, direction=c("both"))
-mod_pramhope= lm(pramhope ~ mp + ul + shope + euribor + infliacija,data=data3)
-summary(mod_pramhope)
-
-mod_infliacija = lm(formula = infliacija ~pramhope+ mp+ta+ul+dll+mhope+shope+phope+vhope+euribor+nedarbas, data = data3)
-infliacija.stepAIC <- stepAIC(mod_infliacija, direction=c("both"))
-mod_infliacija= lm(infliacija ~ pramhope + mhope + vhope + euribor + nedarbas,data=data3)
-summary(mod_infliacija)
-
-mod_nedarbas=lm(formula = nedarbas ~ mp+ta+ul+dll+mhope+shope+phope+vhope+euribor+pramhope+infliacija, data = data3)
-nedarbas.stepAIC <- stepAIC(mod_nedarbas, direction=c("both"))
-mod_nedarbas= lm(nedarbas ~ dll + shope + euribor + infliacija,data=data3)
-summary(mod_nedarbas)
-
-mod_mp=lm(formula = mp ~ nedarbas+ta+ul+dll+mhope+shope+phope+vhope+euribor+pramhope+infliacija, data = data3)
-mp.stepAIC <- stepAIC(mod_mp, direction=c("both"))
-mod_mp= lm(mp ~ dll + phope + vhope + euribor + pramhope + infliacija,data=data3)
-summary(mod_mp)
-
-
-modfinal=lm(OMX~SP350  + pramhope  + infliacija, data = data3)
-summary(modfinal)
-
-#### data5
-
-mod5=lm(OMX~SP350+mp+ta+ul+dll+mhope+shope+phope+vhope+pramhope+euribor+nedarbas+infliacija,data=data5)
-model5.stepAIC <- stepAIC(mod5, direction=c("both"))
-mod6=lm(formula = OMX ~ SP350  + phope + pramhope + nedarbas + infliacija, data = data5)
-summary(mod6)
-
-
-####
-test=data3[,c("OMX","mhope","shope","phope","vhope","pramhope")]
-pairs(test,upper.panel=panel.smooth,diag.panel=panel.hist, lower.panel=panel.cor2) 
-
-test2=cbind(data3$OMX,hope)
-pairs(test2,upper.panel=panel.smooth,diag.panel=panel.hist, lower.panel=panel.cor2)
-
-
-pairs(data3,upper.panel=panel.smooth,diag.panel=panel.hist, lower.panel=panel.cor2)         #su diferencijuotais duomenim
-
-
-ggplot(data=data3)+
-  geom_point(mapping = aes(x = OMX, y = SP350))
-
-par(mfrow=c(1,1))
-
-pairs(data3[,c("OMX","SP350","SP500")],upper.panel=panel.smooth,diag.panel=panel.hist, lower.panel=panel.cor2)
-pairs(data3[,c("OMX","shope","phope")],upper.panel=panel.smooth,diag.panel=panel.hist, lower.panel=panel.cor2)
-
-pairs(data5[,c("OMX","SP350","SP500")],upper.panel=panel.smooth,diag.panel=panel.hist, lower.panel=panel.cor2)
-pairs(data5[,c("OMX","shope","phope")],upper.panel=panel.smooth,diag.panel=panel.hist, lower.panel=panel.cor2)
-
-
-#grafikui
-
-Data = rownames(data3)
-class(Data)
-Data=as.yearmon(Data, "%YM%m")
-
-
-library(ggplot2)
-library(reshape2)
-
-
-
-data3=cbind(data3,Data)
-
-ggplot(data3) + geom_line(aes(x=Data,y=OMX),color="RED") +geom_line(aes(x=Data,y=SP350))+ylab("% pokytis")+xlab("metai")
-
-dd = melt(data3[,c("OMX","SP350","SP500","Data")], id=c("Data"))
-ggplot(dd) + geom_line(aes(x=Data, y=value, colour=variable)) +
-  scale_colour_manual(values=c(1:4))+ylab("% pokytis")+ggtitle("akciju indeksu menesiniai % pokyciai")
-
-```
-
-
-# prasibandymai ir problemos
-
-#(blogas)
-mod=lm(monthly.omx~ilgalaikio_vartojimo_prekės+apyvarta+statybu_pasitikejimas+paslaugu_pasitikejimas+vartotoju_pasitikejimas+mazmeninis_pasitikejimas
-     +pramones_pasitikejimas+verslo_aktyvumas+turimos_akcijos+uzsakymu_lukesciai+darbolygio_lukesciai+infliacija)
-
-#auto arima?
-fit <- auto.arima(monthly.omx, xreg=cbind(apyvarta[-c(length(apyvarta),length(apyvarta)-1),2]))
-#tslm?
-fit <- tslm(y ~ x) 
-
-```
-
-
-# prasibandymai ir problemos
-
-#(blogas)
-mod=lm(monthly.omx~ilgalaikio_vartojimo_prekės+apyvarta+statybu_pasitikejimas+paslaugu_pasitikejimas+vartotoju_pasitikejimas+mazmeninis_pasitikejimas
-     +pramones_pasitikejimas+verslo_aktyvumas+turimos_akcijos+uzsakymu_lukesciai+darbolygio_lukesciai+infliacija)
-
-#auto arima?
-fit <- auto.arima(monthly.omx, xreg=cbind(apyvarta[-c(length(apyvarta),length(apyvarta)-1),2]))
-#tslm?
-fit <- tslm(y ~ x) 

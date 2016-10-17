@@ -1,0 +1,214 @@
+---
+output: 
+  pdf_document: 
+    latex_engine: xelatex
+---
+
+
+```{r, message=FALSE, echo=FALSE}
+library("quantmod")
+library("forecast")
+library("xts")
+library("dplyr")
+library("gridExtra")
+library("dynlm")
+library(ggplot2)
+library(reshape2)
+library(tseries)
+library("knitr")
+```
+
+\begin{titlepage}
+
+\centerline{\bf \large Vilniaus Universitetas}
+\bigskip
+\centerline{\large \textbf{Matematikos ir informatikos fakultetas}}
+
+\vskip 120pt
+\centerline{\bf \Large \textbf{Kursinis darbas}}
+\vskip 50pt
+\begin{center}
+    {\bf \LARGE Lietuvos akcijų rinkos grąžos priklausomybė nuo makroekonominių duomenų}
+\end{center}
+\bigskip
+\centerline{\Large \textbf{Manvydas Sokolovas ir Paulius Kostickis}}
+\vskip 90pt
+\vskip 120pt
+\centerline{\large \textbf{VILNIUS 2016}}
+%\newpage
+\end{titlepage}
+
+\textwidth 6.5in
+\textheight 9.00in
+
+\renewcommand{\contentsname}{Turinys}
+\tableofcontents
+\thispagestyle{empty}
+\newpage
+
+
+# Įvadas
+Yra atlikti tyrimai Šri Lankos, Indijos rinkose, kurie įrodė, jog makroekonominiai rodikliai, tokie kaip nedarbas, infliacija, valiutos kursas, palūkanų dydis, turi įtakos tų rinkų akcijų grąžai. Rusijos rinkoje, remiantis „Arbitrage Pricing Theory” buvo atlikta tiesinė regresija, kuri neįrodė makroekonominių duomenų įtakos. Todėl mes nutarėme ištirti Lietuvos akcijų rinkos grąžos priklausomybę nuo makroekonominių duomenų.
+
+Lietuvos akcijų rinka reprezentuos OMX Vilnius indeksas, kurį sudaro 32 lietuviškų įmonių akcijos. Bus skaičiuojama jo grąža ir bus analizuojama, kiek tą grąžą paaiškina mėnesiniai makroekonominiai duomenys tokie kaip infliacija, nedarbas, palūkanų norma, produkcijos kiekiai. Remiantis „Arbitrage Pricing Theory” (APT) sukursime regresiją, kurią iš esmės sudaro „Capital Pricing Model” ir makroekonomiai duomenys.
+
+Darbe naudojami mėnesiniai duomenys nuo 2002 metų birželio iki 2016 metų liepos. Susiduriama su mėnesinių rodiklių trūkumu: BVP, gyventojų pajamos, pinigų paklausa yra ketvirtiniai duomenys. Taip pat žvelgiant pasauliniu masteliu, Vilniaus akcijų birža yra smulki, o akcijų likvidumas čia taip pat žemas. Nepaisant šių problemų, buvo rasta koreliacija tarp kai kurių makroekonominių duomenų ir OMX Vilnius indekso grąžų.
+
+# Kintamieji
+* S&P 350 Europe - tai indeksas sudarytas iš 350 didžiausių Europos imonių akcijų.
+* S&P 500 - tai indeksas sudarytas iš 500 didžiausių Amerikos imonių akcijų.
+* Euribor 3 mėnesių - palūkanų norma už kurią Europos bankai skolina pinigus vieni kitiems trijų mėnesių laikotarpiui.
+* JAV dolerio ir Euro valiutos kursas.
+* Nedarbas - darbingų nedirbančių žmonių skaičius 1000 žmonių.
+* Pramonės gamintojų kainos  - matuoja vidutinę kainų raidą, visų produktų bei paslaugų iš pramonės sektoriaus ir parduotų vidinėje rinkoje. Procentinis pokytis nuo praeito mėnesio.
+* Infliacija - 12 mėnesių infliacija.
+* Industrinė produkcija - indeksas matuoja produkcijos kiekį nuo gamybos, kasybos, elektros ir dujų pramonės. Atskaitiniai metai 2010 (2010m. indeksas = 100).
+* Darbo lygio ir užsakymų lūkesčiai - mėnesinės apklausos, teigiamų ir neigiamų atsakymų santykis.
+* Pasitikėjimo indikatoriai - pramonės, mažmeninės prekybos, vartotojų, paslaugų, statybų. Tai yra apklausų teigiamų ir neigiamų atsakymų santykis.
+* Mažmeninė prekyba, išskyrus variklinių transporto priemonių ir motociklų prekybą- indeksuotas rodiklis (2010m indeksas = 100).
+
+\newpage
+
+# Duomenų transformacijos
+Duomenys naudojami nuo 2002 metų iki 2006 metų, ankstesnių duomenų nepavyko išgauti.
+
+OMX Vilnius indeksas transformuojamas į mėnesinius procentinius pokyčius: jei OMX indekso mėnesinė kaina nuo laiko (mėnesio)  t žymėsime X(t), tai r(t) = (log(X(t)) – log(X(t-1)) ) * 100 %, r(t) tada yra indekso mėnesinis pokytis procentais.
+Tokiu pačiu būdu gaunama kitų akcijų indeksų grąža logaritmuojant ir diferencijuojant S&P500, S&P350 indeksų kainas. Kasybos ir karjerų eksploatacijos indeksas, mažmeninės prekybos indeksas, industrinės produkcijos indeksas yra taip pat logaritmuojami ir diferencijuojami. Visi logaritmuoti duomenys padauginami iš šimto, kad pokytis būtų interpretuojamas procentais. Euribor yra dalinamas iš 12 ir diferencijuojamas, kad būtų gauta mėnesinis pokytis. Nedarbas dalinamas iš 10 (bedarbių skaičius tenkantis 1000 gyventojų, padalinę iš 10 gauname procentais) ir taip pat yra diferencijuojamas. Dolerio/euro valiutų kursas, pasitikejimo ir lūkesčių rodikliai yra diferencijuojami. Diferencijavimu šiuo atveju vadiname šio mėnesio duomenų atimimą iš preito periodo(mėnesio) duomenų.
+
+
+Tikriname duomenys turi vienetinę šaknį:
+```{r, message=FALSE, echo=FALSE}
+data=read.csv("rawdata.csv")
+
+
+
+data[ data == ":" ] = NA
+data=data[complete.cases(data),]
+rownames(data)<-NULL
+```
+
+```{r, message=FALSE, echo=FALSE,warning =FALSE}
+data2=apply(data[,-1],2,as.numeric)
+rownames(data2)=data[,1]
+data2=data.frame(data2)
+data2$nedarbas=data2$nedarbas/10
+
+data2[,c("OMX","SP350","SP500","kk","mp","ip")] = apply(data2[,c("OMX","SP350","SP500","kk","mp","ip")],2,log)    #logaritmuojama indeksai, akcijų kainos, kursas  
+
+data2[,c("OMX","SP350","SP500","kk","mp","ip")]=data2[,c("OMX","SP350","SP500","kk","mp","ip")]*100
+
+data2$euribor=data2$euribor/12
+
+data3=data.frame(diff(as.matrix(data2)))  
+data3$gkl = data$gkl[-1]    #gamintoju kainu lygio nereik diferencijuot nes jau yra pokytis %
+#tsdisplay(data3$infliacija)
+
+p=apply(data3,2,function(i)adf.test(i,k=1)$p.value)
+p=data.frame(p)
+kable(p)
+
+```
+
+Visų kintamųjų, išskyrus infliaciją, p - value mažiau už 0.05, galime atmesti H0, kad turi vienetinę šaknį, visi kintamieji, išskyrus infliaciją, yra stacionarūs.
+
+\newpage
+
+# Duomenų vizualizacija
+
+```{r, message=FALSE, echo=FALSE}
+panel.hist <- function(x, ...)    #ši funkcija reikalinga grafikų pairs lentelei išbrėžti (histogramos pateikimui)                        
+{
+  usr <- par("usr"); on.exit(par(usr))
+  par(usr = c(usr[1:2], 0, 1.5) )
+  h <- hist(x, plot = FALSE)
+  breaks <- h$breaks; nB <- length(breaks)
+  y <- h$counts; y <- y/max(y)
+  rect(breaks[-nB], 0, breaks[-1], y, col = "cyan", ...)
+}
+
+panel.cor2 <- function(x, y, digits=2, cex.cor)
+{
+  usr <- par("usr"); on.exit(par(usr))
+  par(usr = c(0, 1, 0, 1))
+  r <- abs(cor(x, y))
+  txt <- format(c(r, 0.123456789), digits=digits)[1]
+  test <- cor.test(x,y)
+  Signif <- ifelse(round(test$p.value,3)<0.001,"p<0.001",paste("p=",round(test$p.value,3)))  
+  text(0.5, 0.25, paste("r=",txt))
+  text(.5, .75, Signif)
+}
+panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor,...)    #ši funkcija reikalinga grafikų lentelei
+    #išbrėžti (koreliacijos koeficiento radimui)
+{
+  usr <- par("usr"); on.exit(par(usr))
+  par(usr = c(0, 1, 0, 1))
+  r <- abs(cor(x, y))
+  txt <- format(c(r, 0.123456789), digits = digits)[1]
+  txt <- paste0(prefix, txt)
+  if(missing(cex.cor)) cex.cor <- 0.8/strwidth(txt)
+  text(0.5, 0.5, txt, cex = 3)
+}
+```
+
+```{r, message=FALSE, echo=FALSE}
+Data = rownames(data3)
+Data=as.yearmon(Data, "%YM%m")
+
+data3=cbind.data.frame(Data, data3)
+```
+
+```{r, message=FALSE, echo=FALSE}
+dd = melt(data3[,c("OMX","SP350","SP500","Data")], id=c("Data"))
+```
+
+<br>
+
+### Akcijų indeksų mėnesiniai procentiniai pokyčiai:
+```{r, message=FALSE, echo=FALSE}
+par(mfrow=c(2,1))
+
+ggplot(dd) + geom_line(aes(x=Data, y=value, colour=variable)) +
+  scale_colour_manual(values=c(1:4))+ylab("% pokytis")
+
+
+pairs(data3[,c("OMX","SP350","SP500")],upper.panel=panel.smooth,diag.panel=panel.hist, lower.panel=panel.cor2)
+
+```
+
+* Komentarai
+
+\newpage
+
+```{r}
+pairs(data3[,c("OMX","shope","phope")],upper.panel=panel.smooth,diag.panel=panel.hist, lower.panel=panel.cor2)
+
+```
+
+
+
+```{r}
+dd = melt(data3[,c("OMX","infliacija","Data")], id=c("Data"))
+ggplot(dd) + geom_line(aes(x=Data, y=value, colour=variable)) +
+  scale_colour_manual(values=c(1:3))+ylab("% pokytis")+ggtitle("Akcijų indeksų mėnesiniai procentiniai pokyčiai")
+```
+
+```{r}
+dd = melt(data3[,c("OMX","nedarbas","Data")], id=c("Data"))
+ggplot(dd) + geom_line(aes(x=Data, y=value, colour=variable)) +
+  scale_colour_manual(values=c(1:3))+ylab("% pokytis")+ggtitle("Akcijų indeksų mėnesiniai procentiniai pokyčiai")
+```
+
+```{r}
+dd = melt(data3[,c("OMX","infliacija", "nedarbas", "Data")], id=c("Data"))
+ggplot(dd) + geom_line(aes(x=Data, y=value, colour=variable)) +
+  scale_colour_manual(values=c(1:4))+ylab("% pokytis")+ggtitle("Akcijų indeksų mėnesiniai procentiniai pokyčiai")
+
+```
+
+
+# Išvados
+lore ipsum 
+
+# Literatūra
+lore ipsum
+

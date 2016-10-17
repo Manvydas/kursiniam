@@ -1,0 +1,189 @@
+\begin{frame}[fragile]
+
+Reikiamos bibliotekos:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#library("quantmod")}
+\KeywordTok{library}\NormalTok{(}\StringTok{"forecast"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: zoo
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'zoo'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:base':
+## 
+##     as.Date, as.Date.numeric
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: timeDate
+\end{verbatim}
+
+\begin{verbatim}
+## This is forecast 7.3
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#library("xts")}
+\KeywordTok{library}\NormalTok{(}\StringTok{"dplyr"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Attaching package: 'dplyr'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(}\StringTok{"fpp"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: fma
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: tseries
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: expsmooth
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: lmtest
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#library("dynlm")}
+\KeywordTok{library}\NormalTok{(}\StringTok{"MASS"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Attaching package: 'MASS'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:fma':
+## 
+##     cement, housing, petrol
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:dplyr':
+## 
+##     select
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(}\StringTok{"ggplot2"}\NormalTok{)}
+\KeywordTok{library}\NormalTok{(}\StringTok{"labeling"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data=}\KeywordTok{read.csv}\NormalTok{(}\StringTok{"rawdata.csv"}\NormalTok{)}
+
+\NormalTok{data[ data ==}\StringTok{ ":"} \NormalTok{] =}\StringTok{ }\OtherTok{NA}
+\NormalTok{data=data[}\KeywordTok{complete.cases}\NormalTok{(data),]}
+\KeywordTok{rownames}\NormalTok{(data)<-}\OtherTok{NULL}
+
+
+\NormalTok{panel.hist <-}\StringTok{ }\NormalTok{function(x, ...)    }\CommentTok{#ši funkcija reikalinga grafikų lentelei išbrėžti (histogramos pateikimui)                        }
+\NormalTok{\{}
+  \NormalTok{usr <-}\StringTok{ }\KeywordTok{par}\NormalTok{(}\StringTok{"usr"}\NormalTok{); }\KeywordTok{on.exit}\NormalTok{(}\KeywordTok{par}\NormalTok{(usr))}
+  \KeywordTok{par}\NormalTok{(}\DataTypeTok{usr =} \KeywordTok{c}\NormalTok{(usr[}\DecValTok{1}\NormalTok{:}\DecValTok{2}\NormalTok{], }\DecValTok{0}\NormalTok{, }\FloatTok{1.5}\NormalTok{) )}
+  \NormalTok{h <-}\StringTok{ }\KeywordTok{hist}\NormalTok{(x, }\DataTypeTok{plot =} \OtherTok{FALSE}\NormalTok{)}
+  \NormalTok{breaks <-}\StringTok{ }\NormalTok{h$breaks; nB <-}\StringTok{ }\KeywordTok{length}\NormalTok{(breaks)}
+  \NormalTok{y <-}\StringTok{ }\NormalTok{h$counts; y <-}\StringTok{ }\NormalTok{y/}\KeywordTok{max}\NormalTok{(y)}
+  \KeywordTok{rect}\NormalTok{(breaks[-nB], }\DecValTok{0}\NormalTok{, breaks[-}\DecValTok{1}\NormalTok{], y, }\DataTypeTok{col =} \StringTok{"cyan"}\NormalTok{, ...)}
+\NormalTok{\}}
+
+\NormalTok{panel.cor2 <-}\StringTok{ }\NormalTok{function(x, y, }\DataTypeTok{digits=}\DecValTok{2}\NormalTok{, cex.cor)}
+\NormalTok{\{}
+  \NormalTok{usr <-}\StringTok{ }\KeywordTok{par}\NormalTok{(}\StringTok{"usr"}\NormalTok{); }\KeywordTok{on.exit}\NormalTok{(}\KeywordTok{par}\NormalTok{(usr))}
+  \KeywordTok{par}\NormalTok{(}\DataTypeTok{usr =} \KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{))}
+  \NormalTok{r <-}\StringTok{ }\KeywordTok{abs}\NormalTok{(}\KeywordTok{cor}\NormalTok{(x, y))}
+  \NormalTok{txt <-}\StringTok{ }\KeywordTok{format}\NormalTok{(}\KeywordTok{c}\NormalTok{(r, }\FloatTok{0.123456789}\NormalTok{), }\DataTypeTok{digits=}\NormalTok{digits)[}\DecValTok{1}\NormalTok{]}
+  \NormalTok{test <-}\StringTok{ }\KeywordTok{cor.test}\NormalTok{(x,y)}
+  \NormalTok{Signif <-}\StringTok{ }\KeywordTok{ifelse}\NormalTok{(}\KeywordTok{round}\NormalTok{(test$p.value,}\DecValTok{3}\NormalTok{)<}\FloatTok{0.001}\NormalTok{,}\StringTok{"p<0.001"}\NormalTok{,}\KeywordTok{paste}\NormalTok{(}\StringTok{"p="}\NormalTok{,}\KeywordTok{round}\NormalTok{(test$p.value,}\DecValTok{3}\NormalTok{)))  }
+  \KeywordTok{text}\NormalTok{(}\FloatTok{0.5}\NormalTok{, }\FloatTok{0.25}\NormalTok{, }\KeywordTok{paste}\NormalTok{(}\StringTok{"r="}\NormalTok{,txt))}
+  \KeywordTok{text}\NormalTok{(.}\DecValTok{5}\NormalTok{, .}\DecValTok{75}\NormalTok{, Signif)}
+\NormalTok{\}}
+\NormalTok{panel.cor <-}\StringTok{ }\NormalTok{function(x, y, }\DataTypeTok{digits =} \DecValTok{2}\NormalTok{, }\DataTypeTok{prefix =} \StringTok{""}\NormalTok{, cex.cor,...)    }\CommentTok{#ši funkcija reikalinga grafikų lentelei}
+    \CommentTok{#išbrėžti (koreliacijos koeficiento radimui)}
+\NormalTok{\{}
+  \NormalTok{usr <-}\StringTok{ }\KeywordTok{par}\NormalTok{(}\StringTok{"usr"}\NormalTok{); }\KeywordTok{on.exit}\NormalTok{(}\KeywordTok{par}\NormalTok{(usr))}
+  \KeywordTok{par}\NormalTok{(}\DataTypeTok{usr =} \KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{))}
+  \NormalTok{r <-}\StringTok{ }\KeywordTok{abs}\NormalTok{(}\KeywordTok{cor}\NormalTok{(x, y))}
+  \NormalTok{txt <-}\StringTok{ }\KeywordTok{format}\NormalTok{(}\KeywordTok{c}\NormalTok{(r, }\FloatTok{0.123456789}\NormalTok{), }\DataTypeTok{digits =} \NormalTok{digits)[}\DecValTok{1}\NormalTok{]}
+  \NormalTok{txt <-}\StringTok{ }\KeywordTok{paste0}\NormalTok{(prefix, txt)}
+  \NormalTok{if(}\KeywordTok{missing}\NormalTok{(cex.cor)) cex.cor <-}\StringTok{ }\FloatTok{0.8}\NormalTok{/}\KeywordTok{strwidth}\NormalTok{(txt)}
+  \KeywordTok{text}\NormalTok{(}\FloatTok{0.5}\NormalTok{, }\FloatTok{0.5}\NormalTok{, txt, }\DataTypeTok{cex =} \DecValTok{3}\NormalTok{)}
+\NormalTok{\}}
+
+
+\NormalTok{data2=}\KeywordTok{apply}\NormalTok{(data[,-}\DecValTok{1}\NormalTok{],}\DecValTok{2}\NormalTok{,as.numeric)}
+\KeywordTok{rownames}\NormalTok{(data2)=data[,}\DecValTok{1}\NormalTok{]}
+\NormalTok{data2=}\KeywordTok{data.frame}\NormalTok{(data2)}
+\NormalTok{data2$nedarbas=data2$nedarbas/}\DecValTok{10}
+
+\CommentTok{#gkl turi neigiamas reikšmes, negalime logaritmuot, palieku šią problema nors bandžiau spręst (praleisti)}
+\CommentTok{#min_abs_gkl=data2$gkl + data2$gkl %>% min() %>% abs()    #kad galetume logaritmuot, pridedu maziausio skaiciaus moduli}
+\CommentTok{#data2$gkl = data2$gkl + min_abs_gkl}
+\NormalTok{data5=data2}
+
+\NormalTok{data5[,}\KeywordTok{c}\NormalTok{(}\StringTok{"OMX"}\NormalTok{,}\StringTok{"SP350"}\NormalTok{,}\StringTok{"SP500"}\NormalTok{)] =}\StringTok{ }\KeywordTok{apply}\NormalTok{(data5[,}\KeywordTok{c}\NormalTok{(}\StringTok{"OMX"}\NormalTok{,}\StringTok{"SP350"}\NormalTok{,}\StringTok{"SP500"}\NormalTok{)],}\DecValTok{2}\NormalTok{,log)    }\CommentTok{#logaritmuojama akcijų kainos, kursas   }
+\NormalTok{data5[,}\KeywordTok{c}\NormalTok{(}\StringTok{"OMX"}\NormalTok{,}\StringTok{"SP350"}\NormalTok{,}\StringTok{"SP500"}\NormalTok{)]=data5[,}\KeywordTok{c}\NormalTok{(}\StringTok{"OMX"}\NormalTok{,}\StringTok{"SP350"}\NormalTok{,}\StringTok{"SP500"}\NormalTok{)]*}\DecValTok{100}
+
+\NormalTok{data2[,}\KeywordTok{c}\NormalTok{(}\StringTok{"OMX"}\NormalTok{,}\StringTok{"SP350"}\NormalTok{,}\StringTok{"SP500"}\NormalTok{,}\StringTok{"kursas"}\NormalTok{,}\StringTok{"kk"}\NormalTok{,}\StringTok{"mp"}\NormalTok{,}\StringTok{"ip"}\NormalTok{)] =}\StringTok{ }\KeywordTok{apply}\NormalTok{(data2[,}\KeywordTok{c}\NormalTok{(}\StringTok{"OMX"}\NormalTok{,}\StringTok{"SP350"}\NormalTok{,}\StringTok{"SP500"}\NormalTok{,}\StringTok{"kursas"}\NormalTok{,}\StringTok{"kk"}\NormalTok{,}\StringTok{"mp"}\NormalTok{,}\StringTok{"ip"}\NormalTok{)],}\DecValTok{2}\NormalTok{,log)    }\CommentTok{#logaritmuojama indeksai, akcijų kainos, kursas  }
+
+\NormalTok{data2[,}\KeywordTok{c}\NormalTok{(}\StringTok{"OMX"}\NormalTok{,}\StringTok{"SP350"}\NormalTok{,}\StringTok{"SP500"}\NormalTok{,}\StringTok{"kursas"}\NormalTok{,}\StringTok{"kk"}\NormalTok{,}\StringTok{"mp"}\NormalTok{,}\StringTok{"ip"}\NormalTok{)]=data2[,}\KeywordTok{c}\NormalTok{(}\StringTok{"OMX"}\NormalTok{,}\StringTok{"SP350"}\NormalTok{,}\StringTok{"SP500"}\NormalTok{,}\StringTok{"kursas"}\NormalTok{,}\StringTok{"kk"}\NormalTok{,}\StringTok{"mp"}\NormalTok{,}\StringTok{"ip"}\NormalTok{)]*}\DecValTok{100}
+
+  
+\NormalTok{euribor2=data5$euribor[-}\DecValTok{1}\NormalTok{]/}\DecValTok{12}
+\NormalTok{data5=}\KeywordTok{data.frame}\NormalTok{(}\KeywordTok{diff}\NormalTok{(}\KeywordTok{as.matrix}\NormalTok{(data5)))}
+\NormalTok{data5$euribor=euribor2}
+\CommentTok{#data2[ data2 == "-Inf" ] = NA          šis kodas susijęs su gkl logaritmavimu (praleisti)}
+\CommentTok{#data3=data2[complete.cases(data2),]}
+
+\NormalTok{data2$euribor=data2$euribor/}\DecValTok{12}
+
+
+\NormalTok{data3=}\KeywordTok{data.frame}\NormalTok{(}\KeywordTok{diff}\NormalTok{(}\KeywordTok{as.matrix}\NormalTok{(data2)))  }
+\NormalTok{data3$gkl =}\StringTok{ }\NormalTok{data$gkl[-}\DecValTok{1}\NormalTok{]    }\CommentTok{#gamintoju kainu lygio nereik diferencijuot nes jau yra pokytis %}
+
+\NormalTok{###########}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
