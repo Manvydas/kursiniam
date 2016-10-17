@@ -32,7 +32,9 @@ library("MASS")
     {\bf \LARGE Lietuvos akcijų rinkos grąžos priklausomybė nuo makroekonominių duomenų}
 \end{center}
 \bigskip
-\centerline{\Large \textbf{Manvydas Sokolovas ir Paulius Kostickis}}
+\centerline{\Large \textbf{Kursinio vadovas: lektorius dr. Dmitrij Celov}}
+\bigskip
+\centerline{\Large \textbf{Darbą atliko: Manvydas Sokolovas ir Paulius Kostickis}}
 \vskip 90pt
 \vskip 120pt
 \centerline{\large \textbf{VILNIUS 2016}}
@@ -54,7 +56,7 @@ Yra atlikti tyrimai Šri Lankos, Indijos rinkose, kurie parodė, jog makroekonom
 Lietuvos akcijų rinka reprezentuos OMX Vilnius indeksas, kurį sudaro 32 lietuviškų listinguojamų įmonių akcijos. Bus skaičiuojama jo grąža ir bus analizuojama, kiek tą grąžą paaiškina mėnesiniai makroekonominiai duomenys tokie kaip infliacija, nedarbas, palūkanų norma, produkcijos kiekiai. Remiantis „Arbitražo įkainojimo teorema” (APT) sukursime regresiją, kurią iš esmės sudaro „Ilgalaikio turto įkainojimo modelis” ir makroekonomiai duomenys.
 
 # Kintamieji
-Darbe naudojami mėnesiniai duomenys nuo 2002 metų birželio iki 2016 metų liepos. Susiduriama su mėnesinių rodiklių trūkumu: BVP, gyventojų pajamos, pinigų paklausa yra ketvirtiniai duomenys. Taip pat žvelgiant pasauliniu mastu, Vilniaus akcijų birža yra smulki, o akcijų likvidumas čia taip pat žemas. Nepaisant šių problemų, buvo rasta koreliacija tarp kai kurių makroekonominių duomenų ir OMX Vilnius indekso grąžų.
+Darbe naudojami mėnesiniai duomenys nuo 2002 metų birželio iki 2016 metų liepos. Duomenys gauti iš Eurostat ir Europos Centrinio Banko svetainių. Susiduriama su mėnesinių rodiklių trūkumu: BVP, gyventojų pajamos, pinigų paklausa yra ketvirtiniai duomenys. Taip pat žvelgiant pasauliniu mastu, Vilniaus akcijų birža yra smulki, o akcijų likvidumas čia taip pat žemas. Nepaisant šių problemų, buvo rasta koreliacija tarp kai kurių makroekonominių duomenų ir OMX Vilnius indekso grąžų.
 
 * S&P 350 Europe - tai indeksas sudarytas iš 350 didžiausių Europos imonių akcijų.
 * S&P 500 - tai indeksas sudarytas iš 500 didžiausių Amerikos imonių akcijų.
@@ -62,7 +64,7 @@ Darbe naudojami mėnesiniai duomenys nuo 2002 metų birželio iki 2016 metų lie
 * JAV dolerio ir Euro valiutos kursas.
 * Nedarbas - darbingų nedirbančių žmonių skaičius 1000 žmonių.
 * Pramonės gamintojų kainos  - matuoja vidutinę kainų raidą, visų produktų bei paslaugų iš pramonės sektoriaus ir parduotų vidinėje rinkoje. Procentinis pokytis nuo praeito mėnesio.
-* Infliacija - 12 mėnesių infliacija.
+* Infliacija - 12 mėnesių infliacija apskaičiuota pagal mažmeninės prekybos indeksą.
 * Industrinė produkcija - indeksas matuoja produkcijos kiekį nuo gamybos, kasybos, elektros ir dujų pramonės. Atskaitiniai metai 2010 (2010m. indeksas = 100).
 * Darbo lygio ir užsakymų lūkesčiai - mėnesinės apklausos, teigiamų ir neigiamų atsakymų santykis.
 * Pasitikėjimo indikatoriai - pramonės, mažmeninės prekybos, vartotojų, paslaugų, statybų. Tai yra apklausų teigiamų ir neigiamų atsakymų santykis.
@@ -71,13 +73,13 @@ Darbe naudojami mėnesiniai duomenys nuo 2002 metų birželio iki 2016 metų lie
 \newpage
 
 # Duomenų transformacijos
-Duomenys naudojami nuo 2002 metų iki 2006 metų, ankstesnių duomenų nepavyko išgauti.
+Duomenys naudojami nuo 2002 metų iki 2016 metų, ankstesnių duomenų nepavyko išgauti.
 
-OMX Vilnius indeksas transformuojamas į mėnesinius procentinius pokyčius: jei OMX indekso mėnesinė kaina nuo laiko (mėnesio)  t žymėsime X(t), tai r(t) = (log(X(t)) – log(X(t-1)) ) * 100 %, r(t) tada yra indekso mėnesinis pokytis procentais.
+OMX Vilnius indeksas transformuojamas į mėnesinius procentinius pokyčius: jei OMX indekso mėnesinė kaina nuo laiko (mėnesio)  t žymėsime *X(t)*, tai *r(t)* = (log(*X(t)*) – log(*X(t-1)*) ) $\times$ 100 %, čia *r(t)* yra indekso mėnesinis pokytis procentais.
 Tokiu pačiu būdu gaunama kitų akcijų indeksų grąža logaritmuojant ir diferencijuojant S&P500, S&P350 indeksų kainas. Kasybos ir karjerų eksploatacijos indeksas, mažmeninės prekybos indeksas, industrinės produkcijos indeksas yra taip pat logaritmuojami ir diferencijuojami. Visi logaritmuoti duomenys padauginami iš šimto, kad pokytis būtų interpretuojamas procentais. Euribor yra dalinamas iš 12 ir diferencijuojamas, kad būtų gautas mėnesinis pokytis. Nedarbas dalinamas iš 10 (bedarbių skaičius tenkantis 1000 gyventojų, padalinę iš 10 gauname procentais) ir taip pat yra diferencijuojamas. Dolerio/euro valiutų kursas, pasitikejimo ir lūkesčių rodikliai yra diferencijuojami. Diferencijavimu šiuo atveju vadiname šio mėnesio duomenų atėmimą iš praeito periodo(mėnesio) duomenų.
 
 
-Tikriname ar duomenys turi vienetinę šaknį (stacionarumo tikrinimas):
+Tikrinami duomenys po transformacijų ar turi vienetinę šaknį (stacionarumo tikrinimas), atliekamas Dickey-Fuller testas:
 ```{r, message=FALSE, echo=FALSE}
 data=read.csv("rawdata.csv")
 
@@ -106,11 +108,11 @@ data3$gkl = data$gkl[-1]    #gamintoju kainu lygio nereik diferencijuot nes jau 
 
 p=apply(data3,2,function(i)adf.test(i,k=1)$p.value)
 p=data.frame(p)
+p[,1] = round(p[,1], digits = 2)
 kable(p)
-
 ```
 
-Visų kintamųjų, išskyrus infliaciją, p - value mažiau už 0.05, galime atmesti H0, kad turi vienetinę šaknį, visi kintamieji, išskyrus infliaciją, yra stacionarūs.
+* Visų kintamųjų, išskyrus infliaciją, p - value mažiau už 0.05, galime atmesti H0, kad turi vienetinę šaknį, visi kintamieji, išskyrus infliaciją, yra stacionarūs.
 
 \newpage
 
@@ -197,9 +199,10 @@ ggplot(akc) + geom_line(aes(x=Data, y=value, colour=variable)) +
   guides(col=guide_legend(title="Kintamieji"))
 ```
 
-* Grafike aiškiai matyti, jog S&P350 ir S&P500 indeksų svyravimai panašūs, tai yra šie dydžiai stipriai koreliuoti.
+* Tikėtina, jog S&P350 ir S&P500 indeksų svyravimai tūrėtų būti labai panašūs, taigi pažiūrėjus į grafiką galime matyti, jog jų kreivės juda panašiai, tai yra šie dydžiai stipriai koreliuoti.
 * OMX Vilnius kreivės svyravimai panašūs, tačiau nevisai sutampa su S&P indeksų. Todėl galima manyti, jog šie dydžiai yra gana silpnai koreliuoti.
 
+\newpage
 
 Akcijų rinkų koreliacija:
 
@@ -222,26 +225,42 @@ pairs(data3[,c("OMX","infliacija","nedarbas","kursas")],upper.panel=panel.smooth
 pairs(data3[,c("OMX","mhope","phope","vhope","pramhope","vp")],upper.panel=panel.smooth,diag.panel=panel.hist, lower.panel=panel.cor2)
 ```
 
+* Kaip ir buvo tikėtasi tarp kintamųjų ir OMX Vilnius rasta nestipri koreliacija, tačiau reikšminga. 
 
 \newpage
+
+# Modeliavimas
 
 ```{r, message=FALSE, echo=FALSE}
 mod = lm(OMX ~ SP350 + kk + dll + nedarbas + infliacija + mhope + phope + pramhope + shope + ta + ul + vhope + vp + mp + euribor + gkl + ip + kursas, data=data3)
 ```
 
-\newpage
-
-# modelis pasiulytas stepAIC
-
 ```{r}
 mod_po_aic <- lm(formula = OMX ~ SP350 + nedarbas + infliacija + phope + pramhope + ul, data = data3)
-summary(mod_po_aic)
 ```
 
+```{r, message=FALSE, echo=FALSE}
+datafr=data.frame(summary(mod_po_aic)[c(4,8)] %>%  lapply(round,2))
+colnames(datafr)=c("beta koeficientai","standartinis nuokrypis","koeficientu t reikšmes","p reiksme", "R kvadratas")
+rownames(datafr)=c("beta nulinis","S&P350","nedarbas","infliacija","paslaugu pasitikejimas", "pramones pasitikejimas", "uzsakymu lukesciai")
+datafr[2:nrow(datafr),"R kvadratas"]="-"
+kable(datafr)
+```
+
+* Sudarytas modelis iš visų kintamųjų, atliktas stepAIC.  Didelė dalis makroekonominių duomenų buvo nereikšmingi, tačiau aptikome ir keletą reikšmingų kintamųjų. Modelis paaiškina apie 25% procentus OMX Vilnius indekso grąžos pokyčių.
+
 \newpage
-# Išvados
-lore ipsum 
 
 # Literatūra
-lore ipsum
+
+1) „TESTS OF THE ARBITRAGE PRICING THEORY USING MACROECONOMIC VARIABLES IN THE RUSSIAN EQUITY MARKET“ - Mauri Paavola:
+[link](http://www.doria.fi/bitstream/handle/10024/30869/TMP.objres.246.pdf)
+
+2) „Introductory Econometrics for Finance“ - Chris Brooks
+
+3) „Relationship between Macro – Economic Variables and Stock Market Performance of Colombo Stock Exchange“ - Prabath Suranga Morawakage:
+[link](https://www.researchgate.net/profile/Prabath_Morawakage/publication/263659272_Relationship_between_Macro_-_Economic_Variables_and_Stock_Market_Performance_of_Colombo_Stock_Exchange/links/0f31753b8d1bfe46cb000000.pdf)
+
+4) „Do macro-economic variables explain stock-market returns? Evidence using a semi-parametric approach“ - Sagarika Mishra:
+[link](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1937914)
 
