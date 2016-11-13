@@ -336,20 +336,6 @@ kable(datafr)
 ```{r}
 names2=c("SP350","SP500","kk","dll","nedarbas","infliacija","mhope","phope","pramhope","shop","ta","ul","vhope","vp","mp","palukanos","gkl","ip","kursas")
 
-for (i in 3:length(data3[1,])){
-ccfvalues <- ccf(data3$OMX,data3[,i]) #aiskinames laga
-  if(i==3){lagdata=round(ccfvalues$acf,3)}
-  else{
-  lagdata=cbind(lagdata,round(ccfvalues$acf,3))
-  }
-}
-lagdata=data.frame(lagdata)
-colnames(lagdata)=names2
-rownames(lagdata)=c(-19:19)
-lagdata=lagdata[-c(1:19),]
-
-apply(apply(lagdata,2,abs),2,max)
-
 Find_Max_CCF<- function(a,b)
 {
  d <- ccf(a, b, plot = FALSE)
@@ -368,14 +354,8 @@ ccfvalues <- Find_Max_CCF(data3$OMX,data3[,i])
   }
 }
 rownames(lagdata)=names2
-lagdat
-ccfvalues
-class(as.numeric(as.character(ccfvalues[1])))
-str(ccfvalues)
-acf=ccfvalues$acf
-cbind(acf,acf)
-mod_po_aic2 <- lm(formula = OMX ~ SP350 + nedarbas + infliacija + phope + pramhope, data = data3)
-a=scan()
+lagdata
+
 
 vcovHC(mod_po_aic2)
  
@@ -390,54 +370,94 @@ ccfvalues
 
 res<-bptest(mod_po_aic2)
 
-sum(data3$OMX<0)
 
 
 
-library(caret)
-library(ggplot2)
-library(pls)
-install.packages("pls")
-data(economics)
-class(data3)
-timeSlices <- createTimeSlices(1:nrow(data3), 
-                   initialWindow = 50, horizon = 1, fixedWindow = FALSE)
-timeSlices[1]
-timeSlices[2]
-trainSlices <- timeSlices[[1]]
-testSlices <- timeSlices[[2]]
 
-for(i in trainSlices){
-  u=1
-modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 1) + lag(infliacija, 2) + lag(mhope, 3) + lag(phope,12) + lag(ul, 10) + lag(gkl, 9) + lag(ip, 4) + lag(kursas,2), data = data3[i,c("OMX","SP350","infliacija","mhope","phope","ul","gkl","ip","kursas")])
-predict(modelis_po_aic, data3[testSlices[u],])
-u=u+1
+
+
+
+
+
+
+gen=function(pradzia,pirkti){
+b=sample(pradzia:169,length(pirkti),replace=F)
+return(sum(data3[b,"OMX"]))
 }
-predict(modelis_po_aic, data3[testSlices[u],])
-output <- matrix(unlist(testSlice[u]),  byrow = TRUE)
-str(testSlices)
-trainSlices
-as.numeric(testSlices[1])
-data3[trainSlices[u],]
+validation=function(pradzia){
+pirkti=numeric()
+for(i in pradzia:168){
+  modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 1) + lag(infliacija, 2) + lag(mhope, 3) + lag(phope,12) + lag(ul, 10) + lag(gkl, 9) + lag(ip, 4) + lag(kursas,2), data = data3[1:i,c("OMX","SP350","infliacija","mhope","phope","ul","gkl","ip","kursas")])
+  a=predict(modelis_po_aic, data3[1:i+1,])
+  a=a[length(a)]
+  if(matrix(a)[1]>5){pirkti=append(pirkti,i)}
+}
+graza=sum(data3[pirkti,"OMX"])
+random=replicate(100000,gen(pradzia,pirkti))
+p=mean(random>graza)
+vidurkis_random = mean(random)
+if(p==0){p="nebuvo pirkimu"}
+else{
+  p=append(p,graza)
+  p=append(p,vidurkis_random)
+  p=append(p,length(pirkti))
+  p=append(p,pradzia)
+  p=round(p,3)
+  }
+return(p)                               
+}
+validation(90) #kai pradine imtis 70, atsakymo prasme- tikimybe kad geriau uz random, graza strategijos, vidutine random graza, pirkimo skaicius
 
-unique(rapply(trainSlices, function(x) head(x, 1)))
 
-modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 1) + lag(infliacija, 2) + lag(mhope, 3) + lag(phope,12) + lag(ul, 10) + lag(gkl, 9) + lag(ip, 4) + lag(kursas,2), data = data3)
-plsFitTime <- train(OMX ~ lag(SP350, 1) + lag(infliacija, 2) + lag(mhope, 3) + lag(phope,12) + lag(ul, 10) + lag(gkl, 9) + lag(ip, 4) + lag(kursas,2),
-                    data = data3[trainSlices[[1]],c("OMX","SP350","infliacija","mhope","phope","ul","gkl","ip","kursas")],
-                    method = "pls",
-                    preProc = c("center", "scale"))
-
-
-
+lentele=data.frame()
+for(i in 9:168){
+  lentele=rbind(lentele,validation(i))
+  
+}
+lentele[,c(1:5)]=lentele[,c(5,2,3,1,4)]
+colnames(lentele)=c("pradinis imties dydis","graza strategijos","vidutine random graza","tikimybe kad geriau uz random","sandoriu skaicius")
 
 
+pdf("data_output.pdf", height=45, width=10)
+grid.table(lentele)
+dev.off()
 
 
 
-plsFitTime <- train(OMX ~ SP350 + infliacija + mhope + phope,
-                    data = data3[trainSlices[[1]],c("OMX","SP350","infliacija","mhope","phope","ul","gkl","ip","kursas")],
-                    method = "pls",
-                    preProc = c("center", "scale"))
-plsFitTime$residuals
+
+
+betu_lentele=data.frame()
+for(i in 1:88){
+   modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 1) + lag(infliacija, 2) + lag(mhope, 3) + lag(phope,12) + lag(ul, 10) + lag(gkl, 9) + lag(ip, 4) + lag(kursas,2), na.action=na.omit,data = data3[i:(i+80),])
+   betu_lentele=rbind(betu_lentele,modelis_po_aic$coeff)
+}
+
+betu_lentele=cbind(betu_lentele,81:168)
+colnames(betu_lentele)=c("intercept"," lag(SP350, 1)","lag(infliacija, 2)","lag(mhope, 3)","lag(phope, 12)", "lag(ul, 10)", "lag(gkl, 9)","lag(ip, 4)","lag(kursas, 2)", "paskutinis menesis(is viso 80 imtyje)")
+
+pdf("betos.pdf", height=40, width=25)
+grid.table(betu_lentele)
+dev.off()
+
+
+
+betu_lentele=data.frame()
+for(i in 1:88){
+   modelis_po_aic <- lm(formula =OMX ~ SP350 + nedarbas + infliacija + phope + pramhope + ul,data = data3[i:(i+80),])
+   betu_lentele=rbind(betu_lentele,modelis_po_aic$coeff)
+}
+
+betu_lentele=cbind(betu_lentele,81:168)
+colnames(betu_lentele)=c("intercept"," SP350","nedarbas","infliacija","phope", "pramhope","ul", "paskutinis menesis(is viso 80 imtyje)")
+
+pdf("betos2.pdf", height=40, width=25)
+grid.table(betu_lentele)
+dev.off()
+
+
+  modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 1) + lag(infliacija, 2) + lag(mhope, 3) + lag(phope,12) + lag(ul, 10) + lag(gkl, 9) + lag(ip, 4) + lag(kursas,2), na.action=na.omit,data = data3)
+durbinWatsonTest(modelis_po_aic)
+
+plot(modelis_po_aic$res)
+# p-value > 0.05 - liekanos nėra autokoreliuotos.
 ```
