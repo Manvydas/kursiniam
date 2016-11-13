@@ -331,3 +331,113 @@ kable(datafr)
 4) „Do macro-economic variables explain stock-market returns? Evidence using a semi-parametric approach“ - Sagarika Mishra:
 [link](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1937914)
 
+
+
+```{r}
+names2=c("SP350","SP500","kk","dll","nedarbas","infliacija","mhope","phope","pramhope","shop","ta","ul","vhope","vp","mp","palukanos","gkl","ip","kursas")
+
+for (i in 3:length(data3[1,])){
+ccfvalues <- ccf(data3$OMX,data3[,i]) #aiskinames laga
+  if(i==3){lagdata=round(ccfvalues$acf,3)}
+  else{
+  lagdata=cbind(lagdata,round(ccfvalues$acf,3))
+  }
+}
+lagdata=data.frame(lagdata)
+colnames(lagdata)=names2
+rownames(lagdata)=c(-19:19)
+lagdata=lagdata[-c(1:19),]
+
+apply(apply(lagdata,2,abs),2,max)
+
+Find_Max_CCF<- function(a,b)
+{
+ d <- ccf(a, b, plot = FALSE)
+ d = d[1:19] 
+ cor = d$acf[,,1]
+ lag = d$lag[,,1]
+ res = data.frame(cor,lag)
+ res_max = res[which.max(res$cor),]
+ return(res_max)
+} 
+for (i in 3:length(data3[1,])){
+ccfvalues <- Find_Max_CCF(data3$OMX,data3[,i])
+  if(i==3){lagdata=ccfvalues}
+  else{
+  lagdata=rbind(lagdata,ccfvalues)
+  }
+}
+rownames(lagdata)=names2
+lagdat
+ccfvalues
+class(as.numeric(as.character(ccfvalues[1])))
+str(ccfvalues)
+acf=ccfvalues$acf
+cbind(acf,acf)
+mod_po_aic2 <- lm(formula = OMX ~ SP350 + nedarbas + infliacija + phope + pramhope, data = data3)
+a=scan()
+
+vcovHC(mod_po_aic2)
+ 
+## standard coefficient significance test
+coeftest(mod_po_aic2)
+## robust significance test, cluster by group
+## (robust vs. serial correlation)
+coeftest(mod_po_aic2, vcov=vcovHC)
+
+ccfvalues <- ccf(data3$OMX,mod_po_aic2$residuals)
+ccfvalues
+
+res<-bptest(mod_po_aic2)
+
+sum(data3$OMX<0)
+
+
+
+library(caret)
+library(ggplot2)
+library(pls)
+install.packages("pls")
+data(economics)
+class(data3)
+timeSlices <- createTimeSlices(1:nrow(data3), 
+                   initialWindow = 50, horizon = 1, fixedWindow = FALSE)
+timeSlices[1]
+timeSlices[2]
+trainSlices <- timeSlices[[1]]
+testSlices <- timeSlices[[2]]
+
+for(i in trainSlices){
+  u=1
+modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 1) + lag(infliacija, 2) + lag(mhope, 3) + lag(phope,12) + lag(ul, 10) + lag(gkl, 9) + lag(ip, 4) + lag(kursas,2), data = data3[i,c("OMX","SP350","infliacija","mhope","phope","ul","gkl","ip","kursas")])
+predict(modelis_po_aic, data3[testSlices[u],])
+u=u+1
+}
+predict(modelis_po_aic, data3[testSlices[u],])
+output <- matrix(unlist(testSlice[u]),  byrow = TRUE)
+str(testSlices)
+trainSlices
+as.numeric(testSlices[1])
+data3[trainSlices[u],]
+
+unique(rapply(trainSlices, function(x) head(x, 1)))
+
+modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 1) + lag(infliacija, 2) + lag(mhope, 3) + lag(phope,12) + lag(ul, 10) + lag(gkl, 9) + lag(ip, 4) + lag(kursas,2), data = data3)
+plsFitTime <- train(OMX ~ lag(SP350, 1) + lag(infliacija, 2) + lag(mhope, 3) + lag(phope,12) + lag(ul, 10) + lag(gkl, 9) + lag(ip, 4) + lag(kursas,2),
+                    data = data3[trainSlices[[1]],c("OMX","SP350","infliacija","mhope","phope","ul","gkl","ip","kursas")],
+                    method = "pls",
+                    preProc = c("center", "scale"))
+
+
+
+
+
+
+
+
+plsFitTime <- train(OMX ~ SP350 + infliacija + mhope + phope,
+                    data = data3[trainSlices[[1]],c("OMX","SP350","infliacija","mhope","phope","ul","gkl","ip","kursas")],
+                    method = "pls",
+                    preProc = c("center", "scale"))
+plsFitTime$residuals
+```

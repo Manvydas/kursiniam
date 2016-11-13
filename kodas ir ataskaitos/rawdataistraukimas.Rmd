@@ -64,7 +64,7 @@ omx=read.csv("omx.csv")
 duom=select(omx,OMX.raw,OMXV.Value)
 colnames(duom) <- c("Data", "Verte")
 
-ts <- xts(duom$Verte, as.Date(duom$Data, "%m/%d/%Y"))
+ts <- xts(duom$Verte, as.Date(duom$Data, "%m%d/%Y"))
 ts_m = apply.monthly(ts, last)
 colnames(ts_m) <- c("OMX")
 ```
