@@ -4,8 +4,7 @@ output:
     latex_engine: xelatex
 ---
 
-
-```{r, message=FALSE, echo=FALSE}
+```{r, message=FALSE, echo=FALSE, include=F}
 library("quantmod")
 library("forecast")
 library("xts")
@@ -52,44 +51,45 @@ library("lmtest")
 \thispagestyle{empty}
 \newpage
 
-*Santrauka:*
+**Santrauka:**
 
-Makroekonomiai rodikliai gali padėti nuspėti ateities verslo ciklą, kuris turi įtakos akcijų pelningumui. Sudarytas „OMX Vilnius“ indekso grąžos prognozavimo modelis naudojant „Arbitražo įkainojimo teorema” (angl. APT), siekiant išsiaiškinti, kokie Lietuvos makroekonominiai rodikliai tiesiškai paveikia „OMX Vilnius“ indekso grąžas. Tirti mėnesiniai duomenys nuo 2002 iki 2016 metų. Dalis makroekonominių rodiklių yra reikšmingi vertinant indekso kainos pokyčius.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Makroekonomiai rodikliai gali padėti nuspėti ateities verslo ciklą, kuris turi įtakos akcijų pelningumui. Sudarytas „OMX Vilnius“ indekso grąžos prognozavimo modelis naudojant „Arbitražo įkainojimo teorema” (angl. APT), siekiant išsiaiškinti, kokie Lietuvos makroekonominiai rodikliai tiesiškai paveikia „OMX Vilnius“ indekso grąžas. Sukurta pelninga strategija remiantis Lietuvos makro rodikliais ir palyginta su atsitiktiniu investavimu. Tirti mėnesiniai duomenys nuo 2002 iki 2016 metų. Dalis makroekonominių rodiklių yra reikšmingi vertinant indekso kainos pokyčius. 
 
-*Darbe naudojami trumpiniai:*
+**Darbe naudojami trumpiniai:**
 
 kk – kasyba ir karjerų eksploatacija
-mp – mažmeninė prekyba
-vp – verslo plėtros aktyvumas per 3 mėnesius
-ta – turimos akcijos
-ul – užsakymų lūkesčiai
-dll – darbo lygio lūkesčiai
-mhope – mažmeninės prekybos pasitikėjimas
-shope – statybų pasitikėjimas
-phope – paslaugų pasitikėjimas
-vhope – vartotojų pasitikėjimas
-pramhope – pramonės pasitikėjimas 
-gkl – gamintojų kainų lygis
-ip – industrinė produkcija
+\newline mp – mažmeninė prekyba
+\newline vp – verslo plėtros aktyvumas per 3 mėnesius
+\newline ta – turimos akcijos
+\newline ul – užsakymų lūkesčiai
+\newline dll – darbo lygio lūkesčiai
+\newline mhope – mažmeninės prekybos pasitikėjimas
+\newline shope – statybų pasitikėjimas
+\newline phope – paslaugų pasitikėjimas
+\newline vhope – vartotojų pasitikėjimas
+\newline pramhope – pramonės pasitikėjimas 
+\newline gkl – gamintojų kainų lygis
+\newline ip – industrinė produkcija
 
 # Įvadas:
-Akcijų pokyčiams yra reikšminga ekonomikos būsena. Jei ekonomika auga, tuomet dauguma įmonių padidina savo pelną ir gamybą. Priešingas procesas, kai ekonomika traukiasi. Egzistuoja makroekonominiai rodikliai tokie kaip infliacija, valiutos kursas, palūkanų dydis, kurie gali paaiškinti akcijų grąžas. Tačiau yra atliktas tyrimas Rusijos rinkoje, remiantis arbitražo įkainojimo teorija, kurio tyrimo autorius nesugebėjo rasti reikšmingos makroekonominių duomenų  įtakos akcijų grąžoms. O Šri Lankos ir Indijos rinkoms atlikti empiriniai tyrimai parodė, jog makroekonominiai rodikliai turi įtakos akcijų grąžai. Todėl nutarta ištirti Lietuvos akcijų rinkos grąžos priklausomybę nuo makro rodiklių remiantis Arbitražo įkainojimo teorija (angl. APT)  ir iš daugelių rodiklių atrikti svarbiausius. 
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Akcijų pokyčiams yra reikšminga ekonomikos būsena. Jei ekonomika auga, tuomet dauguma įmonių padidina savo pelną ir gamybą. Priešingas procesas, kai ekonomika traukiasi. Egzistuoja makroekonominiai rodikliai tokie kaip infliacija, valiutos kursas, palūkanų dydis, kurie gali paaiškinti akcijų grąžas. Tačiau yra atliktas tyrimas Rusijos rinkoje, remiantis arbitražo įkainojimo teorija, kurio tyrimo autorius nesugebėjo rasti reikšmingos makroekonominių duomenų  įtakos akcijų grąžoms. O Šri Lankos ir Indijos rinkoms atlikti empiriniai tyrimai parodė, jog makroekonominiai rodikliai turi įtakos akcijų grąžai. Todėl nutarta ištirti Lietuvos akcijų rinkos grąžos priklausomybę nuo makro rodiklių remiantis Arbitražo įkainojimo teorija (angl. APT)  ir iš daugelių rodiklių atrikti svarbiausius. 
 Kylančiose rinkose daug dažniau pasitaiko neteisingai įkainotų finansinių instrumentų nei išvystytose (efektyviose) rinkose. Lietuvos rinką galime priskirti besivystančiosios rinkos kategorijai ir galbūt tyrimo išvadas, naudojant APT, galima bus praktiškai pritaikyti pelningai investuojant. 
 
 # Teorija:
 
 ## Rizika ir diversifikavimas:
 
-Investuojant į akcijas, kuo didesnis standartinis nuokrypis, tuo didesnė galimybė prarasti investuotus pinigus. Šiuo atveju rizika laikysime standartinį nuokrypį. Taigi rizika ir pajamos iš investicijų yra tiesiogiai tarpusavyje susijusios: kuo didesnė rizika, tuo turėtų būti didesnės laukiamas pelnas iš investicijų, kad jos kompensuotų aukštą rizikos lygį. Svarbus tampa reikalaujamas pelningumas – tai mažiausias laukiamas pelnas, kurio yra reikalaujama už investavimą į rizikingą aktyvą. Investuotojas gali rinktis nerizikingą pelną, pirkdamas nerizikingus vertybinius popierius. Ši nerizikinga pelno norma yra minimumas, kurio gali tikėtis investuotojas neprisiimdamas jokios rizikos. Pirkdamas rizikingesnį vertybinį popierių, investuotojas reikalaus rizikos premijos (atpildo už rizikingų vertybinių popierių laikymą. Taigi nerizikinga pelno norma bei rizikos premija sudaro reikalaujamą pelningumą. Ši priklausomybė pavaizduota 3 paveiksle.
- 
-H.Markowitz sukurta portfelio teorija leidžia investuotojams įvertinti riziką ir laukiamas pajamas. Galimą riziką sumažinti, o pelną padidinti, jei bus investuojama į skirtingas įmones, kurių akcijų kainos juda skirtingomis kryptimis. Diversifikacija eliminuoja nesisteminę riziką dėl dviejų priežasčių: atskiros įmonės akcijos sudaro nedidelę dalį portfelyje, todėl poveikis (tiek teigiamas, tiek neigiamas) mažai juntamas.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Investuojant į akcijas, kuo didesnis standartinis nuokrypis, tuo didesnė galimybė prarasti investuotus pinigus. Šiuo atveju rizika bus laikoma standartiniu nuokrypiu. Taigi rizika ir pajamos iš investicijų yra tiesiogiai tarpusavyje susijusios: kuo didesnė rizika, tuo turėtų būti didesnės laukiamas pelnas iš investicijų, kad jos kompensuotų aukštą rizikos lygį. Svarbus tampa reikalaujamas pelningumas – tai mažiausias laukiamas pelnas, kurio yra reikalaujama už investavimą į rizikingą aktyvą. Investuotojas gali rinktis nerizikingą pelną, pirkdamas nerizikingus vertybinius popierius. Ši nerizikinga pelno norma yra minimumas, kurio gali tikėtis investuotojas neprisiimdamas jokios rizikos. Pirkdamas rizikingesnį vertybinį popierių, investuotojas reikalaus rizikos premijos (atpildo už rizikingų vertybinių popierių laikymą. Taigi nerizikinga pelno norma bei rizikos premija sudaro reikalaujamą pelningumą. Ši priklausomybė pavaizduota paveiksle apačioje.
+![](lentele3.png)
 
-Rizikai ir pelningumui, jų dinamikai prognozuoti kuriamos skirtingos strategijos, taikomos
-techninės ir fundamentalios analizės žinios, kuriami rizikos ir pelningumo modeliai. Pastarasis
-bandymas bene geriausiai nusako investuotojui svarbiausių dydžių (rizikos ir pelningumo)
-priklausomybę.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; H.Markowitz sukurta portfelio teorija leidžia investuotojams įvertinti riziką ir laukiamas pajamas. Galimą riziką sumažinti, o pelną padidinti, jei bus investuojama į skirtingas įmones, kurių akcijų kainos juda skirtingomis kryptimis. Diversifikacija eliminuoja nesisteminę riziką dėl dviejų priežasčių: atskiros įmonės akcijos sudaro nedidelę dalį portfelyje, todėl poveikis (tiek teigiamas, tiek neigiamas) mažai juntamas.
 
-Ilgalaikio turto įkainojimo modelis
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Rizikai ir pelningumui, jų dinamikai prognozuoti kuriamos skirtingos strategijos, taikomos
+techninės ir fundamentalios analizės žinios, kuriami rizikos ir pelningumo modeliai. Darbe įvertinama rizika, kurią prisiima investuotojai investuodami į Lietuvos akcijų rinką ir taip pat apskaičiuojama kokia premija turėtų būti mokama už šios rizikos prisiėmimą.
+
+##Ilgalaikio turto įkainojimo modelis
+
 H.Markowitz sukurta portfelio teorija teigia, kad investuotojui rūpi, kaip gauti kuo daugiau
 naudos pasirenkant įvairius vertybinius popierius. Toks portfelis turėtų pasižymėti dvejomis
 savybėmis: 1. mažiausiu pelningumu priimtinam rizikos lygiui; 2. mažiausia rizika esant norimam
@@ -139,8 +139,6 @@ Iš šios lygyb÷s matyti, kad išaugus beta koeficientui, padid÷ja ir laukiama
 5 lygtis nustato tiesinę betą ir vertybinio popieriaus pelningumo priklausomybę ir grafiškai (4
 paveiksl÷lis) išreiškia vertybinio popieriaus rinkos liniją (SML – security market line).
 
- 
-
 
 Taške RF rizikos laipsnis lygus 0. Jei vertybinis popierius yra virš SML (taškas A), tai reiškia,
 kad jis neįvertintas. Ir atvirkščiai, jei vertybinis popierius yra žemiau SML, tai reiškia, kad jis
@@ -160,13 +158,15 @@ nustatyti ryšį tarp finansinių bei nekilnojamo turto sektorių. (R. J. Torz, 
 
 
 
-http://etalpykla.lituanistikadb.lt/fedora/get/LT-LDB-0001:J.04~2007~1367163822251/DS.002.0.01.ARTIC
+http://etalpykla.lituanistikadb.lt/fedora/get/LT-LDB-0001:J.04~2007~1367163822251/DS.002.0.
+
 Pagrindinio kapitalo kainos modelis ir jo prielaidos Pagrindinio kapitalo kainos modelis buvo sukurtas, siekiant pagr┊sti skirting┧ aktyv┧ rizikos premijos skirtumus. Pagal CAPM, šiuos skirtumus lemia skirtingas aktyv┧ generuojam┧ pajam┧ rizikingumas. ┉rodinプjama, kad tikslus rizikos matas yra beta, o rizikos premija, tenkanti vienam rizikingumo vienetui, yra 202 tokia pati visiems aktyv┧ tipams. Jeigu yra žinoma laisva nuo rizikos pelno norma ir tam tikro aktyvo koeficientas beta, tai taikant CAPM gali b┣ti nustatoma laukiama aktyvo rizikos premija. Pagrindinプ CAPM lygtis (Jagannathan, McGrattan, 1995): ERi = R0 + (ERm – R0)di (1) 7ia: i = 1,2,…, n; ERi – laukiama i – tojo aktyvo pelno norma; R0 – laisva nuo rizikos pelno norma (ilgalaiki┧ vyriausybプs vertybini┧ popieri┧ pelno norma); ERm – laukiama rinkos portfolio pelno norma; di – i – tojo aktyvo beta. Pagrindinio kapitalo kainos modelio lygtis rodo, kad vis┧ aktyv┧ i, kuri┧ rizika yra lygi di , pageidaujama rizikos premija yra tokia pati – lygi laukiamos pelno normos ir laisvos nuo rizikos pelno normos skirtumui, t.y. (ERi – R0). CAPM yra paremtas Markowitz (1952) portfelio teorija. Tariama, kad kiekvienas investuotojas diversifikuoja savo aktyv┧ portfel┊, pasirinkdamas jam priimtin> rizikos ir pelno normos derin┊. Siekiant supaprastinti sudプting> išorinC aplink>, priimtos papildomos CAPM prielaidos: 1. Investuotojai laukiam> pelno norm> ir rizik> vertina vienoda tikimybe. Taigi visi investuotojai disponuoja ta pa7ia informacija apie rinkoje cirkuliuojan7ius aktyvus; 2. Investavimo perspektyvos – vienas periodas (vieneri metai); 3. Investuotojai vengia rizikos; 4. Visi investuotojai gali skolintis arba skolinti neribot> apimt┊ pinigini┧ lプš┧ nustatytu laisvu nuo rizikos pelno normos tarifu. Šios pal┣kanos nekinta ilgesn┊ laikotarp┊; 5. Sandori┧ kaštai yra lyg┣s nuliui, nプra infliacijos, nプra diferencijuot┧ mokes7i┧; 6. Rinkoje veikia daug investuotoj┧, todプl pavieniai investuotojai, vykdydami pirkimo-pardavimo sandorius, negali turプti ┊takos aktyv┧ kainai; 7. Investuotojai siekia maksimaliai padidinti savo laukiam> peln> per vien> investavimo period>, esant duotam ar žemesniam rizikos lygiui; 8. Kapitalo rinka yra pusiausvyra; 9. Investicij┧ ┊vertinimui taikomi rodikliai – pelno normos vidurkis ir dispersija. CAPM ┊monプs vadovams padeda suprasti kaip investuotojai vertina potenciali┧ investicini┧ galimybi┧ rizikingum>. Tai didina resurs┧ panaudojimo efektyvum>. Jeigu pagrindinio kapitalo kainos modelis tinkamai ┊vertina investuotoj┧ elgsen>, tai analizuojant istorinius duomenis turプt┧ b┣ti nustatytas teigiamas tiesinis ryšys tarp vidutinプs finansini┧ aktyv┧ pelno normos ir j┧ betos. Be to, turプt┧ neegzistuoti joks kitas matas, kurio pagalba b┣t┧ paaiškinti CAPM betos nepagr┊sti finansini┧ aktyv┧ vidutini┧ pelno norm┧ skirtumai.
 Aktyvų įkainojimo teorija (APT)
 CAPM pagrindu buvo kuriami ir tobulinami kiti aktyvų įkainojimo modeliai, kurie galėjo turėti mažiau apribojimų ir prielaidų, taip pat turėti ir daugiau įtakojančių rodiklių. Vienas iš patobulintų CAPM yra APT.  1966 m. atsirado pirmosios arbitražo įkainojimo teorijos
-idėjos, kai B. F. King (1966) pradėjo finansinių aktyvų grąžos pokyčius aiškinti ekonominiais duomenimis. Tačiau APT teorijos kūrėju yra laikomas S. A. Ross (1976), kuris pateikė  teorijai reikiamas prielaidas ir matematiškai pagrindė koncepciją. Šios teorijos pagrindas yra panašus, kaip ir CAPM, t. y. investuotojai reikalauja rizikos premijos už nediversifikuotos (sisteminės) rizikos prisisėmimą. Tačiau arbitražo įkainojimo teorijos pranašumas prieš CAPM yra tas, kad jį galima tirti empiriniu būdu . Taip pat APT prielaidos yra paprastesnės ir realistiškesnės. 
+idėjos, kai B. F. King (1966) pradėjo finansinių aktyvų grąžos pokyčius aiškinti ekonominiais duomenimis. Tačiau APT teorijos kūrėju yra laikomas S. A. Ross (1976), kuris pateikė  teorijai reikiamas prielaidas ir matematiškai pagrindė koncepciją. Šios teorijos pagrindas yra panašus, kaip ir CAPM, t. y. investuotojai reikalauja rizikos premijos už nediversifikuotos (sisteminės) rizikos prisisėmimą. Tačiau arbitražo įkainojimo teorijos naudingumas yra tas, jog galima įtraukti kitus sisteminės rizikos  šiame darbe yra tas, jog galime ištirti  . Taip pat APT prielaidos yra paprastesnės ir realistiškesnės. 
 
 ## APT taikymo prielaidos:
+
 1) finansų rinkos apibūdinamos kaip tobulos ir
 efektyvios;
 2) apibrėžtumo atveju investuotojai visada teiks
@@ -192,42 +192,10 @@ galimas tik vienas visiems prieinamas optimalus
 portfelis. Tačiau pavaizduota situacija yra praktiškai galima.. A portfelio grąžos vidurkis gali būti didesnis nei SML grąžos vidurkis fiksuotam Beta dydžiui.
 
 Šis aktyvų įkainojimo modelis yra grindžiamas tuo, jog aktyvo pelningumą galima numatyti  naudojant analizuojamo aktyvo ir daugelio įprastų rizikos faktorių tarpusavio ryšį. Sukurta S. Ross (1976) arbitražo įkainojimo teorija numato ryšį tarp atskiro aktyvo pelningumo ir portfelio pelningumo pasitelkiant daugelio nepriklausomų kintamųjų (makroekonominių faktorių, tokių kaip infliacija, ekonomikos augimas, tarptautinės gamybos apimtis, palūkanų normos ir t.t.) tiesinę kombinaciją. APT paaiškina aktyvo kainą, kai tikėta, kad aktyvas yra neteisingai įkainotas. Tuo tikslu naudojami rizikingo aktyvo pelningumas ir keleto makroekonominių faktorių rizikos premijos. Taigi investuotojai pasitelkia šią įkainojimo teoriją, siekdami pasipelnyti iš neteisingai įvertintų (dažniausiai nepakankamai įvertintų) aktyvų. Tačiau neteisingai įkainoto aktyvo kaina skirsis nuo tos, kuri nustatoma šio modelio dėka. Tokiu būdu investuotojai, norintys pasinaudoti arbitražu ir gauti faktiškai nerizikingą pelną, sieks palaikyti trumpas pervertinto aktyvo pozicijas ir kartu laikyti ilgas portfelio (kurio pagrindu yra atliekami APT skaičiavimai) pozicijas.
+
 Jei APT prielaidos patenkinamos, tuomet laukiami pelningumai bus išsidėstę arti SML, o aktyvas turės tiek rizikos charakteristikų, kiek yra faktorių. APT teorijos prielaidos yra artimesnės realybei, nes ne visi investuotojai elgiasi vienodai rinkoje, net jei jų elgsena grindžiama racionalumu, t. y. APT nereikalauja CAPM prielaidų tenkinimo dėl investuotojų naudingumo funkcijų. Be to, ne kiekvienas investuotojas yra linkęs turėti rinkos portfelį kaip vienintelę alternatyvą, t. y. APT nereikalauja CAPM prielaidos tenkinimo dėl rinkos portfelio savybių (kad jis apima visus rizikingus aktyvus ir yra efektyvus vidurkio-dispersijos prasme). Juk rinkoje yra ir kitų rizikingų aktyvų, t. y. kapitalo rinkose daug agresyvių investuotojų. Ši prielaida patvirtinama 1 pav. duomenimis.
+
 Naudodami Lietuvos makro duomenis, matuojame  rizikos premijas, kurias gauname už riziką investuojant Lietuvos rinkoje. Makroduomenys iliustruoja Lietuvos ekonominę būklę.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Aprašymas:
-Yra atlikti tyrimai Šri Lankos, Indijos rinkose, kurie parodė, jog makroekonominiai rodikliai, tokie kaip nedarbas, infliacija, valiutos kursas, palūkanų dydis, turi įtakos tų rinkų akcijų grąžai. Rusijos rinkoje, remiantis „Arbitrage Pricing Theory” buvo atlikta tiesinė regresija, kuri nerado makroekonominių duomenų įtakos. Todėl mes nutarėme ištirti Lietuvos akcijų rinkos grąžos priklausomybę nuo makroekonominių duomenų.
-
-Lietuvos akcijų rinka reprezentuos OMX Vilnius indeksas, kurį sudaro 32 lietuviškų listinguojamų įmonių akcijos. Bus skaičiuojama jo grąža ir bus analizuojama, kiek tą grąžą paaiškina mėnesiniai makroekonominiai duomenys tokie kaip infliacija, nedarbas, palūkanų norma, produkcijos kiekiai. Remiantis „Arbitražo įkainojimo teorema” (APT) sukursime regresiją, kurią iš esmės sudaro „Ilgalaikio turto įkainojimo modelis” ir makroekonomiai duomenys.
-
-# Kintamieji
-Darbe naudojami mėnesiniai duomenys nuo 2002 metų birželio iki 2016 metų liepos. Duomenys gauti iš Eurostat ir Europos Centrinio Banko svetainių. Susiduriama su mėnesinių rodiklių trūkumu: BVP, gyventojų pajamos, pinigų paklausa yra ketvirtiniai duomenys. Taip pat žvelgiant pasauliniu mastu, Vilniaus akcijų birža yra smulki, o akcijų likvidumas čia taip pat žemas. Nepaisant šių problemų, buvo rasta koreliacija tarp kai kurių makroekonominių duomenų ir OMX Vilnius indekso grąžų.
-
-* S&P 350 Europe - tai indeksas sudarytas iš 350 didžiausių Europos imonių akcijų.
-* S&P 500 - tai indeksas sudarytas iš 500 didžiausių Amerikos imonių akcijų.
-* Euribor 3 mėnesių - palūkanų norma už kurią Europos bankai skolina pinigus vieni kitiems trijų mėnesių laikotarpiui.
-* JAV dolerio ir Euro valiutos kursas.
-* Nedarbas - darbingų nedirbančių žmonių skaičius 1000 žmonių.
-* Pramonės gamintojų kainos  - matuoja vidutinę kainų raidą, visų produktų bei paslaugų iš pramonės sektoriaus ir parduotų vidinėje rinkoje. Procentinis pokytis nuo praeito mėnesio.
-* Infliacija - 12 mėnesių infliacija apskaičiuota pagal mažmeninės prekybos indeksą.
-* Industrinė produkcija - indeksas matuoja produkcijos kiekį nuo gamybos, kasybos, elektros ir dujų pramonės. Atskaitiniai metai 2010 (2010m. indeksas = 100).
-* Darbo lygio ir užsakymų lūkesčiai - mėnesinės apklausos, teigiamų ir neigiamų atsakymų santykis.
-* Pasitikėjimo indikatoriai - pramonės, mažmeninės prekybos, vartotojų, paslaugų, statybų. Tai yra apklausų teigiamų ir neigiamų atsakymų santykis.
-* Mažmeninė prekyba, išskyrus variklinių transporto priemonių ir motociklų prekybą- indeksuotas rodiklis (2010m indeksas = 100).
 
 \newpage
 
@@ -236,7 +204,6 @@ Duomenys naudojami nuo 2002 metų iki 2016 metų, ankstesnių duomenų nepavyko 
 
 OMX Vilnius indeksas transformuojamas į mėnesinius procentinius pokyčius: jei OMX indekso mėnesinė kaina nuo laiko (mėnesio)  t žymėsime *X(t)*, tai *r(t)* = (log(*X(t)*) – log(*X(t-1)*) ) $\times$ 100 %, čia *r(t)* yra indekso mėnesinis pokytis procentais.
 Tokiu pačiu būdu gaunama kitų akcijų indeksų grąža logaritmuojant ir diferencijuojant S&P500, S&P350 indeksų kainas. Kasybos ir karjerų eksploatacijos indeksas, mažmeninės prekybos indeksas, industrinės produkcijos indeksas yra taip pat logaritmuojami ir diferencijuojami. Visi logaritmuoti duomenys padauginami iš šimto, kad pokytis būtų interpretuojamas procentais. Euribor yra dalinamas iš 12 ir diferencijuojamas, kad būtų gautas mėnesinis pokytis. Nedarbas dalinamas iš 10 (bedarbių skaičius tenkantis 1000 gyventojų, padalinę iš 10 gauname procentais) ir taip pat yra diferencijuojamas. Dolerio/euro valiutų kursas, pasitikejimo ir lūkesčių rodikliai yra diferencijuojami. Diferencijavimu šiuo atveju vadiname šio mėnesio duomenų atėmimą iš praeito periodo(mėnesio) duomenų.
-
 
 Tikrinami duomenys po transformacijų ar turi vienetinę šaknį (stacionarumo tikrinimas), atliekamas Dickey-Fuller testas:
 ```{r, message=FALSE, echo=FALSE}
@@ -283,15 +250,6 @@ data3$SP500=data3$SP500-data3$palukanos
 \newpage
 
 # Duomenų vizualizacija
-```{r, message=FALSE, echo=FALSE}
-data=read.csv("rawdata.csv")
-
-
-
-data[ data == ":" ] = NA
-data=data[complete.cases(data),]
-rownames(data)<-NULL
-```
 
 ```{r, message=FALSE, echo=FALSE}
 panel.hist <- function(x, ...)    #ši funkcija reikalinga grafikų lentelei išbrėžti (histogramos pateikimui)                        
@@ -358,13 +316,13 @@ data3=cbind.data.frame(Data, data3)
 
 Akcijų indeksų mėnesiniai procentiniai pokyčiai:
 
-```{r, message=FALSE, echo=FALSE}
+```{r, message=FALSE, echo=FALSE,warning=F}
 Sys.setlocale(locale = "en_LT.UTF-8")
 akc = melt(data3[,c("OMX","SP350","SP500","Data")], id=c("Data"))
 ggplot(akc) + geom_line(aes(x=Data, y=value, colour=variable)) +
   scale_colour_manual(values=c(1:4))+ylab("% pokytis")+
   guides(col=guide_legend(title="Kintamieji")) +
-  ggtitle("ą č ę ė į š ų ū ž")
+  ggtitle("Akcijų indeksų mėnesiniai grąžų pokyčiai")
 ```
 
 * Tikėtina, jog S&P350 ir S&P500 indeksų svyravimai tūrėtų būti labai panašūs, taigi pažiūrėjus į grafiką galime matyti, jog jų kreivės juda panašiai, tai yra šie dydžiai stipriai koreliuoti.
@@ -400,18 +358,20 @@ pairs(data3[,c("OMX","mhope","phope","vhope","pramhope","vp")],upper.panel=panel
 # Modeliavimas
 
 ```{r, message=FALSE, echo=FALSE}
-mod = lm(OMX ~ SP350 + kk + dll + nedarbas + infliacija + mhope + phope + pramhope + shope + ta + ul + vhope + vp + mp + gkl + ip + kursas, data=data3)
-boo<-stepAIC((mod))
+modelis = lm(OMX ~ lag(SP350,1) + lag(kk,1) + lag(dll,1) + nedarbas + lag(infliacija,2) + lag(infliacija,3) + lag(infliacija,5) + lag(infliacija,7) + lag(infliacija,8) +lag(mhope,3) + lag(phope,12) + lag(pramhope,3) + lag(shope,4) + lag(ul,10) + lag(vhope,4) + lag(vp,0) + lag(mp,1) + lag(gkl,9) + lag(ip,0) + lag(ip,1) + lag(ip,4) + lag(kursas,2) , data=data3)
+
+modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 1) + lag(infliacija, 2) + lag(mhope, 3) + lag(phope,12) + lag(ul, 10) + lag(gkl, 9) + lag(ip, 4) + lag(kursas,2), data = data3)
+
+coeftest(modelis_po_aic, vcov=vcovHC)
+summary(modelis_po_aic)
+
 ```
 
-```{r}
-mod_po_aic <- lm(formula = OMX ~ SP350 + nedarbas + infliacija + phope + pramhope + ul, data = data3)
-```
 
 ```{r, message=FALSE, echo=FALSE}
-datafr=data.frame(summary(mod_po_aic)[c(4,8)] %>%  lapply(round,2))
+datafr=data.frame(summary(modelis_po_aic)[c(4,8)] %>%  lapply(round,2))
 colnames(datafr)=c("koeficientai","standartinis nuokrypis","koeficientu t reikšmes","p reiksme", "R kvadratas")
-rownames(datafr)=c("beta nulinis","S&P350","nedarbas","infliacija","paslaugu pasitikejimas", "pramones pasitikejimas", "uzsakymu lukesciai")
+
 datafr[2:nrow(datafr),"R kvadratas"]="-"
 kable(datafr)
 ```
@@ -433,55 +393,19 @@ kable(datafr)
 4) „Do macro-economic variables explain stock-market returns? Evidence using a semi-parametric approach“ - Sagarika Mishra:
 [link](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1937914)
 
-Kryžminė koreliacija:
-```{r}
-names2=c("SP350","SP500","kk","dll","nedarbas","infliacija","mhope","phope","pramhope","shope","ta","ul","vhope","vp","mp","palukanos","gkl","ip","kursas")
 
-for (i in 3:length(data3[1,])){
-  x=0
-  while(x==0){
-ccfvalues <- ccf(data3$OMX,data3[,i]) #aiskinames laga
-print(names2[i-2])
-print(ccfvalues)
-x <- scan("")
-  }
-  if(x==9)break
-}
+```{r}
+ par(mfrow = c(2, 2))
+plot(modelis_po_aic)
 ```
 
-Atrinkti lagai pagal didžiausią koreliaciją su OMX ir sudarytas modelis:
-```{r}
-modelis2 = lm(OMX ~ lag(SP350,1) + lag(kk,1) + lag(dll,1) + lag(nedarbas,5) + lag(infliacija,4)  + lag(mhope,3) + lag(phope,12) + lag(pramhope,3) + lag(shope,1) + lag(ul,10) + lag(vhope,4) + lag(vp,1) + lag(mp,1) + lag(gkl,19) + lag(ip,4) + lag(kursas,2) , data=data3)
-
-
-modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 1) + lag(nedarbas, 5) + lag(infliacija, 4) + 
-    lag(mhope, 3) + lag(phope, 12) + lag(pramhope, 3) + lag(ul,10) + lag(vhope, 4) + lag(mp, 1) + lag(gkl, 19) + lag(ip,4) + lag(kursas, 2), data = data3)
-```
-
-
-Atrinkti lagai:
-```{r}
-ccfvalues <- ccf(data3$OMX,data3$SP350)
-ccfvalues
-modelis = lm(OMX ~ lag(SP350,1) + lag(kk,1) + lag(dll,1) + nedarbas + lag(infliacija,2) + lag(infliacija,3) + lag(infliacija,5) + lag(infliacija,7) + lag(infliacija,8) +lag(mhope,3) + lag(phope,12) + lag(pramhope,3) + lag(shope,4) + lag(ul,10) + lag(vhope,4) + lag(vp,0) + lag(mp,1) + lag(gkl,9) + lag(ip,0) + lag(ip,1) + lag(ip,4) + lag(kursas,2) , data=data3)
-
-boo<-stepAIC((modelis))
-
-modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 1) + lag(infliacija, 2) + lag(mhope, 3) + lag(phope,12) + lag(ul, 10) + lag(gkl, 9) + lag(ip, 4) + lag(kursas,2), data = data3)
-
-coeftest(modelis_po_aic, vcov=vcovHC)
-summary(modelis_po_aic)
-```
 
 ```{r}
 res<-bptest(modelis_po_aic)
-```
-
-
-```{r}
+# p-value < 0.05, tai H0 negalime priimti - duomenys homoskedastiški.
 ncvTest(modelis_po_aic)
-# Kadangi p-value > 0.05, tai H0 hipotezė priimama - duomenys homoskedastiški.
-spreadLevelPlot(mod_po_aic)
+# Kadangi p-value > 0.05, tai H0 hipotezė negalime atmesti - duomenys homoskedastiški.
+spreadLevelPlot(modelis_po_aic)
 vif(modelis)
 ```
 
@@ -491,13 +415,15 @@ Tikrinama autokoreliacija:
 
 durbinWatsonTest(modelis_po_aic)
 # p-value > 0.05 - liekanos nėra autokoreliuotos.
+
+Box.test(modelis_po_aic$res, fitdf=0, type="Lj")
+#p-value >0.05, vadinasi H0 neatmetama. Galima teigti, kad liekanos yra baltasis triukšmas.
 ```
 
 ```{r}
-shapiro.test(mod_po_aic$residuals)
+shapiro.test(modelis_po_aic$residuals)
 # p-value > 0.05 - liekanos yra normalios
 ```
-
 
 
 
@@ -539,7 +465,6 @@ validation(90) #kai pradine imtis 70, atsakymo prasme- tikimybe kad geriau uz ra
 modelis = lm(OMX ~ lag(SP350,1) + lag(kk,1) + lag(dll,1) + nedarbas + lag(infliacija,2) + lag(infliacija,3) + lag(infliacija,5) + lag(infliacija,7) + lag(infliacija,8) +lag(mhope,3) + lag(phope,12) + lag(pramhope,3) + lag(shope,4) + lag(ul,10) + lag(vhope,4) + lag(vp,0) + lag(mp,1) + lag(gkl,9) + lag(ip,0) + lag(ip,1) + lag(ip,4) + lag(kursas,2) , data=data3)
 
 modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 1) + lag(infliacija, 2) + lag(mhope, 3) + lag(phope,12) + lag(ul, 10) + lag(gkl, 9) + lag(ip, 4) + lag(kursas,2) 
-                    +
                      , data = data3)
 
 coeftest(modelis_po_aic, vcov=vcovHC)
@@ -553,14 +478,11 @@ ncvTest(modelis_po_aic)
 names2=c("SP350","SP500","kk","dll","nedarbas","infliacija","mhope","phope","pramhope","shope","ta","ul","vhope","vp","mp","palukanos","gkl","ip","kursas")
 
 for (i in 3:length(data3[1,])){
-  x=0
-  while(x==0){
+ 
 ccfvalues <- ccf(data3$OMX,data3[,i]) #aiskinames laga
 print(names2[i-2])
 print(ccfvalues)
-x <- scan("")
-  }
-  if(x==9)break
+
 }
 
 
@@ -613,14 +535,21 @@ mySummary <- function(modelis_po_aic, VCOV) {
 mySummary(modelis_po_aic,vcovHC)
 ```
 
+# Priedai:
 
-```{r}
-Blah blah [see @doe99, pp. 33-35; also @smith04, ch. 1].
+## Kintamieji
+Darbe naudojami mėnesiniai duomenys nuo 2002 metų birželio iki 2016 metų liepos. Duomenys gauti iš Eurostat ir Europos Centrinio Banko svetainių. Susiduriama su mėnesinių rodiklių trūkumu: BVP, gyventojų pajamos, pinigų paklausa yra ketvirtiniai duomenys. Taip pat žvelgiant pasauliniu mastu, Vilniaus akcijų birža yra smulki, o akcijų likvidumas čia taip pat žemas. Nepaisant šių problemų, buvo rasta koreliacija tarp kai kurių makroekonominių duomenų ir OMX Vilnius indekso grąžų.
 
-Blah blah [@doe99, pp. 33-35, 38-39 and *passim*].
-
-Blah blah [@smith04; @doe99].
-
-```
+* S&P 350 Europe - tai indeksas sudarytas iš 350 didžiausių Europos imonių akcijų.
+* S&P 500 - tai indeksas sudarytas iš 500 didžiausių Amerikos imonių akcijų.
+* Euribor 3 mėnesių - palūkanų norma už kurią Europos bankai skolina pinigus vieni kitiems trijų mėnesių laikotarpiui.
+* JAV dolerio ir Euro valiutos kursas.
+* Nedarbas - darbingų nedirbančių žmonių skaičius 1000 žmonių.
+* Pramonės gamintojų kainos  - matuoja vidutinę kainų raidą, visų produktų bei paslaugų iš pramonės sektoriaus ir parduotų vidinėje rinkoje. Procentinis pokytis nuo praeito mėnesio.
+* Infliacija - 12 mėnesių infliacija apskaičiuota pagal mažmeninės prekybos indeksą.
+* Industrinė produkcija - indeksas matuoja produkcijos kiekį nuo gamybos, kasybos, elektros ir dujų pramonės. Atskaitiniai metai 2010 (2010m. indeksas = 100).
+* Darbo lygio ir užsakymų lūkesčiai - mėnesinės apklausos, teigiamų ir neigiamų atsakymų santykis.
+* Pasitikėjimo indikatoriai - pramonės, mažmeninės prekybos, vartotojų, paslaugų, statybų. Tai yra apklausų teigiamų ir neigiamų atsakymų santykis.
+* Mažmeninė prekyba, išskyrus variklinių transporto priemonių ir motociklų prekybą- indeksuotas rodiklis (2010m indeksas = 100).
 
 
