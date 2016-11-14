@@ -1,0 +1,69 @@
+---
+title: "duomenys"
+author: "Manvydas Sokolovas ir Paulius Kostickis"
+date: "10/13/2016"
+output: 
+  pdf_document: 
+    latex_engine: xelatex
+---
+
+<br>
+
+Reikiamos bibliotekos:
+```{r, message=FALSE}
+library("quantmod")
+library("forecast")
+library("xts")
+library("dplyr")
+library("gridExtra")
+library("dynlm")
+
+```
+
+Nuskaitomi duomenys:
+```{r}
+data=read.csv("rawdata.csv")
+data[ data == ":" ] = NA
+data=data[complete.cases(data),]
+rownames(data)<-NULL
+data2=apply(data[,-1],2,as.numeric)
+
+eil_nr <- 1:20
+klase_po <- cbind(data.frame(apply(data2, 2, class)), eil_nr);  colnames(klase_po) <- c("Klase po","Stulpelio nr.")
+
+rownames(data2)=data[,1]
+data2=data.frame(data2)
+data2$nedarbas=data2$nedarbas/10
+data2[,c("OMX","SP350","SP500")] = apply(data2[,c("OMX","SP350","SP500")],1,log)
+
+diffeile = data.frame(sapply(data2,ndiffs)) 
+
+
+data3=data.frame(diff(as.matrix(data2)))
+data2[-nrow(data2),4:ncol(data2)]=data3[,4:ncol(data3)]
+data2=data2[-nrow(data2),]
+Box.test(data3$OMX,type="Ljung-Box")$p.value
+
+apply(data2 , 2, function(i){Box.test(i,lag=20,type="Ljung-Box")$p.value < 0.05})
+
+apply(data2 , 2, function(i){kpss.test(i)$p.value>0.05})
+a=diff(data2[,c(4,5,6,7,8,9,11,12,14,16,17,18)])
+data3=data2
+data3[,c(4,5,6,7,8,9,11,12,14,16,17,18)]=apply(data2[,c(4,5,6,7,8,9,11,12,14,16,17,18)] , 2, diff)
+
+apply(data3 , 2, function(i){kpss.test(i)$p.value>0.05})
+
+mod3=dynlm(log(OMX)~log(SP350)+mp+vp+ta+ul+dll+mhope+shope+phope+vhope+pramhope+euribor+nedarbas+Infliacija+gkl,data=data3)
+
+mod3=lm(OMX~SP350+mp+vp+ta+ul+dll+mhope+shope+phope+vhope+pramhope+euribor+nedarbas+Infliacija+gkl,data=data3)
+
+mod3=lm(diff(log(OMX))~diff(log(SP350))+mp+vp+ta+ul+dll+mhope+shope+phope+vhope+pramhope+euribor+nedarbas+Infliacija+gkl,data=data2)
+
+
+summary(mod3)
+pairs(data3,upper.panel=panel.smooth,diag.panel=panel.hist, lower.panel=panel.cor2)         #su diferencijuotais duomenim
+```
+
+
+
+
