@@ -242,6 +242,12 @@ panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor,...)    #ši funkci
 ```
 
 
+```{r, message=FALSE, echo=FALSE}
+Data = rownames(data3)
+Data=as.yearmon(Data, "%YM%m")
+
+data3=cbind.data.frame(Data, data3)
+```
 
 <br>
 
@@ -293,7 +299,10 @@ pairs(data3[,c("OMX","mhope","phope","vhope","pramhope","vp")],upper.panel=panel
 
 modelis = lm(OMX ~ lag(SP350,1)  + lag(phope,12)  + lag(ul,10)+lag(mhope, 3)+ lag(gkl, 9)+  lag(ip, 11)+lag(kursas,2),data=data3)  #prognozuojantis
 modelis = lm(OMX ~ SP350  + lag(phope,12)  + lag(ul,10)+lag(mhope, 3)+ lag(gkl, 9)+  lag(ip, 11)+lag(kursas,2),data=data3)  #reiksmingumui
+
+modelis = lm(OMX ~ lag(SP350,1)  + lag(phope,12)  + lag(gkl, 9),data=data3) 
 summary(modelis)
+kable(coeftest(modelis, vcov=vcovHC)[,])
 ccf(data3$OMX,data3[,"nedarbas"])
 
 # pairs(data3[,c("OMX","mhope","phope","vhope","pramhope","vp")],upper.panel=panel.smooth,diag.panel=panel.hist, lower.panel=panel.cor2)
@@ -334,13 +343,31 @@ predict grafikas
 ```{r}
 progn=numeric()
  for(i in 10:168){
-   modelis = lm(OMX ~ lag(SP350,1)  + lag(phope,12)  + lag(ul,10)+lag(mhope, 3)+ lag(gkl, 9)+  lag(ip, 11)+lag(kursas,2),data=data3)  
+  modelis = lm(OMX ~ lag(SP350,1)  + lag(phope,12)  + lag(gkl, 9),data=data3)   
    a=predict(modelis, data3[1:i+1,])
    progn=append(progn,a[length(a)])
    
-}
-class(progn)
-brezimui=append(progn,data3$OMX[13:length(data3$OMX)])
+ }
+progn=as.numeric(progn)
+a=cbind(progn,data3$OMX[12:length(data3$OMX)])
+a=a[complete.cases(a),]
+rownames(a)<-NULL
+menesiai=c(1:length(a))
+a=cbind(a,menesiai)
+a[,c(1,2,3)]=a[,c(3,2,1)]
+colnames(a)=c("menesiai","real","progn")
+a=data.frame(a)
+akc = melt(a[,c("progn","real","menesiai")], id=c("menesiai"))
+ggplot(akc) + geom_line(aes(x=menesiai, y=value, colour=variable)) +
+  scale_colour_manual(values=c(1:2))+ylab("% pokytis")+
+  guides(col=guide_legend(title="Kintamieji")) +
+  ggtitle("Akcijų indeksų mėnesiniai grąžų prognozės ir tikrieji duomenys")+ geom_hline(yintercept = 5)+geom_hline(yintercept = -5)
+
+ggplot(akc) + geom_line(aes(x=menesiai, y=value, colour=variable)) +
+  scale_colour_manual(values=c(1:2))+ylab("% pokytis")+
+  guides(col=guide_legend(title="Kintamieji")) +
+  ggtitle("Akcijų indeksų mėnesiniai grąžų prognozės ir tikrieji duomenys")+ geom_hline(yintercept = 2)+geom_hline(yintercept = -2)
+
 
 ```
 
@@ -460,8 +487,8 @@ didejantis langas
 
 betu_lentele=data.frame()
 for(i in 15:168){
-   modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 1) + lag(infliacija, 2) + lag(mhope, 3) + lag(phope,12) + lag(ul, 10) + lag(gkl, 9) + lag(ip, 4) + lag(kursas,2), na.action=na.omit,data = data3[1:i,])
-   betu_lentele=rbind(betu_lentele,modelis_po_aic$coeff)
+   modelis = lm(OMX ~ lag(SP350,1)  + lag(phope,12)  + lag(ul,10)+lag(mhope, 3)+ lag(gkl, 9)+  lag(ip, 11)+lag(kursas,2),data=data3)  
+   betu_lentele=rbind(betu_lentele,modelis$coeff)
 }
 
 betu_lentele=cbind(betu_lentele,15:168)
