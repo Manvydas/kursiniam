@@ -242,30 +242,6 @@ panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor,...)    #ši funkci
 ```
 
 
-```{r, message=FALSE, echo=FALSE}
-data2=apply(data[,-1],2,as.numeric)
-rownames(data2)=data[,1]
-data2=data.frame(data2)
-data2$nedarbas=data2$nedarbas/10
-
-data2[,c("OMX","SP350","SP500","kursas","kk","mp","ip")] = apply(data2[,c("OMX","SP350","SP500","kursas","kk","mp","ip")],2,log)    #logaritmuojama indeksai, akcijų kainos, kursas  
-
-data2[,c("OMX","SP350","SP500","kursas","kk","mp","ip")]=data2[,c("OMX","SP350","SP500","kursas","kk","mp","ip")]*100
-
-data2$euribor=data2$euribor/12
-
-data3=data.frame(diff(as.matrix(data2)))  
-data3$gkl = data$gkl[-1]    #gamintoju kainu lygio nereik diferencijuot nes jau yra pokytis %
-```
-
-
-```{r, message=FALSE, echo=FALSE}
-Data = rownames(data3)
-Data=as.yearmon(Data, "%YM%m")
-
-data3=cbind.data.frame(Data, data3)
-```
-
 
 <br>
 
@@ -312,9 +288,84 @@ pairs(data3[,c("OMX","mhope","phope","vhope","pramhope","vp")],upper.panel=panel
 
 # Modeliavimas
 
+```{r}
 
+
+modelis = lm(OMX ~ lag(SP350,1)  + lag(phope,12)  + lag(ul,10)+lag(mhope, 3)+ lag(gkl, 9)+  lag(ip, 11)+lag(kursas,2),data=data3)  #prognozuojantis
+modelis = lm(OMX ~ SP350  + lag(phope,12)  + lag(ul,10)+lag(mhope, 3)+ lag(gkl, 9)+  lag(ip, 11)+lag(kursas,2),data=data3)  #reiksmingumui
+
+modelis = lm(OMX ~ lag(SP350,1)  + lag(phope,12)  + lag(ul,10)+lag(gkl, 9)+lag(kursas,2),data=data3)  #prognozuojantis
+
+summary(modelis)
+kable(coeftest(modelis, vcov=vcovHC)[,])
+ccf(data3$OMX,data3[,"nedarbas"])
+
+# pairs(data3[,c("OMX","mhope","phope","vhope","pramhope","vp")],upper.panel=panel.smooth,diag.panel=panel.hist, lower.panel=panel.cor2)
+
+Find_Max_CCF<- function(a,b)
+{
+ d <- ccf(a, b, plot = FALSE,na.action = na.pass)
+ d = d[0:19] 
+ cor = d$acf[,,1]
+ lag = d$lag[,,1]
+ res = data.frame(cor,lag)
+ res_max = res[which.max(res$cor),]
+ return(res_max)
+} 
+lagdata=data.frame()
+for (i in 3:length(data4[1,])){
+ccfvalues <- Find_Max_CCF(data4$OMX,data4[,i])
+  if(i==3){lagdata=ccfvalues}
+  else{
+  lagdata=rbind(lagdata,ccfvalues)
+  }
+}
+
+#priedui?
+#par(mfrow=c(3,3))
+for (i in 16:length(data4[1,])){
+
+  ccf(data3$OMX,data3[,i])
+  print(colnames(data3)[i])
+}
+
+names2=c("SP350","SP500","kk","dll","nedarbas","infliacija","mhope","phope","pramhope","shop","ta","ul","vhope","vp","mp","palukanos","gkl","ip","kursas")
+rownames(lagdata)=names2
+```
+
+
+predict grafikas
+```{r}
+progn=numeric()
+ for(i in 10:168){
+   modelis = lm(OMX ~ lag(SP350,1)  + lag(phope,12)  + lag(ul,10)+ lag(gkl, 9)+  lag(kursas,2),data=data3)  
+   a=predict(modelis, data3[1:i+1,])
+   progn=append(progn,a[length(a)])
+   
+}
+
+progn=as.numeric(progn)
+a=cbind(progn,data3$OMX[12:length(data3$OMX)])
+a=data.frame(a)
+a=a[complete.cases(a),]
+rownames(a)<-NULL
+menesiai=c(1:156)
+a=cbind(menesiai,a)
+rownames(a)=NULL
+colnames(a)=c("menesiai","progn", "reali")
+akc = melt(a, id=c("menesiai"))
+ggplot(akc) + geom_line(aes(x=menesiai, y=value, colour=variable)) +
+  scale_colour_manual(values=c(1:2))+ylab("% pokytis")+
+  guides(col=guide_legend(title="Kintamieji")) +
+  ggtitle("Prognozuojama ir reali akcijų grąža")+ geom_hline(yintercept = 5)+
+  geom_hline(yintercept = -5)
+```
 
 ```{r, message=FALSE, echo=FALSE}
+modelis = lm(OMX ~ lag(SP350,1) + lag(kk,1) + lag(dll,1) + nedarbas + lag(infliacija,2) + lag(infliacija,3) + lag(infliacija,5) + lag(infliacija,7) + lag(infliacija,8) +lag(mhope,3) + lag(phope,12) + lag(pramhope,3) + lag(shope,4) + lag(ul,10) + lag(vhope,4) + lag(vp,0) + lag(mp,1) + lag(gkl,9) + lag(ip,0) + lag(ip,1) + lag(ip,4) + lag(kursas,2) , data=data3)
+
+modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 1) + lag(infliacija, 2) + lag(mhope, 3) + lag(phope,12) + lag(ul, 10) + lag(gkl, 9) + lag(ip, 4) + lag(kursas,2), data = data3)
+
 datafr=data.frame(summary(modelis_po_aic)[c(4,8)] %>%  lapply(round,2))
 colnames(datafr)=c("koeficientai","standartinis nuokrypis","koeficientu t reikšmes","p reiksme", "R kvadratas")
 
@@ -325,19 +376,25 @@ kable(datafr)
 Heteroskedastiškumo korekcija:
 
 ```{r, message=FALSE, echo=FALSE}
-modelis = lm(OMX ~ lag(SP350,1) + lag(kk,1) + lag(dll,1) + nedarbas + lag(infliacija,2) + lag(infliacija,3) + lag(infliacija,5) + lag(infliacija,7) + lag(infliacija,8) +lag(mhope,3) + lag(phope,12) + lag(pramhope,3) + lag(shope,4) + lag(ul,10) + lag(vhope,4) + lag(vp,0) + lag(mp,1) + lag(gkl,9) + lag(ip,0) + lag(ip,1) + lag(ip,4) + lag(kursas,2) , data=data3)
+
+modelis = lm(OMX ~ lag(SP350,1) + lag(kk,1) + lag(dll,1) + nedarbas + lag(infliacija,2) + lag(infliacija,3) + lag(infliacija,5) + lag(infliacija,7) + lag(infliacija,8) +lag(mhope,3) + lag(phope,12) + lag(pramhope,3) + lag(shope,4) + lag(ul,10) + lag(vhope,4) + lag(vp,0) + lag(mp,1) + lag(gkl,9) + lag(ip,0) + lag(ip,1) + lag(ip,4) + lag(kursas,2) , data=data4)
+
 
 modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 1) + lag(infliacija, 2) + lag(mhope, 3) + lag(phope,12) + lag(ul, 10) + lag(gkl, 9) + lag(ip, 4) + lag(kursas,2), data = data3)
 
 kable(coeftest(modelis_po_aic, vcov=vcovHC)[,])
 
+summary(modelis_po_aic)
 
 summary(modelis_po_aic)[8]
+
+modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 1) + lag(infliacija, 2) + lag(mhope, 3) + lag(phope,12) + lag(ul, 10) + lag(gkl, 9) + lag(ip, 4) + lag(kursas,2), data = data4)
+
 
 
 ```
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Kintamiesiems atrinkti ankstiniai pagal didžiausią kryžminę koreliaciją su OMX Vilnius. Sudarytas modelis iš visų kintamųjų, atliktas stepAIC.  Didelė dalis makroekonominių duomenų buvo nereikšmingi, tačiau aptikome ir keletą reikšmingų kintamųjų. Modelis paaiškina apie 24 procentų OMX Vilnius indekso grąžos pokyčių.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Kintamiesiems atrinkti ankstiniai pagal didžiausią kryžminę koreliaciją su OMX Vilnius. Sudarytas modelis iš visų kintamųjų, atliktas stepAIC.  Didelė dalis makroekonominių duomenų buvo nereikšmingi, tačiau aptikome ir keletą reikšmingų kintamųjų. Modelis paaiškina apie 34 procentų OMX Vilnius indekso grąžos pokyčių.
 
 \newpage
 
@@ -370,7 +427,7 @@ shapiro.test(modelis_po_aic$residuals)
 # p-value > 0.05 - liekanos yra normalios
 ```
 
-
+rolling window
 Bet'ų kitimas:
 kai po 80 imtyje
 ```{r}
@@ -393,6 +450,7 @@ a=apply(zenklai[,-length(betu_lentele)],2,table)
 kable(data.frame(unlist(a)))
 ```                  
 
+rolling window
 kai po 40 imtyje
 ```{r}
 
@@ -414,6 +472,31 @@ a=apply(zenklai[,-length(betu_lentele)],2,table)
 kable(data.frame(unlist(a)))
 ```     
 
+didejantis langas
+```{r}
+
+betu_lentele=data.frame()
+for(i in 15:168){
+   modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 1) + lag(infliacija, 2) + lag(mhope, 3) + lag(phope,12) + lag(ul, 10) + lag(gkl, 9) + lag(ip, 4) + lag(kursas,2), na.action=na.omit,data = data3[1:i,])
+   betu_lentele=rbind(betu_lentele,modelis_po_aic$coeff)
+}
+
+betu_lentele=cbind(betu_lentele,15:168)
+colnames(betu_lentele)=c("intercept"," lag(SP350, 1)","lag(infliacija, 2)","lag(mhope, 3)","lag(phope, 12)", "lag(ul, 10)", "lag(gkl, 9)","lag(ip, 4)","lag(kursas, 2)", "paskutinis menesis(is viso po 40 imtyje)")
+
+betu_lentele=round(betu_lentele,3)
+kable(betu_lentele)
+plot(betu_lentele[,9],type="l")
+
+zenklai=apply(betu_lentele[,-length(betu_lentele)],2,sign)
+a=apply(zenklai[,-length(betu_lentele)],2,table)
+kable(data.frame(unlist(a)))
+
+
+```     
+
+
+
 Strategijos pelningumo tikrinimas:
 kai perkama jei tikimasi pelno >5% kitą mėnesį:
 ```{r}
@@ -423,16 +506,21 @@ gen=function(pradzia,pirkti){
 b=sample(pradzia:169,length(pirkti),replace=F)
 return(sum(data3[b,"OMX"]))
 }
+
 validation=function(pradzia){
-pirkti=numeric()
-for(i in pradzia:168){
-  modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 1) + lag(infliacija, 2) + lag(mhope, 3) + lag(phope,12) + lag(ul, 10) + lag(gkl, 9) + lag(ip, 4) + lag(kursas,2), data = data3[1:i,)
-  a=predict(modelis_po_aic, data3[1:i+1,])
-  a=a[length(a)]
-  if(matrix(a)[1]>5){pirkti=append(pirkti,i)}
-}
-graza=sum(data3[pirkti,"OMX"])
-random=replicate(100000,gen(pradzia,pirkti))
+  pirkti=numeric()
+  shortinti=numeric()
+  for(i in pradzia:168){
+    modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 1) + lag(infliacija, 2) + lag(mhope, 3) + lag(phope,12) + lag(ul, 10) + lag(gkl, 9) + lag(ip, 4) + lag(kursas,2), data = data3[1:i,])
+   a=predict(modelis_po_aic, data3[1:i+1,])
+   a=a[length(a)]
+   if(matrix(a)[1]>5){pirkti=append(pirkti,i)}
+   if(matrix(a)[1]<5){shorinti=append(shortinti,i)}
+  }
+graza=sum(data3[pirkti,"OMX"])+sum(data3[shortinti,"OMX"])*(-1)
+random=replicate(1000,gen(pradzia,pirkti))
+random2=replicate(1,gen(pradzia,shortinti))*(-1)
+
 p=mean(random>graza)
 vidurkis_random = mean(random)
 if(p==0){p="nebuvo pirkimu"}
@@ -462,14 +550,16 @@ gen=function(pradzia,pirkti){
 b=sample(pradzia:169,length(pirkti),replace=F)
 return(sum(data3[b,"OMX"]))
 }
+
 validation=function(pradzia){
-pirkti=numeric()
-for(i in pradzia:168){
-  modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 1) + lag(infliacija, 2) + lag(mhope, 3) + lag(phope,12) + lag(ul, 10) + lag(gkl, 9) + lag(ip, 4) + lag(kursas,2), data = data3[1:i,)
-  a=predict(modelis_po_aic, data3[1:i+1,])
-  a=a[length(a)]
-  if(matrix(a)[1]>3){pirkti=append(pirkti,i)}
+  pirkti=numeric()
+  for(i in pradzia:168){
+    modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 1) + lag(infliacija, 2) + lag(mhope, 3) + lag(phope,12) + lag(ul, 10) + lag(gkl, 9) + lag(ip, 4) + lag(kursas,2), data = data3[1:i,])
+    a=predict(modelis_po_aic, data3[1:i+1,])
+    a=a[length(a)]
+    if(matrix(a)[1]>3){pirkti=append(pirkti,i)}
 }
+
 graza=sum(data3[pirkti,"OMX"])
 random=replicate(100000,gen(pradzia,pirkti))
 p=mean(random>graza)
@@ -492,6 +582,7 @@ for(i in 30:168){
 }
 lentele[,c(1:5)]=lentele[,c(5,2,3,1,4)]
 colnames(lentele)=c("pradinis imties dydis","graza strategijos","vidutine random graza","tikimybe kad geriau uz random","sandoriu skaicius")
+
 kable(lentele)
 ```
 
