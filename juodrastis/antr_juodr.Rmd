@@ -2,6 +2,11 @@
 output: 
   pdf_document: 
     latex_engine: xelatex
+header-includes:
+  - \usepackage[L7x]{fontenc}
+  - \usepackage[lithuanian]{babel}
+
+
 ---
 
 
@@ -11,15 +16,13 @@ library("forecast")
 library("xts")
 library("dplyr")
 library("gridExtra")
-library("dynlm")
 library("ggplot2")
 library("reshape2")
 library("knitr")
 library("tseries")
-library("MASS")
-library("car")
 library("sandwich")
 library("lmtest")
+
 ```
 
 \begin{titlepage}
@@ -54,11 +57,12 @@ library("lmtest")
 
 #Santrauka:
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Makroekonomiai rodikliai gali padėti nuspėti ateities verslo ciklą, kuris turi įtakos akcijų pelningumui. Sudarytas „OMX Vilnius“ indekso grąžos prognozavimo modelis naudojant arbitražo įkainojimo teoremą (angl. APT), siekiant išsiaiškinti, kokie Lietuvos makroekonominiai rodikliai tiesiškai paveikia „OMX Vilnius“ indekso grąžas. Sukurta pelninga strategija remiantis Lietuvos makro rodikliais ir palyginta su atsitiktiniu investavimu. Tirti mėnesiniai duomenys nuo 2002 iki 2016 metų. Dalis makroekonominių rodiklių yra reikšmingi vertinant indekso kainos pokyčius. 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Makroekonomiai rodikliai gali padėti nuspėti ateities verslo ciklą, kuris turi įtakos akcijų pelningumui. Naudodajant Lietuvos makro duomenis, matuojamos  rizikos premijos, kurios gaunamos už riziką investuojant Lietuvos rinkoje. Makroduomenys iliustruoja Lietuvos ekonominę būklę.  Sudarytas „OMX Vilnius“ indekso grąžos įkainojimo ir prognozavimo modelis remiantis arbitražo įkainojimo teoremą (angl. APT), siekiant išsiaiškinti, kokie Lietuvos makroekonominiai rodikliai tiesiškai paveikia „OMX Vilnius“ indekso grąžas. Sukurta prekybos strategija naudojant sukurtais prognozavimo ir įkainojimo modeliais ir palyginta su atsitiktiniu investavimu. Tirti mėnesiniai duomenys nuo 2002 iki 2016 metų. Dalis makroekonominių rodiklių yra reikšmingi vertinant indekso kainos pokyčius.
 
 *Darbe naudojami trumpiniai:*
-
-kk – kasyba ir karjerų eksploatacija
+\newline APT – arbitražo įkainojimo teorija (Arbitrage pricing theory)
+\newline CAPM – kapitalo įkainojimo modelis (Capital Asset pricing model)
+\newline kk – kasyba ir karjerų eksploatacija
 \newline mp – mažmeninė prekyba
 \newline vp – verslo plėtros aktyvumas per 3 mėnesius
 \newline ta – turimos akcijos
@@ -73,10 +77,10 @@ kk – kasyba ir karjerų eksploatacija
 \newline ip – industrinė produkcija
 
 # Įvadas:
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Akcijų pokyčiams yra reikšminga ekonomikos būsena. Jei ekonomika auga, tuomet dauguma įmonių padidina savo pelną ir gamybą. Priešingas procesas, kai ekonomika traukiasi. Egzistuoja makroekonominiai rodikliai tokie kaip infliacija, valiutos kursas, palūkanų dydis, kurie gali paaiškinti akcijų grąžas. Tačiau yra atliktas tyrimas Rusijos rinkoje, remiantis arbitražo įkainojimo teorija, kurio tyrimo autorius nesugebėjo rasti reikšmingos makroekonominių duomenų  įtakos akcijų grąžoms. O Šri Lankos ir Indijos rinkoms atlikti empiriniai tyrimai parodė, jog makroekonominiai rodikliai turi įtakos akcijų grąžai. Todėl nutarta ištirti Lietuvos akcijų rinkos grąžos priklausomybę nuo makro rodiklių remiantis arbitražo įkainojimo teorija (angl. APT)  ir iš daugelių rodiklių atrinkti svarbiausius. 
-Kylančiose rinkose daug dažniau pasitaiko neteisingai įkainotų finansinių instrumentų nei išvystytose (efektyviose) rinkose. Lietuvos rinką galime priskirti besivystančiosios rinkos kategorijai ir galbūt tyrimo išvadas, naudojant APT, galima bus praktiškai pritaikyti pelningai investuojant. 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Akcijų pokyčiams yra reikšminga ekonomikos būsena. Jei ekonomika auga, tuomet dauguma įmonių padidina savo pelną ir gamybą. Priešingas procesas, kai ekonomika traukiasi. Egzistuoja makroekonominiai rodikliai tokie kaip infliacija, valiutos kursas, palūkanų dydis, kurie gali įvertinti ekonominę būklę, kuri yra svarbi pelningumui iš aktyvų. Todėl galima būtų manyti, jog makroekonominiai rodikliai koreliuoti su aktyvų grąžomis. Tačiau yra atliktas tyrimas Rusijos rinkoje, remiantis arbitražo įkainojimo teorija, kurio tyrimo autorius nesugebėjo rasti reikšmingos makroekonominių duomenų  įtakos akcijų grąžoms. O Šri Lankos ir Indijos rinkoms atlikti empiriniai tyrimai parodė, jog makroekonominiai rodikliai turi įtakos akcijų grąžai. Todėl nutarta ištirti Lietuvos akcijų rinkos grąžos priklausomybę nuo makro rodiklių remiantis arbitražo įkainojimo teorija (angl. APT)  ir iš daugelių rodiklių atrinkti svarbiausius. 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Kylančiose rinkose daug dažniau pasitaiko neteisingai įkainotų finansinių instrumentų nei išvystytose (efektyviose) rinkose. Lietuvos rinką galime priskirti besivystančiosios rinkos kategorijai ir galbūt tyrimo išvadas, naudojant APT, galima bus praktiškai pritaikyti pelningiau investuojant. Pirmoje dalyje bus pateikta rizikos ir diversifikavimo svarba ir šio tyrimo matuojamas objektas - rizikos premijos. Vėliau aptariamas aktyvų įkainojimo modelis (CAPM) ir arbitražinė aktyvų įkainojimo teorija (APT) bei jų pritaikymas tyrime. Kitoje dalyje parodoma koreliacija tarp rodiklių, sudaromas prognozavimo ir įkainojimo modeliai bei rodiklių reikšmingumo tikrinimas. Turint modelius, bandoma juos panaudoti kuriant pelningesnę nei atsitiktinis investavimas strategiją ir jos patikrinimas remiantis praeities duomenimis.
 
-# Teorija:
+# Aktyvų įkainojimas
 
 ## Rizika ir diversifikavimas:
 
@@ -84,17 +88,19 @@ Kylančiose rinkose daug dažniau pasitaiko neteisingai įkainotų finansinių i
 
 ![](lentele3.png)
 
-H.Markowitz sukurta portfelio teorija leidžia investuotojams įvertinti riziką ir laukiamas pajamas. Galimą riziką sumažinti, o pelną padidinti, jei bus investuojama į skirtingas įmones, kurių akcijų kainos juda skirtingomis kryptimis. Diversifikacija eliminuoja nesisteminę riziką dėl dviejų priežasčių: atskiros įmonės akcijos sudaro nedidelę dalį portfelyje, todėl poveikis (tiek teigiamas, tiek neigiamas) mažai juntamas. Darbe remiamasi prielaida, jog galime diversifikuoti nesisteminę riziką, todėl bus tiriama tik sisteminės rizikos teikiamas premijas.
+H. Markowitz sukurta portfelio teorija leidžia investuotojams įvertinti riziką ir laukiamas pajamas. Galimą riziką sumažinti, o pelną padidinti, jei bus investuojama į skirtingas įmones, kurių akcijų kainos juda skirtingomis kryptimis. Diversifikacija eliminuoja nesisteminę riziką dėl dviejų priežasčių: atskiros įmonės akcijos sudaro nedidelę dalį portfelyje, todėl poveikis (tiek teigiamas, tiek neigiamas) mažai juntamas. Darbe remiamasi prielaida, jog galime diversifikuoti nesisteminę riziką, todėl bus tiriama tik sisteminės rizikos teikiamas premijas. 
 
-##Aktyvų įkainojimo modelis
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CAPM – teorinis aktyvų įkainojimo modelis, nustatantis ryšį tarp laukiamo pelno ir rizikos konkurencinėje rinkoje. Nors šio modelio prielaidos yra labai griežtos, dažnai neatitinkančios realaus gyvenimo, yra bandoma testuoti modelį su realiais duomenimis.
+##Aktyvų įkainojimo modelis (CAPM)
 
-$$\alpha, \beta,  \gamma, \Gamma$$
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Remiantis H. Markowitz sukurta portfelio teorija, buvo sukurtas teorinis aktyvų įkainojimo modelis (angl. CAPM). Vienas iš šio modelio kūrėjų William Sharpe Nobelio premiją 1990 m. Šis modelis yra svarbus tuo, jog yra pirmasis modelis, kuris turi aiškų pagrindimą, galima empiriškai testuoti ryšį tarp laukiamo pelno ir rizikos konkurencinėje rinkoje. Nors šio modelio prielaidos yra labai griežtos, dažnai neatitinkančios realaus gyvenimo. Nepaisant to, vistiek bandoma testuoti modelį su realiais duomenimis ir galima įvertinti apytikslę sisteminės rizikos premiją remiantis praeities duomenimis. CAPM nedviprasmiškai tvirtina, kad vertybinio popieriaus kovariacija su rinkos portfeliu – vienintelis
+tikras investicinės rizikos šaltinis gerai diversifikuotam portfeliui.
+Jos formulė:
 
-E(Y)-rf = $$\beta$$ * X
+E(*Y*)-*rf* = *$\beta$* $\times$ *X*
 
-čia E(Y) - vidutinė akcijos grąža, rf - nerizikingo aktyvo grąža, $$\beta$$ - aktyvo rizikingumo jautrumas, X - visos rinkos grąža
+
+čia E(*Y*) - vidutinė akcijos grąža, *rf* - nerizikingo aktyvo grąža, *$\beta$*- aktyvo rizikingumo jautrumas, *X* - visos rinkos grąža.
 
 Pagal CAPM, akcijos tikėtinos grąžos premija priklauso nuo rinkos rezultatų ir specifinės sisteminės rizikos nuo rinkos jautrumo dydžio.
 
@@ -112,14 +118,26 @@ Prielaidos yra tokios:
 
 	Laisvai prieinama ir vienodai galima informacija apie investicijas visiems investuotojams.
 
-	Nusistovėjusi kapitalo rinkos pusiausvyra, t.y. rinkos kainos yra kliringo kainos (kainos, pagal kurias vykdomi kasdieniniai atsiskaitymai kliringo kontoroje).
+	Kapitalo rinkos yra pusiausvyroje
 
-CAPM atveju dažniausiai beta(rizikos veiksnys) yra pasirenkamas tos pačios rinkos indeksas.
-Prielaidos nėra realistiškos, tačiau ši teorija svarbi interpretuojant riziką, akcijų pelningumą.
+Teorijos naudojimas ir jos interpretacija aptariama pasitelkiant šį brėžinį:
+
+![](CAPM.png)
+
+Taške RF rizikos laipsnis lygus 0. Jei vertybinis popierius yra virš vertybinių popierių rinkos tiesės SML (taškas A), tai reiškia, kad jis neįvertintas. Ir atvirkščiai, jei vertybinis popierius yra žemiau SML, tai reiškia, kad jis pervertinamas (taškas B). Nors pagal teorija tokia situacija neturėtų kilti (kad A taškas yra aukščiau SML tiesės), virš SML esančius aktyvus galėtume pirkti ilguoju laikotarpiu, nes jie yra pervertinti. Šiuo principu remsimės ir šiame darbe: bandysime įkainoti kito mėnesio aktyvą ir jei prognozuojama grąža yra didelė, bus perkamos OMX Vilnius indekso pozicijos ir bus tikimasi uždirbti daugiau nei vidutinė mėnesinė grąža. Tačiau modelis sudaroma bus pagal Arbitražinė aktyvų įkainojimo teoriją, kuri bus aptarta vėliau. Jos interpretacijos negalima paaiškinti Dekarto koordinačių sistema, nes egzistuoja daugiau rizikos faktorių.
+
+CAPM atveju beta(rizikos veiksnys) yra pasirenkamas tos pačios rinkos indeksas, nes rinkos indeksas reprezentuoja visos rinkos portfelį, kurį turėtų būti optimalu pirkti. Kaip minėta anksčiau, prielaidos nėra realistiškos, tačiau ši teorija svarbi interpretuojant riziką, akcijų pelningumą.
+
 
 ##Arbitražinė aktyvų įkainojimo teorija (APT)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CAPM pagrindu buvo kuriami ir tobulinami kiti aktyvų įkainojimo modeliai, kurie galėjo turėti mažiau apribojimų ir prielaidų, taip pat turėti ir daugiau įtakojančių rodiklių. Vienas iš patobulintų CAPM yra arbitražinė aktyvų įkainojimo teorija(angl. APT).  1966 m. atsirado pirmosios arbitražo įkainojimo teorijos
-idėjos, kai B. F. King (1966) pradėjo finansinių aktyvų grąžos pokyčius aiškinti ekonominiais duomenimis. Tačiau APT teorijos kūrėju yra laikomas S. A. Ross (1976), kuris pateikė  teorijai reikiamas prielaidas ir matematiškai pagrindė koncepciją. Šios teorijos pagrindas yra panašus, kaip ir CAPM, t. y. investuotojai reikalauja rizikos premijos už nediversifikuotos (sisteminės) rizikos prisisėmimą. Tačiau arbitražo įkainojimo teorijos naudingumas yra tas, jog galima įtraukti kitus sisteminės rizikos  šiame darbe yra tas, jog galime ištirti. Taip pat APT prielaidos yra paprastesnės ir realistiškesnės. 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Kadangi yra tiriamas rizikingumas investuojant Lietuvos rinkoje naudojant makro duomenis, rizikos faktorių bus ne vienas kaip CAPM atveju, o daugiau. Tačiau CAPM yra svarbus tuo, kad jo pagrindu buvo kuriami ir tobulinami kiti aktyvų įkainojimo modeliai, kurie galėjo turėti mažiau apribojimų ir prielaidų, taip pat turėti ir daugiau įtakojančių rodiklių. Vienas iš patobulintų CAPM yra arbitražinė aktyvų įkainojimo teorija(angl. APT).  1966 m. atsirado pirmosios arbitražo įkainojimo teorijos idėjos, kai B. F. King (1966) pradėjo finansinių aktyvų grąžos pokyčius aiškinti ekonominiais duomenimis. Tačiau APT teorijos kūrėju yra laikomas S. A. Ross (1976), kuris pateikė  teorijai reikiamas prielaidas ir matematiškai pagrindė koncepciją. Šios teorijos pagrindas yra panašus, kaip ir CAPM, t. y. investuotojai reikalauja rizikos premijos už nediversifikuotos (sisteminės) rizikos prisisėmimą. Tačiau norint praktiškai pritaikyti APT, reikia: apibrėžti faktorius, įvertinti tų faktorių įtaką portfeliui, įvertinti faktoriaus premiją. APT neatsako į klausimus apie faktorių gausumą ir svarbumą, į kuriuos turi būti atsižvelgta vertinant laukiamas pajamas. Dažniausiai išskiriama nuo 3 iki 5 tokių
+veiksnių. Jos formulė:
+
+E(*Y*)-*rf* = *\beta* $\times$ *X* {*\beta*}_1
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Šis aktyvų įkainojimo modelis yra grindžiamas tuo, jog aktyvo premijinį pelningumą galima numatyti naudojant analizuojamo aktyvo ir daugelio įprastų rizikos faktorių tarpusavio ryšį. Nenurodoma kokie būtent faktoriai yra svarbūs rizikos premijai, tačiau sukurta S. Ross (1976) arbitražo įkainojimo teorija numato ryšį tarp portfelio pelningumo pasitelkiant daugelio nepriklausomų kintamųjų (makroekonominių faktorių, tokių kaip infliacija, ekonomikos augimas, tarptautinės gamybos apimtis, palūkanų normos ir t.t.) tiesinę kombinaciją. Darbe bus tiriamas įvairių makroekonominių rodiklių reikšmingumas grąžom ir gebėjimas prognozuoti gražąs remiantis praeities duomenimis. Taigi pasitelkiant šią įkainojimo teoriją, bus siekiama pasipelnyti iš gerai įvertintos kito mėnesio OMX Vilniaus indekso grąžos. Neteisingai įkainoto aktyvo kaina skirsis nuo tos, kuri nustatoma šio modelio dėka. Tokiu būdu investuotojai, norintys pasinaudoti arbitražu ir gauti faktiškai nerizikingą pelną, sieks palaikyti trumpas pervertinto aktyvo pozicijas ir kartu laikyti ilgas portfelio (kurio pagrindu yra atliekami APT skaičiavimai) pozicijas.
+
+Taip pat APT prielaidos yra paprastesnės už CAPM, tačiau vis tiek yra ginčytinos ir negalime teigti, jog realistiškos. 
 
 APT taikymo prielaidos:
 1) finansų rinkos apibūdinamos kaip tobulos ir
@@ -137,27 +155,32 @@ aktyvo jautrumą toms rizikoms;
 pelningumų skirtumus pasinaudodami
 arbitražu.
 
-Šios prielaidos bus taikomos modelyje.
 Iliustracija (figure 2):
 
 ![](pav.png)
 
-paveiksle Juoda  tiese B yra S&P 500  indekso vertybinių
-popierių rinkos tiesė (SML), taškas A yra portfelis, kuris yra
-aukščiau tiesės. Kai rinka pasiekusi pusiausvyrą,
-remiantis CAPM tokia situacija neįmanoma, nes
-galimas tik vienas visiems prieinamas optimalus
-portfelis. Tačiau pavaizduota situacija yra praktiškai galima. A portfelio grąžos vidurkis gali būti didesnis nei SML grąžos vidurkis fiksuotam Beta dydžiui.
+paveiksle Juoda  tiese B yra S&P 500  indekso vertybinių popierių rinkos tiesė (SML), taškas A yra portfelis, kuris yra aukščiau tiesės. Kai rinka pasiekusi pusiausvyrą, remiantis CAPM tokia situacija neįmanoma, nes galimas tik vienas visiems prieinamas optimalus portfelis. Tačiau pavaizduota situacija yra praktiškai galima. Pagal APT tokia situacija galima, kai yra daugiau rizikos veiksnių nei įskaičiuota modelyje.
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Šis aktyvų įkainojimo modelis yra grindžiamas tuo, jog aktyvo pelningumą galima numatyti  naudojant analizuojamo aktyvo ir daugelio įprastų rizikos faktorių tarpusavio ryšį. Sukurta S. Ross (1976) arbitražo įkainojimo teorija numato ryšį tarp atskiro aktyvo pelningumo ir portfelio pelningumo pasitelkiant daugelio nepriklausomų kintamųjų (makroekonominių faktorių, tokių kaip infliacija, ekonomikos augimas, tarptautinės gamybos apimtis, palūkanų normos ir t.t.) tiesinę kombinaciją. APT paaiškina aktyvo kainą, kai tikėta, kad aktyvas yra neteisingai įkainotas. Tuo tikslu naudojami rizikingo aktyvo pelningumas ir keleto makroekonominių faktorių rizikos premijos. Taigi investuotojai pasitelkia šią įkainojimo teoriją, siekdami pasipelnyti iš neteisingai įvertintų (dažniausiai nepakankamai įvertintų) aktyvų. Tačiau neteisingai įkainoto aktyvo kaina skirsis nuo tos, kuri nustatoma šio modelio dėka. Tokiu būdu investuotojai, norintys pasinaudoti arbitražu ir gauti faktiškai nerizikingą pelną, sieks palaikyti trumpas pervertinto aktyvo pozicijas ir kartu laikyti ilgas portfelio (kurio pagrindu yra atliekami APT skaičiavimai) pozicijas.
-Jei APT prielaidos patenkinamos, tuomet laukiami pelningumai bus išsidėstę arti SML, o aktyvas turės tiek rizikos charakteristikų, kiek yra faktorių. APT teorijos prielaidos yra artimesnės realybei, nes ne visi investuotojai elgiasi vienodai rinkoje, net jei jų elgsena grindžiama racionalumu, t. y. APT nereikalauja CAPM prielaidų tenkinimo dėl investuotojų naudingumo funkcijų. Be to, ne kiekvienas investuotojas yra linkęs turėti rinkos portfelį kaip vienintelę alternatyvą, t. y. APT nereikalauja CAPM prielaidos tenkinimo dėl rinkos portfelio savybių (kad jis apima visus rizikingus aktyvus ir yra efektyvus vidurkio-dispersijos prasme). Juk rinkoje yra ir kitų rizikingų aktyvų, t. y. kapitalo rinkose daug agresyvių investuotojų. Ši prielaida patvirtinama 1 pav. duomenimis.
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Naudodami Lietuvos makro duomenis, matuojame  rizikos premijas, kurias gauname už riziką investuojant Lietuvos rinkoje. Makroduomenys iliustruoja Lietuvos ekonominę būklę.
+Taigi investuotojai pasitelkia šią įkainojimo teoriją, siekdami pasipelnyti iš neteisingai įvertintų (dažniausiai nepakankamai įvertintų) aktyvų. Tačiau neteisingai įkainoto aktyvo kaina skirsis nuo tos, kuri nustatoma šio modelio dėka. Tokiu būdu investuotojai, norintys pasinaudoti arbitražu ir gauti faktiškai nerizikingą pelną, sieks palaikyti trumpas pervertinto aktyvo pozicijas ir kartu laikyti ilgas portfelio (kurio pagrindu yra atliekami APT skaičiavimai) pozicijas.
+
+
+Jei APT prielaidos patenkinamos, tuomet laukiami pelningumai bus išsidėstę arti SML, o aktyvas turės tiek rizikos charakteristikų, kiek yra veiksnių. APT teorijos prielaidos yra artimesnės realybei negu CAPM, nes ne visi investuotojai elgiasi vienodai rinkoje, net jei jų elgsena grindžiama racionalumu, t. y. APT nereikalauja CAPM prielaidų tenkinimo dėl investuotojų naudingumo funkcijų. Be to, ne kiekvienas investuotojas yra linkęs turėti rinkos portfelį kaip vienintelę alternatyvą, t. y. APT nereikalauja CAPM prielaidos tenkinimo dėl rinkos portfelio savybių (kad jis apima visus rizikingus aktyvus ir yra efektyvus vidurkio-dispersijos prasme).
+
+
+#APT naudojimas nustatant rodiklių reikšmingumą ir prognozuojant grąžas
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Naudodami Lietuvos makro duomenis, matuojame  rizikos premijas, kurias gauname už riziką investuojant Lietuvos rinkoje. Makroduomenys iliustruoja Lietuvos ekonominę būklę. 
+
+#Įtraukiami rodikliai 
+S&P350 Europe indeksas yra įtraukiamas, remiantis CAPM. Galima teigti, jog OMX Vilniaus indeksas yra stipriai susijęs su S&P350 indeksu ir šis indeksas gerai apibūdina sisteminę riziką kaip ir kitoms Europos rinkoje esančiomis akcijoms.
+
+
 
 # Duomenų transformacijos
 Duomenys naudojami nuo 2002 metų iki 2016 metų, ankstesnių duomenų nepavyko išgauti.
 
-OMX Vilnius indeksas transformuojamas į mėnesinius procentinius pokyčius: jei OMX indekso mėnesinė kaina nuo laiko (mėnesio)  t žymėsime *X(t)*, tai *r(t)* = (log(*X(t)*) – log(*X(t-1)*) ) $\times$ 100 %, čia *r(t)* yra indekso mėnesinis pokytis procentais.
-Tokiu pačiu būdu gaunama kitų akcijų indeksų grąža logaritmuojant ir diferencijuojant S&P500, S&P350 indeksų kainas. Kasybos ir karjerų eksploatacijos indeksas, mažmeninės prekybos indeksas, industrinės produkcijos indeksas yra taip pat logaritmuojami ir diferencijuojami. Visi logaritmuoti duomenys padauginami iš šimto, kad pokytis būtų interpretuojamas procentais. Euribor yra dalinamas iš 12 ir diferencijuojamas, kad būtų gautas mėnesinis pokytis. Nedarbas dalinamas iš 10 (bedarbių skaičius tenkantis 1000 gyventojų, padalinę iš 10 gauname procentais) ir taip pat yra diferencijuojamas. Dolerio/euro valiutų kursas, pasitikejimo ir lūkesčių rodikliai yra diferencijuojami. Diferencijavimu šiuo atveju vadiname šio mėnesio duomenų atėmimą iš praeito periodo(mėnesio) duomenų.
+OMX Vilnius indeksas transformuojamas į mėnesinius procentinius pokyčius: *r(t)* = (log(*X(t)*) – log(*X(t-1)*) ) $\times$ 100 %, 
+čia *X(t)* - OMX indekso mėnesinė kaina nuo laiko (mėnesio) t, *r(t)* yra indekso mėnesinis pokytis procentais.
+Tokiu pačiu būdu gaunama kitų akcijų indeksų grąža logaritmuojant ir imant pokyčius  S&P350 Europe indeksų kainas, kasybos ir karjerų eksploatacijos, mažmeninės prekybos, industrinės produkcijos indeksus. Visi logaritmuoti duomenys padauginami iš šimto, kad pokytis būtų interpretuojamas procentais. Euribor buvo pateiktas metinėmis palūkanomis, transformuojami į mėnesines palūkanas. Dolerio/euro valiutų kursas, pasitikejimo ir lūkesčių rodikliai yra imami mėnesiniai pokyčiai.
 
 
 Tikrinami duomenys po transformacijų ar turi vienetinę šaknį (stacionarumo tikrinimas), atliekamas Dickey-Fuller testas:
@@ -501,7 +524,9 @@ Strategijos pelningumo tikrinimas:
 kai perkama jei tikimasi pelno >5% kitą mėnesį:
 ```{r}
 
-
+mean(data3$OMX)
+median(data3$OMX)
+plot(1:10)
 gen=function(pradzia,pirkti){
 b=sample(pradzia:169,length(pirkti),replace=F)
 return(sum(data3[b,"OMX"]))
@@ -546,22 +571,64 @@ kable(lentele)
 
 kai perkama jei tikimasi pelno >3% kitą mėnesį:
 ```{r}
+    modkain=lm(OMX ~ SP350  + lag(phope,12)  + lag(ul,10)+lag(mhope, 3)+ lag(gkl, 9)+  lag(ip, 11)+lag(kursas,2),data=data3)
+    b=predict(modkain, data3[1:i,])
+    b=b[length(b)]
+
+modelis = lm(OMX ~ lag(SP350,1)  + lag(phope,12)  + lag(ul,10)+lag(mhope, 3)+ lag(gkl, 9)+  lag(ip, 11)+lag(kursas,2),data=data3)  #prognozuojantis
+modelis = lm(OMX ~ SP350  + lag(phope,12)  + lag(ul,10)+lag(mhope, 3)+ lag(gkl, 9)+  lag(ip, 11)+lag(kursas,2),data=data3)  #reiksmingumui
+
+modelis = lm(OMX ~ lag(SP350,1)  + lag(phope,12)  + lag(ul,10)+lag(gkl, 9)+lag(kursas,2),data=data3)  #prognozuojantis
+
+OMX ~ lag(SP350, 1) + lag(infliacija, 2) + lag(mhope, 3) + lag(phope,12) + lag(ul, 10) + lag(gkl, 9) + lag(ip, 4) + lag(kursas,2) #manvydo
+
 gen=function(pradzia,pirkti){
 b=sample(pradzia:169,length(pirkti),replace=F)
 return(sum(data3[b,"OMX"]))
 }
 
+
 validation=function(pradzia){
   pirkti=numeric()
   for(i in pradzia:168){
-    modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 1) + lag(infliacija, 2) + lag(mhope, 3) + lag(phope,12) + lag(ul, 10) + lag(gkl, 9) + lag(ip, 4) + lag(kursas,2), data = data3[1:i,])
-    a=predict(modelis_po_aic, data3[1:i+1,])
+    modprog <- lm(OMX ~ lag(SP350,1)  + lag(phope,12)  + lag(ul,10)+lag(gkl, 9)+lag(kursas,2), data = data3[1:i,])
+    a=predict(modprog, data3[1:i+1,])
     a=a[length(a)]
-    if(matrix(a)[1]>3){pirkti=append(pirkti,i)}
+    if(matrix(a)[1]>2){pirkti=append(pirkti,i)}
 }
 
 graza=sum(data3[pirkti,"OMX"])
-random=replicate(100000,gen(pradzia,pirkti))
+random=replicate(10000,gen(pradzia,pirkti))
+p=mean(random>graza)
+vidurkis_random = mean(random)
+if(p==0){p="nebuvo pirkimu"}
+else{
+  p=append(p,graza)
+  p=append(p,vidurkis_random)
+  p=append(p,length(pirkti))
+  p=append(p,pradzia)
+  p=round(p,3)
+  }
+return(p)                               
+}
+
+
+validation2=function(pradzia){
+  pirkti=numeric()
+  for(i in pradzia:168){
+    modprog <- lm(OMX ~ lag(SP350,1)  + lag(phope,12)  + lag(ul,10)+lag(gkl, 9)+lag(kursas,2), data = data3[1:i,])
+    a=predict(modprog, data3[1:i+1,])
+    a=a[length(a)]
+    modkain=lm(OMX ~ SP350  + lag(phope,12)  + lag(ul,10)+lag(gkl, 9)+lag(kursas,2),data=data3)
+    b=predict(modkain, data3[1:i,])
+    b=b[length(b)]
+    b= b-data3[i,"OMX"]
+    if(matrix(a)[1]>2 & matrix(b)[1]>0){pirkti=append(pirkti,i)}
+    if(matrix(a)[1]>5 & matrix(b)[1]<0){pirkti=append(pirkti,i)}
+}
+
+graza=sum(data3[pirkti,"OMX"])
+random=replicate(10000,gen(pradzia,pirkti))
 p=mean(random>graza)
 vidurkis_random = mean(random)
 if(p==0){p="nebuvo pirkimu"}
@@ -580,10 +647,22 @@ for(i in 30:168){
   lentele=rbind(lentele,validation(i))
   
 }
+
+
+lentele=validation(15)
 lentele[,c(1:5)]=lentele[,c(5,2,3,1,4)]
 colnames(lentele)=c("pradinis imties dydis","graza strategijos","vidutine random graza","tikimybe kad geriau uz random","sandoriu skaicius")
 
 kable(lentele)
+
+
+lentele=validation(15)
+lentele[c(1:5)]=lentele[c(5,2,3,1,4)]
+colnames(lentele)=c("pradinis imties dydis","graza strategijos","vidutine random graza","tikimybe kad geriau uz random","sandoriu skaicius")
+
+lentele2=validation2(1)
+lentele2[c(1:5)]=lentele2[c(5,2,3,1,4)]
+colnames(lentele)=c("pradinis imties dydis","graza strategijos","vidutine random graza","tikimybe kad geriau uz random","sandoriu skaicius")
 ```
 
 
