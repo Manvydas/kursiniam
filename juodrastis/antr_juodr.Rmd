@@ -268,34 +268,22 @@ panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor,...)    #ši funkci
 
 <br>
 
+Pagal CAPM turėtų matytis koreliacija tarp OMX Vilniaus indekso ir S&P 350 Europe. Koreliacija aiškiai matoma grafike. Tai patvirtina, jog reikėtų bandyti įtrauki Europos indeksą aiškinant grąžų premijos riziką.
+
 Akcijų indeksų mėnesiniai procentiniai pokyčiai:
 
 ```{r, message=FALSE, echo=FALSE,warning=F}
-Sys.setlocale(locale = "en_LT.UTF-8")
 akc = melt(data3[,c("OMX","SP350","SP500","Data")], id=c("Data"))
 ggplot(akc) + geom_line(aes(x=Data, y=value, colour=variable)) +
   scale_colour_manual(values=c(1:4))+ylab("% pokytis")+
-  guides(col=guide_legend(title="Kintamieji")) +
-  ggtitle("Akcijų indeksų mėnesiniai grąžų pokyčiai")
+  guides(col=guide_legend(title="Kintamieji"))
 ```
 
-* Tikėtina, jog S&P350 ir S&P500 indeksų svyravimai tūrėtų būti labai panašūs, taigi pažiūrėjus į grafiką galime matyti, jog jų kreivės juda panašiai, tai yra šie dydžiai stipriai koreliuoti.
-* OMX Vilnius kreivės svyravimai panašūs, tačiau nevisai sutampa su S&P indeksų. Todėl galima manyti, jog šie dydžiai yra gana silpnai koreliuoti.
+
 
 \newpage
 
-Akcijų rinkų koreliacija:
-
-```{r, message=FALSE, echo=FALSE}
-pairs(data3[,c("OMX","SP350","SP500")],upper.panel=panel.smooth,diag.panel=panel.hist, lower.panel=panel.cor2)
-```
-
-* S&P350 ir S&P500 indeksų koreliacija reikšminga ir jie stipriai koreliuoja. Europos ir JAV akcijų rinkų svyravimai yra glaudžiai susiję.
-* Kaip ir teigta anksčiau OMX Vilnius koreliacija su S&P indeksais yra reikšminga, tačiau nėra didelė. Nesimato stiprios įtakos iš lyderiaujančių pasaulio rinkų.
-
-\newpage
-
-Kintamųjų koreliacija su OMX Vilnius. r - koreliacijos koeficientas, p - koreliacijos reiksmingumas:
+Kintamųjų koreliacija su OMX Vilnius. r - koreliacijos koeficientas, p - koreliacijos reikšmingumas:
 
 ```{r, message=FALSE, echo=FALSE}
 pairs(data3[,c("OMX","infliacija","nedarbas","kursas")],upper.panel=panel.smooth,diag.panel=panel.hist, lower.panel=panel.cor2)
@@ -336,8 +324,8 @@ Find_Max_CCF<- function(a,b)
  return(res_max)
 } 
 lagdata=data.frame()
-for (i in 3:length(data4[1,])){
-ccfvalues <- Find_Max_CCF(data4$OMX,data4[,i])
+for (i in 3:length(data3[1,])){
+ccfvalues <- Find_Max_CCF(data3$OMX,data3[,i])
   if(i==3){lagdata=ccfvalues}
   else{
   lagdata=rbind(lagdata,ccfvalues)
@@ -346,7 +334,7 @@ ccfvalues <- Find_Max_CCF(data4$OMX,data4[,i])
 
 #priedui?
 #par(mfrow=c(3,3))
-for (i in 16:length(data4[1,])){
+for (i in 16:length(data3[1,])){
 
   ccf(data3$OMX,data3[,i])
   print(colnames(data3)[i])
@@ -368,11 +356,10 @@ progn=numeric()
 }
 
 progn=as.numeric(progn)
-a=cbind(progn,data3$OMX[12:length(data3$OMX)])
+a=cbind(progn,data3$OMX[11:length(data3$OMX)])
 a=data.frame(a)
-a=a[complete.cases(a),]
-rownames(a)<-NULL
-menesiai=c(1:156)
+
+menesiai=c(1:159)
 a=cbind(menesiai,a)
 rownames(a)=NULL
 colnames(a)=c("menesiai","progn", "reali")
@@ -400,7 +387,7 @@ Heteroskedastiškumo korekcija:
 
 ```{r, message=FALSE, echo=FALSE}
 
-modelis = lm(OMX ~ lag(SP350,1) + lag(kk,1) + lag(dll,1) + nedarbas + lag(infliacija,2) + lag(infliacija,3) + lag(infliacija,5) + lag(infliacija,7) + lag(infliacija,8) +lag(mhope,3) + lag(phope,12) + lag(pramhope,3) + lag(shope,4) + lag(ul,10) + lag(vhope,4) + lag(vp,0) + lag(mp,1) + lag(gkl,9) + lag(ip,0) + lag(ip,1) + lag(ip,4) + lag(kursas,2) , data=data4)
+modelis = lm(OMX ~ lag(SP350,1) + lag(kk,1) + lag(dll,1) + nedarbas + lag(infliacija,2) + lag(infliacija,3) + lag(infliacija,5) + lag(infliacija,7) + lag(infliacija,8) +lag(mhope,3) + lag(phope,12) + lag(pramhope,3) + lag(shope,4) + lag(ul,10) + lag(vhope,4) + lag(vp,0) + lag(mp,1) + lag(gkl,9) + lag(ip,0) + lag(ip,1) + lag(ip,4) + lag(kursas,2) , data=data3)
 
 
 modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 1) + lag(infliacija, 2) + lag(mhope, 3) + lag(phope,12) + lag(ul, 10) + lag(gkl, 9) + lag(ip, 4) + lag(kursas,2), data = data3)
@@ -411,7 +398,7 @@ summary(modelis_po_aic)
 
 summary(modelis_po_aic)[8]
 
-modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 1) + lag(infliacija, 2) + lag(mhope, 3) + lag(phope,12) + lag(ul, 10) + lag(gkl, 9) + lag(ip, 4) + lag(kursas,2), data = data4)
+modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 1) + lag(infliacija, 2) + lag(mhope, 3) + lag(phope,12) + lag(ul, 10) + lag(gkl, 9) + lag(ip, 4) + lag(kursas,2), data = data3)
 
 
 
