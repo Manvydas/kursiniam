@@ -106,19 +106,19 @@ Pagal CAPM, akcijos tikėtinos grąžos premija priklauso nuo rinkos rezultatų 
 
 Prielaidos yra tokios:
 
-  Visi investuotojai vengia rizikos, kuri lygi portfelio pajamų (pelno) normos vidutiniam kvadratiniam nuokrypiui.
+Visi investuotojai vengia rizikos, kuri lygi portfelio pajamų (pelno) normos vidutiniam kvadratiniam nuokrypiui.
 
-	Visi investuotojai turi vienodą laiko horizontą (pvz., vienas mėnuo, dveji metai) investiciniam sprendimui priimti.
+Visi investuotojai turi vienodą laiko horizontą (pvz., vienas mėnuo, dveji metai) investiciniam sprendimui priimti.
 
-	Visi investuotojai turi vienodą subjektyvų įvertį apie būsimą kiekvieną vertybinio popieriaus pelną ir riziką.
+Visi investuotojai turi vienodą subjektyvų įvertį apie būsimą kiekvieną vertybinio popieriaus pelną ir riziką.
 
-	Rinkoje egzistuoja nerizikingoji investicija į turtą, ir kiekvienas investuotojas gali skolintis arba skolinti neribotą jo kiekį su nerizikingąja palūkanų norma.
+Rinkoje egzistuoja nerizikingoji investicija į turtą, ir kiekvienas investuotojas gali skolintis arba skolinti neribotą jo kiekį su nerizikingąja palūkanų norma.
 
-	Į visus vertybinius popierius kapitalą galima investuoti norimu santykiu, nėra išlaidų už sandorius, mokesčių bei apribojimų nepadengtajam pardavimui.
+Į visus vertybinius popierius kapitalą galima investuoti norimu santykiu, nėra išlaidų už sandorius, mokesčių bei apribojimų nepadengtajam pardavimui.
 
-	Laisvai prieinama ir vienodai galima informacija apie investicijas visiems investuotojams.
+Laisvai prieinama ir vienodai galima informacija apie investicijas visiems investuotojams.
 
-	Kapitalo rinkos yra pusiausvyroje
+Kapitalo rinkos yra pusiausvyroje
 
 Teorijos naudojimas ir jos interpretacija aptariama pasitelkiant šį brėžinį:
 
@@ -133,7 +133,7 @@ CAPM atveju beta(rizikos veiksnys) yra pasirenkamas tos pačios rinkos indeksas,
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Kadangi yra tiriamas rizikingumas investuojant Lietuvos rinkoje naudojant makro duomenis, rizikos faktorių bus ne vienas kaip CAPM atveju, o daugiau. Tačiau CAPM yra svarbus tuo, kad jo pagrindu buvo kuriami ir tobulinami kiti aktyvų įkainojimo modeliai, kurie galėjo turėti mažiau apribojimų ir prielaidų, taip pat turėti ir daugiau įtakojančių rodiklių. Vienas iš patobulintų CAPM yra arbitražinė aktyvų įkainojimo teorija(angl. APT).  1966 m. atsirado pirmosios arbitražo įkainojimo teorijos idėjos, kai B. F. King (1966) pradėjo finansinių aktyvų grąžos pokyčius aiškinti ekonominiais duomenimis. Tačiau APT teorijos kūrėju yra laikomas S. A. Ross (1976), kuris pateikė  teorijai reikiamas prielaidas ir matematiškai pagrindė koncepciją. Šios teorijos pagrindas yra panašus, kaip ir CAPM, t. y. investuotojai reikalauja rizikos premijos už nediversifikuotos (sisteminės) rizikos prisisėmimą. Tačiau norint praktiškai pritaikyti APT, reikia: apibrėžti faktorius, įvertinti tų faktorių įtaką portfeliui, įvertinti faktoriaus premiją. APT neatsako į klausimus apie faktorių gausumą ir svarbumą, į kuriuos turi būti atsižvelgta vertinant laukiamas pajamas. Dažniausiai išskiriama nuo 3 iki 5 tokių
 veiksnių. Jos formulė:
 
-E(*Y*)-*rf* = *\beta* $\times$ *X* {*\beta*}_1
+E(*Y*)-*rf* = *\beta* $\times$ *{X}_1* {*\beta*}_1 $\times$ *{X}_2* {*\beta*}_2
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Šis aktyvų įkainojimo modelis yra grindžiamas tuo, jog aktyvo premijinį pelningumą galima numatyti naudojant analizuojamo aktyvo ir daugelio įprastų rizikos faktorių tarpusavio ryšį. Nenurodoma kokie būtent faktoriai yra svarbūs rizikos premijai, tačiau sukurta S. Ross (1976) arbitražo įkainojimo teorija numato ryšį tarp portfelio pelningumo pasitelkiant daugelio nepriklausomų kintamųjų (makroekonominių faktorių, tokių kaip infliacija, ekonomikos augimas, tarptautinės gamybos apimtis, palūkanų normos ir t.t.) tiesinę kombinaciją. Darbe bus tiriamas įvairių makroekonominių rodiklių reikšmingumas grąžom ir gebėjimas prognozuoti gražąs remiantis praeities duomenimis. Taigi pasitelkiant šią įkainojimo teoriją, bus siekiama pasipelnyti iš gerai įvertintos kito mėnesio OMX Vilniaus indekso grąžos. Neteisingai įkainoto aktyvo kaina skirsis nuo tos, kuri nustatoma šio modelio dėka. Tokiu būdu investuotojai, norintys pasinaudoti arbitražu ir gauti faktiškai nerizikingą pelną, sieks palaikyti trumpas pervertinto aktyvo pozicijas ir kartu laikyti ilgas portfelio (kurio pagrindu yra atliekami APT skaičiavimai) pozicijas.
 
@@ -171,7 +171,7 @@ Jei APT prielaidos patenkinamos, tuomet laukiami pelningumai bus išsidėstę ar
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Naudodami Lietuvos makro duomenis, matuojame  rizikos premijas, kurias gauname už riziką investuojant Lietuvos rinkoje. Makroduomenys iliustruoja Lietuvos ekonominę būklę. 
 
 #Įtraukiami rodikliai 
-S&P350 Europe indeksas yra įtraukiamas, remiantis CAPM. Galima teigti, jog OMX Vilniaus indeksas yra stipriai susijęs su S&P350 indeksu ir šis indeksas gerai apibūdina sisteminę riziką kaip ir kitoms Europos rinkoje esančiomis akcijoms.
+S&P350 Europe indeksas yra įtraukiamas, remiantis CAPM. Galima teigti, jog OMX Vilniaus indeksas yra stipriai susijęs su S&P350 indeksu ir šis indeksas gerai apibūdina sisteminę riziką kaip ir kitoms Europos rinkoje esančiomis akcijoms. 
 
 
 
@@ -223,7 +223,7 @@ data3$SP350=data3$SP350-data3$palukanos
 data3$SP500=data3$SP500-data3$palukanos
 ```
 
-* Visų kintamųjų, išskyrus infliaciją, p - value mažiau už 0.05, galime atmesti H0, kad turi vienetinę šaknį, visi kintamieji, išskyrus infliaciją, yra stacionarūs.
+* Visų kintamųjų, išskyrus infliaciją, p - value mažiau už 0.05, galime atmesti H0, kad turi vienetinę šaknį, visi kintamieji, išskyrus infliaciją, yra stacionarūs. Stacionar
 
 \newpage
 
@@ -505,64 +505,26 @@ kable(data.frame(unlist(a)))
 
 ```     
 
+Tarkime *t* žymi mėnesį nuo pirmo matavimo mėnesio iki 169-to mėnesio, *t* yra sveikas skaičius nuo 1 iki 169. 
+Modelyje kintamieji gali būti tik vėlinti(su lag'ais), nes turi būti žinomi rodiklių duomenys iki *t* laiko momento.
+Duomenų pavėlinimus renkantis pagal kryžminę koreliaciją ir atrinkus reikšmingus kintamuosius pagal step AIC, gaunamas toks prognozuojantis modelis:
 
 
-Strategijos pelningumo tikrinimas:
-kai perkama jei tikimasi pelno >5% kitą mėnesį:
-```{r}
 
-mean(data3$OMX)
-median(data3$OMX)
-plot(1:10)
-gen=function(pradzia,pirkti){
-b=sample(pradzia:169,length(pirkti),replace=F)
-return(sum(data3[b,"OMX"]))
-}
 
-validation=function(pradzia){
-  pirkti=numeric()
-  shortinti=numeric()
-  for(i in pradzia:168){
-    modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 1) + lag(infliacija, 2) + lag(mhope, 3) + lag(phope,12) + lag(ul, 10) + lag(gkl, 9) + lag(ip, 4) + lag(kursas,2), data = data3[1:i,])
-   a=predict(modelis_po_aic, data3[1:i+1,])
-   a=a[length(a)]
-   if(matrix(a)[1]>5){pirkti=append(pirkti,i)}
-   if(matrix(a)[1]<5){shorinti=append(shortinti,i)}
-  }
-graza=sum(data3[pirkti,"OMX"])+sum(data3[shortinti,"OMX"])*(-1)
-random=replicate(1000,gen(pradzia,pirkti))
-random2=replicate(1,gen(pradzia,shortinti))*(-1)
+Įkainojimo modelis gali būti ir be lag'ų(gali būti *t* laiko momentu gautais duomenimis), nes bandoma įvertinti ar priaugis buvo advekatus pagal duomenis. Įkainojimo modelis gautas toks:
 
-p=mean(random>graza)
-vidurkis_random = mean(random)
-if(p==0){p="nebuvo pirkimu"}
-else{
-  p=append(p,graza)
-  p=append(p,vidurkis_random)
-  p=append(p,length(pirkti))
-  p=append(p,pradzia)
-  p=round(p,3)
-  }
-return(p)                               
-}
 
-lentele=data.frame()
-for(i in 30:168){
-  lentele=rbind(lentele,validation(i))
-  
-}
-lentele[,c(1:5)]=lentele[,c(5,2,3,1,4)]
-colnames(lentele)=c("pradinis imties dydis","graza strategijos","vidutine random graza","tikimybe kad geriau uz random","sandoriu skaicius")
-kable(lentele)
-```
+Palyginus su prognozuojamu modeliu, skiriasi tiktais S&P 350 Europe kintamasis. Minėtas kintamasis paimtas be lag'o, nes geriau paaiškina mėnesio grąžą, o kitiems rodikliams reikia laiko, kad jų rezultatai būtų koreliuoti su grąžomis.
+
+Kadangi yra modeliai, bandoma bus jais remiantis investuoti. 
+
+{OMX}_t+1
 
 kai perkama jei tikimasi pelno >3% kitą mėnesį:
 ```{r}
-    modkain=lm(OMX ~ SP350  + lag(phope,12)  + lag(ul,10)+lag(mhope, 3)+ lag(gkl, 9)+  lag(ip, 11)+lag(kursas,2),data=data3)
-    b=predict(modkain, data3[1:i,])
-    b=b[length(b)]
-
 modelis = lm(OMX ~ lag(SP350,1)  + lag(phope,12)  + lag(ul,10)+lag(mhope, 3)+ lag(gkl, 9)+  lag(ip, 11)+lag(kursas,2),data=data3)  #prognozuojantis
+AIC(modelis)
 modelis = lm(OMX ~ SP350  + lag(phope,12)  + lag(ul,10)+lag(mhope, 3)+ lag(gkl, 9)+  lag(ip, 11)+lag(kursas,2),data=data3)  #reiksmingumui
 
 modelis = lm(OMX ~ lag(SP350,1)  + lag(phope,12)  + lag(ul,10)+lag(gkl, 9)+lag(kursas,2),data=data3)  #prognozuojantis
@@ -575,81 +537,177 @@ return(sum(data3[b,"OMX"]))
 }
 
 
-validation=function(pradzia){
+validation=function(pradzia,formula_prog){
   pirkti=numeric()
-  for(i in pradzia:168){
-    modprog <- lm(OMX ~ lag(SP350,1)  + lag(phope,12)  + lag(ul,10)+lag(gkl, 9)+lag(kursas,2), data = data3[1:i,])
-    a=predict(modprog, data3[1:i+1,])
-    a=a[length(a)]
-    if(matrix(a)[1]>2){pirkti=append(pirkti,i)}
+    for(i in pradzia:168){
+      modprog <- lm( formula_prog, data = data3[1:i,])
+      a=predict(modprog, data3[1:i+1,])
+      a=a[length(a)]
+      if(matrix(a)[1]>2){pirkti=append(pirkti,i+1)}
+    }
+  graza=sum(data3[pirkti,"OMX"])
+  random=replicate(10000,gen(pradzia,pirkti))
+  p=mean(random<graza)
+  vidurkis_random = mean(random)
+  if(p==0){p="nebuvo pirkimu"}
+  else{
+    p=append(p,graza)
+    p=append(p,vidurkis_random)
+    p=append(p,length(pirkti))
+    p=append(p,pradzia)
+    p=round(p,3)
+    }
+  return(p)                               
 }
 
-graza=sum(data3[pirkti,"OMX"])
-random=replicate(10000,gen(pradzia,pirkti))
-p=mean(random>graza)
-vidurkis_random = mean(random)
-if(p==0){p="nebuvo pirkimu"}
-else{
-  p=append(p,graza)
-  p=append(p,vidurkis_random)
-  p=append(p,length(pirkti))
-  p=append(p,pradzia)
-  p=round(p,3)
-  }
-return(p)                               
-}
 
-
-validation2=function(pradzia){
+validation2=function(pradzia,formula_prog,formula_kain){
   pirkti=numeric()
   for(i in pradzia:168){
-    modprog <- lm(OMX ~ lag(SP350,1)  + lag(phope,12)  + lag(ul,10)+lag(gkl, 9)+lag(kursas,2), data = data3[1:i,])
+    modprog <- lm(formula_prog, data = data3[1:i,])
     a=predict(modprog, data3[1:i+1,])
     a=a[length(a)]
-    modkain=lm(OMX ~ SP350  + lag(phope,12)  + lag(ul,10)+lag(gkl, 9)+lag(kursas,2),data=data3)
+    modkain=lm(formula_kain,data=data3[1:i,])
     b=predict(modkain, data3[1:i,])
     b=b[length(b)]
     b= b-data3[i,"OMX"]
-    if(matrix(a)[1]>2 & matrix(b)[1]>0){pirkti=append(pirkti,i)}
-    if(matrix(a)[1]>5 & matrix(b)[1]<0){pirkti=append(pirkti,i)}
+    if(matrix(a)[1]>1 & matrix(b)[1]>0){pirkti=append(pirkti,i+1)}
+    if(matrix(a)[1]>4 & matrix(b)[1]<0){pirkti=append(pirkti,i+1)}
+  }
+  graza=sum(data3[pirkti,"OMX"])
+  random=replicate(10000,gen(pradzia,pirkti))
+  p=mean(random<graza)
+  vidurkis_random = mean(random)
+  if(p==0){p="nebuvo pirkimu"}
+  else{
+    p=append(p,graza)
+    p=append(p,vidurkis_random)
+    p=append(p,length(pirkti))
+    p=append(p,pradzia)
+    p=round(p,3)
+  }
+  return(p)                               
 }
 
-graza=sum(data3[pirkti,"OMX"])
-random=replicate(10000,gen(pradzia,pirkti))
-p=mean(random>graza)
-vidurkis_random = mean(random)
-if(p==0){p="nebuvo pirkimu"}
-else{
-  p=append(p,graza)
-  p=append(p,vidurkis_random)
-  p=append(p,length(pirkti))
-  p=append(p,pradzia)
-  p=round(p,3)
-  }
-return(p)                               
-}
+formula_prog=OMX ~ lag(SP350,1)  + lag(phope,12)  + lag(ul,10)+lag(gkl, 9)+lag(kursas,2)                        #prognozuojantis
+formula_kain=OMX ~ SP350  + lag(phope,12)  + lag(ul,10)+lag(gkl, 9)+lag(kursas,2)    #reiksmingumui
 
 lentele=data.frame()
-for(i in 30:168){
-  lentele=rbind(lentele,validation(i))
-  
+for(i in c(30,70,100,150)){
+  lentele=rbind(lentele,validation(i,formula_prog))
 }
 
-
-lentele=validation(15)
 lentele[,c(1:5)]=lentele[,c(5,2,3,1,4)]
-colnames(lentele)=c("pradinis imties dydis","graza strategijos","vidutine random graza","tikimybe kad geriau uz random","sandoriu skaicius")
+colnames(lentele)=c("pradinis imties dydis","strategijos premijine graza","vidutine atsitiktinio pirkimo premijine graza","tikimybe, kad geriau uz atsitiktini pirkima","sandoriu skaicius")
 
 kable(lentele)
 
 
-lentele=validation(15)
-lentele[c(1:5)]=lentele[c(5,2,3,1,4)]
-colnames(lentele)=c("pradinis imties dydis","graza strategijos","vidutine random graza","tikimybe kad geriau uz random","sandoriu skaicius")
+lentele2=data.frame()
+for(i in c(30,70,100,150)){
+  lentele2=rbind(lentele2,validation2(i,formula_prog,formula_kain))
+}
 
-lentele2=validation2(1)
-lentele2[c(1:5)]=lentele2[c(5,2,3,1,4)]
-colnames(lentele)=c("pradinis imties dydis","graza strategijos","vidutine random graza","tikimybe kad geriau uz random","sandoriu skaicius")
+lentele2[,c(1:5)]=lentele2[,c(5,2,3,1,4)]
+colnames(lentele2)=c("pradinis imties dydis","strategijos premijine graza","vidutine atsitiktinio pirkimo premijine graza","tikimybe, kad geriau uz atsitiktini pirkima","sandoriu skaicius")
+
+kable(lentele2)
+
+#######
+
+formula_prog2=OMX ~ lag(SP350, 1) + lag(infliacija, 2) + lag(mhope, 3) + lag(phope,12) + lag(ul, 10) + lag(gkl, 9) + lag(ip, 4) + lag(kursas,2)
+formula_kain2=OMX ~ SP350 + lag(infliacija, 2) + lag(mhope, 3) + lag(phope,12) + lag(ul, 10) + lag(gkl, 9) + lag(ip, 4) + lag(kursas,2)
+
+lentele3=data.frame()
+for(i in c(30,70,100,140)){
+  lentele3=rbind(lentele3,validation(i,formula_prog2))
+}
+
+lentele3[,c(1:5)]=lentele3[,c(5,2,3,1,4)]
+colnames(lentele3)=c("pradinis imties dydis","strategijos premijine graza","vidutine atsitiktinio pirkimo premijine graza","tikimybe, kad geriau uz atsitiktini pirkima","sandoriu skaicius")
+
+kable(lentele3)
+
+
+lentele4=data.frame()
+for(i in c(30,70,100,140)){
+  lentele4=rbind(lentele4,validation2(i,formula_prog2,formula_kain2))
+}
+
+lentele4[,c(1:5)]=lentele4[,c(5,2,3,1,4)]
+colnames(lentele4)=c("pradinis imties dydis","strategijos premijine graza","vidutine atsitiktinio pirkimo premijine graza","tikimybe, kad geriau uz atsitiktini pirkima","sandoriu skaicius")
+
+kable(lentele4)
+
+
+#####
+
+formula_prog3=OMX ~ lag(SP350,1)  + lag(phope,12)  + lag(ul,10)+lag(mhope, 3)+ lag(gkl, 9)+  lag(ip, 11)+lag(kursas,2)
+formula_kain3=OMX ~ SP350  + lag(phope,12)  + lag(ul,10)+lag(mhope, 3)+ lag(gkl, 9)+  lag(ip, 11)+lag(kursas,2)
+
+lentele5=data.frame()
+for(i in c(30,70,100,140)){
+  lentele5=rbind(lentele5,validation(i,formula_prog3))
+}
+
+lentele5[,c(1:5)]=lentele5[,c(5,2,3,1,4)]
+colnames(lentele5)=c("pradinis imties dydis","strategijos premijine graza","vidutine atsitiktinio pirkimo premijine graza","tikimybe, kad geriau uz atsitiktini pirkima","sandoriu skaicius")
+
+kable(lentele5)
+
+
+lentele6=data.frame()
+for(i in c(30,70,100,130,140,150)){
+  lentele6=rbind(lentele6,validation2(i,formula_prog3,formula_kain3))
+}
+
+lentele6[,c(1:5)]=lentele6[,c(5,2,3,1,4)]
+colnames(lentele6)=c("pradinis imties dydis","strategijos premijine graza","vidutine atsitiktinio pirkimo premijine graza","tikimybe, kad geriau uz atsitiktini pirkima","sandoriu skaicius")
+
+kable(lentele6)
+
+
+validation2=function(pradzia,formula_prog,formula_kain){
+  pirkti=numeric()
+  for(i in pradzia:168){
+    modprog <- lm(formula_prog, data = data3[1:i,])
+    a=predict(modprog, data3[1:i+1,])
+    a=a[length(a)]
+    modkain=lm(formula_kain,data=data3[1:i,])
+    b=predict(modkain, data3[1:i,])
+    b=b[length(b)]
+    b= b-data3[i,"OMX"]
+    if(matrix(a)[1]>1 & matrix(b)[1]>0){pirkti=append(pirkti,i+1)}
+    if(matrix(a)[1]>4 & matrix(b)[1]<0){pirkti=append(pirkti,i+1)}
+  }
+  graza=sum(data3[pirkti,"OMX"])
+  random=replicate(10000,gen(pradzia,pirkti))
+  p=mean(random<graza)
+  vidurkis_random = mean(random)
+  if(p==0){p="nebuvo pirkimu"}
+  else{
+    p=append(p,graza)
+    p=append(p,vidurkis_random)
+    p=append(p,length(pirkti))
+    p=append(p,pradzia)
+    p=round(p,3)
+  }
+  return(p)                               
+}
+
+#test
+modprog <- lm(formula_prog3, data = data3[1:152,])
+    a=predict(modprog, data3[1:(152+1),])
+a=a[length(a)]
+matrix(a)[1]
+data3[153,"OMX"]
+modkain=lm(formula_kain3,data=data3[1:152,])
+    b=predict(modkain, data3[1:(152),])
+    b=b[length(b)]
+    b= b-data3[152,"OMX"]
+
+
+
 ```
 
 
