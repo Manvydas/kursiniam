@@ -223,8 +223,7 @@ data3$SP350=data3$SP350-data3$palukanos
 data3$SP500=data3$SP500-data3$palukanos
 ```
 
-* Visų kintamųjų, išskyrus infliaciją, p - value mažiau už 0.05, galime atmesti H0, kad turi vienetinę šaknį, visi kintamieji, išskyrus infliaciją, yra stacionarūs. Stacionar
-
+* Visų kintamųjų, išskyrus infliaciją, p - value mažiau už 0.05, galime atmesti H0, kad turi vienetinę šaknį, visi kintamieji, išskyrus infliaciją, yra stacionarūs.
 \newpage
 
 # Duomenų vizualizacija
