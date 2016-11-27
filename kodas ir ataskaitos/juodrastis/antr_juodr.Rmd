@@ -1,11 +1,14 @@
 ---
+header-includes:
+   - \usepackage[utf8]{inputenc}
+   - \usepackage[english,lithuanian]{babel}
+   - \usepackage[nottoc,numbib]{tocbibind}
 output: 
   pdf_document: 
     latex_engine: xelatex
     number_sections: yes
     toc_depth: 2
 ---
-
 
 ```{r, message=FALSE, echo=FALSE, include=F}
 library("quantmod")
@@ -35,9 +38,9 @@ library("lmtest")
     {\bf \LARGE Lietuvos akcijų rinkos grąžos priklausomybė nuo makroekonominių duomenų}
 \end{center}
 \bigskip
-\centerline{\Large \textbf{Kursinio vadovas: lektorius dr. Dmitrij Celov}}
-\bigskip
 \centerline{\Large \textbf{Darbą atliko: Manvydas Sokolovas ir Paulius Kostickis}}
+\bigskip
+\centerline{\Large \textbf{Kursinio vadovas: lekt. dr. Dmitrij Celov}}
 \vskip 90pt
 \vskip 120pt
 \centerline{\large \textbf{VILNIUS 2016}}
@@ -47,18 +50,16 @@ library("lmtest")
 \textwidth 6.5in
 \textheight 9.00in
 
-\renewcommand{\contentsname}{Turinys}
-\tableofcontents
-\thispagestyle{empty}
+\section*{Santrauka}
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Makroekonomiai rodikliai gali padėti nuspėti ateities verslo ciklą, kuris turi įtakos akcijų pelningumui. Naudojant Lietuvos makroekonominius duomenis, matuojamos  rizikos premijos, kurios gaunamos už riziką investuojant Lietuvos rinkoje. Šie duomenys iliustruoja Lietuvos ekonominę būklę.  Sudarytas „OMX Vilnius“ indekso grąžos įkainojimo ir prognozavimo modelis remiantis arbitražo įkainojimo teoremą (angl. APT), siekiant išsiaiškinti, kokie Lietuvos makroekonominiai rodikliai veikia „OMX Vilnius“ indekso grąžas. Sukurta prekybos strategija naudojant sukurtais prognozavimo ir įkainojimo modeliais ir palyginta su atsitiktiniu investavimu. Tirti mėnesiniai duomenys nuo 2002 iki 2016 metų. Dalis makroekonominių rodiklių yra reikšmingi vertinant indekso kainos pokyčius.
+
 \newpage
 
-#Santrauka:
+\section*{Darbe naudojami trumpiniai}
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Makroekonomiai rodikliai gali padėti nuspėti ateities verslo ciklą, kuris turi įtakos akcijų pelningumui. Naudojant Lietuvos makro duomenis, matuojamos  rizikos premijos, kurios gaunamos už riziką investuojant Lietuvos rinkoje. Makroduomenys iliustruoja Lietuvos ekonominę būklę.  Sudarytas „OMX Vilnius“ indekso grąžos įkainojimo ir prognozavimo modelis remiantis arbitražo įkainojimo teoremą (angl. APT), siekiant išsiaiškinti, kokie Lietuvos makroekonominiai rodikliai tiesiškai paveikia „OMX Vilnius“ indekso grąžas. Sukurta prekybos strategija naudojant sukurtais prognozavimo ir įkainojimo modeliais ir palyginta su atsitiktiniu investavimu. Tirti mėnesiniai duomenys nuo 2002 iki 2016 metų. Dalis makroekonominių rodiklių yra reikšmingi vertinant indekso kainos pokyčius.
-
-*Darbe naudojami trumpiniai:*
-\newline APT – arbitražo įkainojimo teorija (Arbitrage pricing theory)
-\newline CAPM – kapitalo įkainojimo modelis (Capital Asset pricing model)
+APT – arbitražo įkainojimo teorija (Arbitrage Pricing Theory)
+\newline CAPM – kapitalo įkainojimo modelis (Capital Asset Pricing Model)
 \newline kk – kasyba ir karjerų eksploatacija
 \newline mp – mažmeninė prekyba
 \newline vp – verslo plėtros aktyvumas per 3 mėnesius
@@ -73,15 +74,25 @@ library("lmtest")
 \newline gkl – gamintojų kainų lygis
 \newline ip – industrinė produkcija
 
-# Įvadas:
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Akcijų pokyčiams yra reikšminga ekonomikos būsena. Jei ekonomika auga, tuomet dauguma įmonių padidina savo pelną ir gamybą. Priešingas procesas, kai ekonomika traukiasi. Egzistuoja makroekonominiai rodikliai tokie kaip infliacija, valiutos kursas, palūkanų dydis, kurie gali įvertinti ekonominę būklę, kuri yra svarbi pelningumui iš aktyvų. Todėl galima būtų manyti, jog makroekonominiai rodikliai koreliuoti su aktyvų grąžomis. Tačiau yra atliktas tyrimas Rusijos rinkoje (Paavola Mauri - Tests of the Arbitage Pricing Theory using Macroeconomic Variables in the Russian Equity Market, 2006-04-26), remiantis arbitražo įkainojimo teorija, kurio tyrimo autorius nesugebėjo rasti reikšmingos makroekonominių duomenų  įtakos akcijų grąžoms. O Šri Lankos (Prabath Suranga Morawakage - Relationship between Macro – Economic Variables and Stock Market Performance of Colombo Stock Exchange, 2013-12) ir Indijos (Mishra Sagarika - Do Macro - Economic Variables explain Stock - Market Returns? Evidence using a Semi-Parametric Approach, 2011-10-03) rinkoms atlikti empiriniai tyrimai parodė, jog makroekonominiai rodikliai turi įtakos akcijų grąžai. Todėl nutarta ištirti Lietuvos akcijų rinkos grąžos priklausomybę nuo makro rodiklių remiantis arbitražo įkainojimo teorija (angl. APT)  ir iš daugelių rodiklių atrinkti svarbiausius. 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Kylančiose rinkose daug dažniau pasitaiko neteisingai įkainotų finansinių instrumentų nei išvystytose (efektyviose) rinkose. Lietuvos rinką galime priskirti besivystančiosios rinkos kategorijai ir galbūt tyrimo išvadas, naudojant APT, galima bus praktiškai pritaikyti pelningiau investuojant. Pirmoje dalyje bus pateikta rizikos ir diversifikavimo svarba ir šio tyrimo matuojamas objektas - rizikos premijos. Vėliau aptariamas aktyvų įkainojimo modelis (CAPM) ir arbitražinė aktyvų įkainojimo teorija (APT) bei jų pritaikymas tyrime. Kitoje dalyje parodoma koreliacija tarp rodiklių, sudaromas prognozavimo ir įkainojimo modeliai bei rodiklių reikšmingumo tikrinimas. Turint modelius, bandoma juos panaudoti kuriant pelningesnę nei atsitiktinio investavimo strategiją ir jos patikrinimas remiantis praeities duomenimis.
+\newpage
+
+\renewcommand{\contentsname}{Turinys}
+\tableofcontents
+\thispagestyle{empty}
+\newpage
+
+# Įvadas
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Akcijų pokyčiams yra reikšminga ekonomikos būsena. Jei ekonomika auga, tuomet dauguma įmonių padidina savo pelną ir gamybą. Priešingas procesas, kai ekonomika traukiasi. Egzistuoja makroekonominiai rodikliai tokie kaip infliacija, valiutos kursas, palūkanų dydis, kurie padeda įvertinti ekonominę būklę, kuri yra svarbi pelningumui iš aktyvų. Todėl galima būtų manyti, jog makroekonominiai rodikliai koreliuoti su aktyvų grąžomis. Tačiau markoekonominių rodiklių poveikis akcijų rinkoms yra nevienareikšmis. Pavyzdžiui, yra atliktas tyrimas Rusijos rinkoje\cite{rusija}, remiantis arbitražo įkainojimo teorija, kurio tyrimo autorius nesugebėjo rasti reikšmingos makroekonominių duomenų  įtakos akcijų grąžoms. O Šri Lankos\cite{sri_lanka} ir Indijos\cite{indija} rinkoms atlikti empiriniai tyrimai parodė, jog makroekonominiai rodikliai turi įtakos akcijų grąžai. Todėl nutarta ištirti Lietuvos akcijų rinkos grąžos priklausomybę nuo makro rodiklių remiantis arbitražo įkainojimo teorija (angl. APT)  ir iš daugelių rodiklių atrinkti svarbiausius. 
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Kylančiose rinkose daug dažniau pasitaiko neteisingai įkainotų finansinių instrumentų nei išvystytose (efektyviose) rinkose. Lietuvos rinką galime priskirti besivystančiosios rinkos kategorijai ir galbūt tyrimo išvadas, naudojant APT, galima bus praktiškai pritaikyti pelningiau investuojant. 
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pirmoje dalyje bus pateikta rizikos ir diversifikavimo svarba ir šio tyrimo matuojamas objektas - rizikos premijos. Vėliau aptariamas aktyvų įkainojimo modelis (CAPM) ir arbitražinė aktyvų įkainojimo teorija (APT) bei jų pritaikymas tyrime. Kitoje dalyje parodoma koreliacija tarp rodiklių, sudaromas prognozavimo ir įkainojimo modeliai bei rodiklių reikšmingumo tikrinimas. Turint modelius, bandoma juos panaudoti kuriant pelningesnę nei atsitiktinio investavimo strategiją ir jos patikrinimas remiantis praeities duomenimis.
 
 # Aktyvų įkainojimas
 
 ## Rizika ir diversifikavimas:
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Investuojant į akcijas, kuo didesnis standartinis nuokrypis, tuo didesnė galimybė prarasti investuotus pinigus. Šiuo atveju rizika bus laikoma standartiniu nuokrypiu. Taigi rizika ir pajamos iš investicijų yra tiesiogiai tarpusavyje susijusios: kuo didesnė rizika, tuo turėtų būti didesnės laukiamas pelnas iš investicijų, kad jos kompensuotų aukštą rizikos lygį. Svarbus tampa reikalaujamas pelningumas – tai mažiausias laukiamas pelnas, kurio yra reikalaujama už investavimą į rizikingą aktyvą. Investuotojas gali rinktis nerizikingą pelną, pirkdamas nerizikingus vertybinius popierius. Ši nerizikinga pelno norma yra minimumas, kurio gali tikėtis investuotojas neprisiimdamas jokios rizikos. Pirkdamas rizikingesnį vertybinį popierių, investuotojas reikalaus rizikos premijos (atpildo už rizikingų vertybinių popierių laikymą. Taigi nerizikinga pelno norma bei rizikos premija sudaro reikalaujamą pelningumą. Ši priklausomybė pavaizduota paveiksle apačioje (figure 1).
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Investuojant į akcijas, kuo didesnis standartinis nuokrypis, tuo didesnė galimybė prarasti investuotus pinigus. Investicijų kontekste rizika bus matuojama standartiniu nuokrypiu. Taigi rizika ir pajamos iš investicijų yra tiesiogiai tarpusavyje susijusios: kuo didesnė rizika, tuo turėtų būti didesnės laukiamas pelnas iš investicijų, kad jos kompensuotų aukštą rizikos lygį. Svarbus tampa reikalaujamas pelningumas – tai mažiausias laukiamas pelnas, kurio yra reikalaujama už investavimą į rizikingą aktyvą. Investuotojas gali rinktis nerizikingą pelną, pirkdamas nerizikingus vertybinius popierius. Ši nerizikinga pelno norma yra minimumas, kurio gali tikėtis investuotojas neprisiimdamas jokios rizikos. Pirkdamas rizikingesnį vertybinį popierių, investuotojas reikalaus rizikos premijos (atpildo už rizikingų vertybinių popierių laikymą. Taigi nerizikinga pelno norma bei rizikos premija sudaro reikalaujamą pelningumą. Ši priklausomybė pavaizduota paveiksle apačioje (figure 1).
 
 ![](lentele3.png)
 
@@ -94,7 +105,7 @@ H. Markowitz sukurta portfelio teorija leidžia investuotojams įvertinti rizik�
 tikras investicinės rizikos šaltinis gerai diversifikuotam portfeliui.
 Jos formulė:
 
-$E(Y) - rf = \beta \times X$
+$$E(Y) - rf = \beta \times X$$
 
 čia E(*Y*) - vidutinė akcijos grąža,
 *rf* - nerizikingo aktyvo grąža,
@@ -513,22 +524,28 @@ Strategija geriau pasirodė nei atsitiktinis investavimas.
 
 \newpage
 
-# Literatūros sąrašas:
+\begin{thebibliography}{00}
+\bibitem{rusija}
+  Mauri Paavola, Tests of the Arbitage Pricing Theory using Macroeconomic Variables in the Russian Equity Market.
 
-1) „Tests of the Arbitage Pricing Theory using Macroeconomic Variables in the Russian Equity Market“ - Mauri Paavola:
-[link](http://www.doria.fi/bitstream/handle/10024/30869/TMP.objres.246.pdf)
+\bibitem{brooks}
+  Chris Brooks, Introductory Econometrics for Finance.
+ 
+ \bibitem{sri_lanka}
+   Prabath Suranga Morawakage, Relationship between Macro – Economic Variables and Stock Market Performance of Colombo Stock Exchange.
+ 
+ \bibitem{indija}
+   Sagarika Mishra, Do Macro - Economic Variables explain Stock - Market Returns? Evidence using a Semi-Parametric Approach.
+ 
+ \bibitem{capm} 
+   University of Pennsylvania, The Capital Asset Pricing Model: An Aplication of Bivariate Regression Analysis.
 
-2) „Introductory Econometrics for Finance“ - Chris Brooks
+ \bibitem{apt_capm}
+   Aistė Launagaitė, Vertybinių popierių rizikos ir pelningumo modelių įvertinimas.
+ 
 
-3) „Relationship between Macro – Economic Variables and Stock Market Performance of Colombo Stock Exchange“ - Prabath Suranga Morawakage:
-[link](https://www.researchgate.net/profile/Prabath_Morawakage/publication/263659272_Relationship_between_Macro_-_Economic_Variables_and_Stock_Market_Performance_of_Colombo_Stock_Exchange/links/0f31753b8d1bfe46cb000000.pdf)
+\end{thebibliography}
 
-4) „Do Macro - Economic Variables explain Stock - Market Returns? Evidence using a Semi-Parametric Approach“ - Sagarika Mishra:
-[link](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1937914)
-
-5) „The Capital Asset Pricing Model: An Aplication of Bivariate Regression Analysis“ - University of Pennsylvania.
-
-6) „Vertybinių popierių rizikos ir pelningumo modelių įvertinimas“ - Aistė Launagaitė
 
 \newpage
 
