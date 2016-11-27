@@ -3,6 +3,7 @@ header-includes:
    - \usepackage[utf8]{inputenc}
    - \usepackage[english,lithuanian]{babel}
    - \usepackage[nottoc,numbib]{tocbibind}
+   - \usepackage[titletoc]{appendix}
 output: 
   pdf_document: 
     latex_engine: xelatex
@@ -76,7 +77,6 @@ APT – arbitražo įkainojimo teorija (Arbitrage Pricing Theory)
 
 \newpage
 
-\renewcommand{\contentsname}{Turinys}
 \tableofcontents
 \thispagestyle{empty}
 \newpage
@@ -543,11 +543,13 @@ Strategija geriau pasirodė nei atsitiktinis investavimas.
  \bibitem{apt_capm}
    Aistė Launagaitė, Vertybinių popierių rizikos ir pelningumo modelių įvertinimas.
  
-
 \end{thebibliography}
 
-
 \newpage
+
+\setcounter{section}{0}
+\renewcommand\thesection{\Alph{section}}
+\pagenumbering{gobble}
 
 # Priedai:
 
@@ -565,4 +567,3 @@ Darbe naudojami mėnesiniai duomenys nuo 2002 metų birželio iki 2016 metų lie
 * Darbo lygio ir užsakymų lūkesčiai - mėnesinės apklausos, teigiamų ir neigiamų atsakymų santykis.
 * Pasitikėjimo indikatoriai - pramonės, mažmeninės prekybos, vartotojų, paslaugų, statybų. Tai yra apklausų teigiamų ir neigiamų atsakymų santykis.
 * Mažmeninė prekyba, išskyrus variklinių transporto priemonių ir motociklų prekybą- indeksuotas rodiklis (2010m indeksas = 100).
-
