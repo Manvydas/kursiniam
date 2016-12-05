@@ -78,7 +78,6 @@ APT – arbitražo įkainojimo teorija (Arbitrage Pricing Theory)
 \newpage
 
 \tableofcontents
-\thispagestyle{empty}
 \newpage
 
 # Įvadas
@@ -90,7 +89,7 @@ APT – arbitražo įkainojimo teorija (Arbitrage Pricing Theory)
 
 # Aktyvų įkainojimas
 
-## Rizika ir diversifikavimas:
+## Rizika ir diversifikavimas
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Investuojant į akcijas, kuo didesnis standartinis nuokrypis, tuo didesnė galimybė prarasti investuotus pinigus. Investicijų kontekste rizika bus matuojama standartiniu nuokrypiu. Taigi rizika ir pajamos iš investicijų yra tiesiogiai tarpusavyje susijusios: kuo didesnė rizika, tuo turėtų būti didesnės laukiamas pelnas iš investicijų, kad jos kompensuotų aukštą rizikos lygį. Svarbus tampa reikalaujamas pelningumas – tai mažiausias laukiamas pelnas, kurio yra reikalaujama už investavimą į rizikingą aktyvą. Investuotojas gali rinktis nerizikingą pelną, pirkdamas nerizikingus vertybinius popierius. Ši nerizikinga pelno norma yra minimumas, kurio gali tikėtis investuotojas neprisiimdamas jokios rizikos. Pirkdamas rizikingesnį vertybinį popierių, investuotojas reikalaus rizikos premijos (atpildo už rizikingų vertybinių popierių laikymą. Taigi nerizikinga pelno norma bei rizikos premija sudaro reikalaujamą pelningumą. Ši priklausomybė pavaizduota paveiksle apačioje (figure 1).
 
@@ -143,7 +142,7 @@ CAPM atveju beta(rizikos veiksnys) yra pasirenkamas tos pačios rinkos indeksas,
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Kadangi yra tiriamas rizikingumas investuojant Lietuvos rinkoje naudojant makro duomenis, rizikos faktorių bus ne vienas kaip CAPM atveju, o daugiau. Tačiau CAPM yra svarbus tuo, kad jo pagrindu buvo kuriami ir tobulinami kiti aktyvų įkainojimo modeliai, kurie galėjo turėti mažiau apribojimų ir prielaidų, taip pat turėti ir daugiau įtakojančių rodiklių. Vienas iš patobulintų CAPM yra arbitražinė aktyvų įkainojimo teorija(angl. APT).  1966 m. atsirado pirmosios arbitražo įkainojimo teorijos idėjos, kai B. F. King (1966) pradėjo finansinių aktyvų grąžos pokyčius aiškinti ekonominiais duomenimis. Tačiau APT teorijos kūrėju yra laikomas S. A. Ross (1976), kuris pateikė  teorijai reikiamas prielaidas ir matematiškai pagrindė koncepciją. Šios teorijos pagrindas yra panašus, kaip ir CAPM, t. y. investuotojai reikalauja rizikos premijos už nediversifikuotos (sisteminės) rizikos prisisėmimą. Tačiau norint praktiškai pritaikyti APT, reikia: apibrėžti faktorius, įvertinti tų faktorių įtaką portfeliui, įvertinti faktoriaus premiją. APT neatsako į klausimus apie faktorių gausumą ir svarbumą, į kuriuos turi būti atsižvelgta vertinant laukiamas pajamas. Dažniausiai išskiriama nuo 3 iki 5 tokių
 veiksnių. Jos formulė:
 
-$E(Y) - rf = \beta \times {X}_1 {\beta}_1 \times {X}_2 {\beta}_2$
+$E(Y) - rf = {\beta}_0 + {X}_1 {\beta}_1 + {X}_2 {\beta}_2$
 
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Šis aktyvų įkainojimo modelis yra grindžiamas tuo, jog aktyvo premijinį pelningumą galima numatyti naudojant analizuojamo aktyvo ir daugelio įprastų rizikos faktorių tarpusavio ryšį. Nenurodoma kokie būtent faktoriai yra svarbūs rizikos premijai, tačiau sukurta S. Ross (1976) arbitražo įkainojimo teorija numato ryšį tarp portfelio pelningumo pasitelkiant daugelio nepriklausomų kintamųjų (makroekonominių faktorių, tokių kaip infliacija, ekonomikos augimas, tarptautinės gamybos apimtis, palūkanų normos ir t.t.) tiesinę kombinaciją. Darbe bus tiriamas įvairių makroekonominių rodiklių reikšmingumas grąžom ir gebėjimas prognozuoti grąžas remiantis praeities duomenimis. Taigi pasitelkiant šią įkainojimo teoriją, bus siekiama pasipelnyti iš gerai įvertintos kito mėnesio OMX Vilniaus indekso grąžos. Neteisingai įkainoto aktyvo kaina skirsis nuo tos, kuri nustatoma šio modelio dėka. Tokiu būdu investuotojai, norintys pasinaudoti arbitražu ir gauti faktiškai nerizikingą pelną, sieks palaikyti trumpas pervertinto aktyvo pozicijas ir kartu laikyti ilgas portfelio (kurio pagrindu yra atliekami APT skaičiavimai) pozicijas.
@@ -178,6 +177,8 @@ Taigi investuotojai pasitelkia šią įkainojimo teoriją, siekdami pasipelnyti 
 Jei APT prielaidos patenkinamos, tuomet laukiami pelningumai bus išsidėstę arti SML, o aktyvas turės tiek rizikos charakteristikų, kiek yra veiksnių. APT teorijos prielaidos yra artimesnės realybei negu CAPM, nes ne visi investuotojai elgiasi vienodai rinkoje, net jei jų elgsena grindžiama racionalumu, t. y. APT nereikalauja CAPM prielaidų tenkinimo dėl investuotojų naudingumo funkcijų. Be to, ne kiekvienas investuotojas yra linkęs turėti rinkos portfelį kaip vienintelę alternatyvą, t. y. APT nereikalauja CAPM prielaidos tenkinimo dėl rinkos portfelio savybių (kad jis apima visus rizikingus aktyvus ir yra efektyvus vidurkio-dispersijos prasme).
 Naudodami Lietuvos makro duomenis, matuojama  rizikos premijos, kurios gaunamos už riziką investuojant Lietuvos rinkoje. Makroduomenys iliustruoja Lietuvos ekonominę būklę. 
 
+\newpage
+
 # Duomenų transformacijos
 Duomenys naudojami nuo 2002 metų iki 2016 metų, ankstesnių duomenų nepavyko išgauti.
 
@@ -185,11 +186,9 @@ OMX Vilnius indeksas transformuojamas į mėnesinius procentinius pokyčius: $r(
 čia *X(t)* - OMX indekso mėnesinė kaina nuo laiko (mėnesio) t, *r(t)* yra indekso mėnesinis pokytis procentais.
 Tokiu pačiu būdu gaunama kitų akcijų indeksų grąža logaritmuojant ir imant pokyčius  S&P350 Europe indeksų kainas, kasybos ir karjerų eksploatacijos, mažmeninės prekybos, industrinės produkcijos indeksus. Visi logaritmuoti duomenys padauginami iš šimto, kad pokytis būtų interpretuojamas procentais. Euribor buvo pateiktas metinėmis palūkanomis, transformuojami į mėnesines palūkanas. Dolerio/euro valiutų kursas, pasitikėjimo ir lūkesčių rodikliai yra imami mėnesiniai pokyčiai.
 
-
 Tikrinami duomenys po transformacijų ar turi vienetinę šaknį (stacionarumo tikrinimas), atliekamas Dickey-Fuller testas:
 ```{r, message=FALSE, echo=FALSE}
 data=read.csv("rawdata.csv")
-
 
 
 data[ data == ":" ] = NA
@@ -228,82 +227,12 @@ data3$SP500=data3$SP500-data3$palukanos
 
 * Visų kintamųjų, išskyrus infliaciją, p - value mažiau už 0.05, galime atmesti H0, kad turi vienetinę šaknį, visi kintamieji, išskyrus infliaciją, yra stacionarūs.
 \newpage
-
-# Duomenų vizualizacija
-
-```{r, message=FALSE, echo=FALSE}
-panel.hist <- function(x, ...)    #ši funkcija reikalinga grafikų lentelei išbrėžti (histogramos pateikimui)                        
-{
-  usr <- par("usr"); on.exit(par(usr))
-  par(usr = c(usr[1:2], 0, 1.5) )
-  h <- hist(x, plot = FALSE)
-  breaks <- h$breaks; nB <- length(breaks)
-  y <- h$counts; y <- y/max(y)
-  rect(breaks[-nB], 0, breaks[-1], y, col = "cyan", ...)
-}
-
-panel.cor2 <- function(x, y, digits=2, cex.cor)
-{
-  usr <- par("usr"); on.exit(par(usr))
-  par(usr = c(0, 1, 0, 1))
-  r <- abs(cor(x, y))
-  txt <- format(c(r, 0.123456789), digits=digits)[1]
-  test <- cor.test(x,y)
-  Signif <- ifelse(round(test$p.value,3)<0.001,"p<0.001",paste("p=",round(test$p.value,3)))  
-  text(0.5, 0.25, paste("r=",txt))
-  text(.5, .75, Signif)
-}
-panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor,...)    #ši funkcija reikalinga grafikų lentelei
-    #išbrėžti (koreliacijos koeficiento radimui)
-{
-  usr <- par("usr"); on.exit(par(usr))
-  par(usr = c(0, 1, 0, 1))
-  r <- abs(cor(x, y))
-  txt <- format(c(r, 0.123456789), digits = digits)[1]
-  txt <- paste0(prefix, txt)
-  if(missing(cex.cor)) cex.cor <- 0.8/strwidth(txt)
-  text(0.5, 0.5, txt, cex = 3)
-}
-```
-
-
 ```{r, message=FALSE, echo=FALSE}
 Data = rownames(data3)
 Data=as.yearmon(Data, "%YM%m")
 
 data3=cbind.data.frame(Data, data3)
 ```
-
-
-<br>
-S&P350 Europe indeksas yra įtraukiamas, remiantis CAPM. Galima teigti, jog OMX Vilniaus indeksas yra stipriai susijęs su S&P350 indeksu ir šis indeksas gerai apibūdina sisteminę riziką kaip ir kitoms Europos rinkoje esančiomis akcijoms. 
-Pagal CAPM turėtų matytis koreliacija tarp OMX Vilniaus indekso ir S&P 350 Europe. Koreliacija aiškiai matoma grafike. Tai patvirtina, jog reikėtų bandyti įtrauki Europos indeksą aiškinant grąžų premijos riziką.
-
-Akcijų indeksų mėnesiniai procentiniai pokyčiai:
-
-```{r, message=FALSE, echo=FALSE,warning=F}
-akc = melt(data3[,c("OMX","SP350","SP500","Data")], id=c("Data"))
-ggplot(akc) + geom_line(aes(x=Data, y=value, colour=variable)) +
-  scale_colour_manual(values=c(1:4))+ylab("% pokytis")+
-  guides(col=guide_legend(title="Kintamieji")) 
-```
-
-
-
-
-\newpage
-
-Kintamųjų koreliacija su OMX Vilnius. r - koreliacijos koeficientas, p - koreliacijos reikšmingumas:
-
-```{r, message=FALSE, echo=FALSE}
-pairs(data3[,c("OMX","infliacija","nedarbas","kursas")],upper.panel=panel.smooth,diag.panel=panel.hist, lower.panel=panel.cor2)
-```
-
-```{r, message=FALSE, echo=FALSE}
-pairs(data3[,c("OMX","mhope","phope","vhope","pramhope","vp")],upper.panel=panel.smooth,diag.panel=panel.hist, lower.panel=panel.cor2)
-```
-
-* Kaip ir buvo tikėtasi tarp kintamųjų ir OMX Vilnius rasta nestipri koreliacija, tačiau reikšminga. 
 
 \newpage
 
@@ -480,7 +409,7 @@ for(i in c(30,70,100,130,140,150)){
 }
 
 lentele[,c(1:5)]=lentele[,c(5,2,3,1,4)]
-colnames(lentele)=c("pradinis imties dydis","strategijos premijine graza","vidutine atsitiktinio pirkimo premijine graza","tikimybe, kad geriau uz atsitiktini pirkima","pirkimu skaicius")
+colnames(lentele)=c("pradinis imties dydis","strategijos premijinė grąža","vidutine atsitiktinio pirkimo premijine graza","tikimybe, kad geriau uz atsitiktini pirkima","pirkimu skaicius")
 lentele=lentele[,-c(3,4)]
 kable(lentele)
 ```
@@ -549,7 +478,6 @@ Strategija geriau pasirodė nei atsitiktinis investavimas.
 
 \setcounter{section}{0}
 \renewcommand\thesection{\Alph{section}}
-\pagenumbering{gobble}
 
 # Priedai:
 
@@ -559,7 +487,7 @@ Darbe naudojami mėnesiniai duomenys nuo 2002 metų birželio iki 2016 metų lie
 * S&P 350 Europe - tai indeksas sudarytas iš 350 didžiausių Europos imonių akcijų.
 * S&P 500 - tai indeksas sudarytas iš 500 didžiausių Amerikos imonių akcijų.
 * Euribor 3 mėnesių - palūkanų norma už kurią Europos bankai skolina pinigus vieni kitiems trijų mėnesių laikotarpiui.
-* JAV dolerio ir Euro valiutos kursas.
+* Euro ir JAV dolerio valiutos kursas.
 * Nedarbas - darbingų nedirbančių žmonių skaičius 1000 žmonių.
 * Pramonės gamintojų kainos  - matuoja vidutinę kainų raidą, visų produktų bei paslaugų iš pramonės sektoriaus ir parduotų vidinėje rinkoje. Procentinis pokytis nuo praeito mėnesio.
 * Infliacija - 12 mėnesių infliacija apskaičiuota pagal mažmeninės prekybos indeksą.
@@ -567,3 +495,69 @@ Darbe naudojami mėnesiniai duomenys nuo 2002 metų birželio iki 2016 metų lie
 * Darbo lygio ir užsakymų lūkesčiai - mėnesinės apklausos, teigiamų ir neigiamų atsakymų santykis.
 * Pasitikėjimo indikatoriai - pramonės, mažmeninės prekybos, vartotojų, paslaugų, statybų. Tai yra apklausų teigiamų ir neigiamų atsakymų santykis.
 * Mažmeninė prekyba, išskyrus variklinių transporto priemonių ir motociklų prekybą- indeksuotas rodiklis (2010m indeksas = 100).
+
+## Duomenų vizualizacija
+
+```{r, message=FALSE, echo=FALSE}
+panel.hist <- function(x, ...)    #ši funkcija reikalinga grafikų lentelei išbrėžti (histogramos pateikimui)                        
+{
+  usr <- par("usr"); on.exit(par(usr))
+  par(usr = c(usr[1:2], 0, 1.5) )
+  h <- hist(x, plot = FALSE)
+  breaks <- h$breaks; nB <- length(breaks)
+  y <- h$counts; y <- y/max(y)
+  rect(breaks[-nB], 0, breaks[-1], y, col = "cyan", ...)
+}
+
+panel.cor2 <- function(x, y, digits=2, cex.cor)
+{
+  usr <- par("usr"); on.exit(par(usr))
+  par(usr = c(0, 1, 0, 1))
+  r <- abs(cor(x, y))
+  txt <- format(c(r, 0.123456789), digits=digits)[1]
+  test <- cor.test(x,y)
+  Signif <- ifelse(round(test$p.value,3)<0.001,"p<0.001",paste("p=",round(test$p.value,3)))  
+  text(0.5, 0.25, paste("r=",txt))
+  text(.5, .75, Signif)
+}
+panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor,...)    #ši funkcija reikalinga grafikų lentelei
+    #išbrėžti (koreliacijos koeficiento radimui)
+{
+  usr <- par("usr"); on.exit(par(usr))
+  par(usr = c(0, 1, 0, 1))
+  r <- abs(cor(x, y))
+  txt <- format(c(r, 0.123456789), digits = digits)[1]
+  txt <- paste0(prefix, txt)
+  if(missing(cex.cor)) cex.cor <- 0.8/strwidth(txt)
+  text(0.5, 0.5, txt, cex = 3)
+}
+```
+
+<br>
+S&P350 Europe indeksas yra įtraukiamas, remiantis CAPM. Galima teigti, jog OMX Vilniaus indeksas yra stipriai susijęs su S&P350 indeksu ir šis indeksas gerai apibūdina sisteminę riziką kaip ir kitoms Europos rinkoje esančiomis akcijoms. 
+Pagal CAPM turėtų matytis koreliacija tarp OMX Vilniaus indekso ir S&P 350 Europe. Koreliacija aiškiai matoma grafike. Tai patvirtina, jog reikėtų bandyti įtrauki Europos indeksą aiškinant grąžų premijos riziką.
+
+Akcijų indeksų mėnesiniai procentiniai pokyčiai:
+
+```{r, message=FALSE, echo=FALSE,warning=F}
+akc = melt(data3[,c("OMX","SP350","SP500","Data")], id=c("Data"))
+ggplot(akc) + geom_line(aes(x=Data, y=value, colour=variable)) +
+  scale_colour_manual(values=c(1:4))+ylab("% pokytis")+
+  guides(col=guide_legend(title="Kintamieji"))
+```
+
+\newpage
+
+Kintamųjų koreliacija su OMX Vilnius. r - koreliacijos koeficientas, p - koreliacijos reikšmingumas:
+
+```{r, message=FALSE, echo=FALSE}
+pairs(data3[,c("OMX","SP350","nedarbas","kursas")],upper.panel=panel.smooth,diag.panel=panel.hist, lower.panel=panel.cor2)
+```
+
+```{r, message=FALSE, echo=FALSE}
+pairs(data3[,c("OMX","mhope","phope","ul","gkl","ip")],upper.panel=panel.smooth,diag.panel=panel.hist, lower.panel=panel.cor2)
+```
+
+* Kaip ir buvo tikėtasi tarp kintamųjų ir OMX Vilnius rasta nestipri koreliacija, tačiau reikšminga. 
+
+

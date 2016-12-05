@@ -224,7 +224,6 @@ data2$nedarbas=data2$nedarbas/10
 
 data2[,c("OMX","SP350","SP500","kk","mp","ip")] = apply(data2[,c("OMX","SP350","SP500","kk","mp","ip")],2,log)    #logaritmuojama indeksai, akcijų kainos, kursas  
 
-data2[,c("OMX","SP350","SP500","kk","mp","ip")]=data2[,c("OMX","SP350","SP500","kk","mp","ip")]*100
 
 data2$euribor=((data2$euribor+1)^(1/12)-1)*12                    #reiketu gal menesio?
 names(data2)[names(data2) == 'euribor'] <- 'palukanos'
@@ -378,6 +377,9 @@ kable(datafr)
 4) „Do macro-economic variables explain stock-market returns? Evidence using a semi-parametric approach“ - Sagarika Mishra:
 [link](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1937914)
 
+5) "Vertybinių popierių rizikos ir pelningumo modelių įvertinimas" - Aistė Launagaitė:
+[link](http://vddb.library.lt/fedora/get/LT-eLABa-0001:E.02~2007~D_20140626_161610-48318/DS.005.0.01.ETD)
+
 Kryžminė koreliacija:
 ```{r}
 names2=c("SP350","SP500","kk","dll","nedarbas","infliacija","mhope","phope","pramhope","shope","ta","ul","vhope","vp","mp","palukanos","gkl","ip","kursas")
@@ -406,9 +408,15 @@ ccfvalues <- ccf(data3$OMX,data3$kursas)
 ccfvalues
 modelis = lm(OMX ~ lag(SP350,0) + lag(kk,1) + lag(dll,1) + nedarbas + lag(mhope,3) + lag(phope,12) + lag(pramhope,3) + lag(shope,4) + lag(ul,10) + lag(vhope,4) + lag(vp,0) + lag(mp,1) + lag(gkl,9) + lag(ip,0) + lag(ip,1) + lag(ip,4) + lag(kursas,0) + lag(kursas,2) , data=data3)
 
+y<-data3$OMX
+x<-as.matrix(data3[,3:21])
+a<-lars(y, x, type = c("lasso", "lar", "forward.stagewise", "stepwise"))
+lars(x, y, type = c("lasso", "lar", "forward.stagewise", "stepwise"),
+trace = FALSE, normalize = TRUE, intercept = TRUE, eps = .Machine$double.eps, max.steps = 160, use.Gram = TRUE)
+
 boo<-stepAIC((modelis))
 
-modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 0) + lag(mhope, 3) + lag(phope, 12) + lag(pramhope, 3) + lag(ul, 10) + lag(gkl, 9) + lag(ip, 1)+ lag(kursas,2) , data = data3)
+modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 0) + lag(mhope, 3) + lag(phope, 12) + lag(pramhope, 0) + lag(ul, 10) + lag(mp, 1) + lag(gkl, 9) + lag(kursas, 2)   , data = data3)
 
 coeftest(modelis_po_aic, vcov=vcovHC)
 summary(modelis_po_aic)
@@ -478,9 +486,25 @@ validation(90) #kai pradine imtis 70, atsakymo prasme- tikimybe kad geriau uz ra
 
 
 
-```{r, ++++ SP350, 1.05e-08->2.43e-08}
+```{r}
+ccfvalues <- ccf(data3$OMX,data3$pramhope)
+ccfvalues
+modelis = lm(OMX ~ lag(SP350,0) + lag(kk,1) + lag(kk,8) + lag(dll,1) + nedarbas + lag(mhope,3) + lag(phope, 12) + lag(phope,0) + lag(pramhope,0)+ lag(shope,1) + lag(ul,10) + lag(vhope,4) + lag(vp,0) + lag(mp,1) + lag(gkl,9) + lag(ip,4) + lag(ip,1) + lag(kursas,2) , data=data3)
+
+boo<-stepAIC((modelis))
+
+modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 0) + lag(mhope, 3) + lag(phope, 12) + lag(pramhope, 0) + lag(ul, 10) + lag(mp, 1) + lag(gkl, 9) + lag(kursas, 2) , data = data3)
+
+ncvTest(modelis_po_aic)
+# Kadangi p-value > 0.05, tai H0 hipotezė priimama - duomenys homoskedastiški.
+coeftest(modelis_po_aic, vcov=vcovHC)
+summary(modelis_po_aic)
+```
+
+
+```{r, +++ SP350, 0.5356981(8.282e-05) -> 0.5632657(0.0001001)}
 # KORELIACIJA:
-names2=c("SP350","SP500","kk","dll","nedarbas","infliacija","mhope","phope","pramhope","shope","ta","ul","vhope","vp","mp","palukanos","gkl","ip","kursas")
+names2=names(data3[,-c(1,2)])
 
 for (i in 3:length(data3[1,])){
 ccfvalues <- ccf(data3$SP350,data3[,i]) #aiskinames laga
@@ -489,12 +513,12 @@ print(ccfvalues)
 }
 
 # TEST KINT MODELIS:
-mod_sp350 = lm( SP350 ~ lag(kk,0) + lag(kk,13) + lag(dll,1) + lag(nedarbas,0) + lag(mhope,0) + lag(phope,1) + lag(pramhope,2) + lag(shope,8) + lag(ul,1) + lag(vhope,2) + lag(vp,0) + lag(mp,4) + lag(gkl,5) + lag(ip,13)  + lag(kursas,0), data=data3)
+mod_sp350 = lm( SP350 ~ lag(kk,0) + lag(kk,13) + lag(dll,1) + lag(nedarbas,0) + lag(mhope,0) + lag(phope,1) + lag(pramhope,2) + lag(shope,8) + lag(shope,0) + lag(shope,1) + lag(ul,1) + lag(vhope,2) + lag(vp,0) + lag(mp,4) + lag(gkl,5) + lag(ip,13)  + lag(kursas,0), data=data3)
 # ccf: kursas - 0.597; 
 
-stepAIC(mod_sp350)
+stepAIC(mod_sp350)$anova
 
-mod_po_aic_sp350 = lm(SP350 ~ lag(kk, 0) + lag(shope, 8) + lag(vhope, 2) + lag(vp, 0) + lag(mp, 4) + lag(gkl, 5) + lag(ip, 13) +  lag(kursas, 0), data=data3)
+mod_po_aic_sp350 = lm(SP350 ~ lag(kk, 0) + lag(shope, 8) + lag(vhope, 2) + lag(vp, 0) + lag(mp, 4) + lag(gkl, 5) + lag(ip, 13) + lag(kursas,0), data=data3)
 
 ncvTest(mod_po_aic_sp350)
 # Kadangi p-value > 0.05, tai H0 hipotezė priimama - duomenys homoskedastiški.
@@ -504,9 +528,9 @@ coeftest(mod_po_aic_sp350, vcov=vcovHC)
 summary(mod_po_aic_sp350)
 
 # PAGR MOD PLIUS PAPILDOMI KINTAMIEJI:
-modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 0) + lag(mhope, 3) + lag(phope, 12) + lag(pramhope, 3) + lag(ul, 10) + lag(gkl, 9) + lag(ip, 1)+ lag(kursas,2)  
+modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 0) + lag(mhope, 3) + lag(phope, 12) + lag(pramhope, 0) + lag(ul, 10) + lag(mp, 1) + lag(gkl, 9) + lag(kursas, 2)  
                      +
-                      lag(kk, 0) + lag(shope, 8) + lag(vhope, 2) + lag(vp, 0) + lag(mp, 4)  # +0 lago, nes SP350 lag(0)
+                      lag(kk, 0) + lag(shope, 8) + lag(vhope, 2) + lag(vp, 0) + lag(ip, 13)  # +0 lago, nes SP350 lag(0)
                      , data = data3)
 
 ncvTest(modelis_po_aic)
@@ -517,48 +541,7 @@ coeftest(modelis_po_aic, vcov=vcovHC)
 summary(modelis_po_aic)
 ```
 
-```{r, - infliacija,  0.147154->0.215864}
-# KORELIACIJA:
-names2=c("SP350","SP500","kk","dll","nedarbas","infliacija","mhope","phope","pramhope","shope","ta","ul","vhope","vp","mp","palukanos","gkl","ip","kursas")
-
-for (i in 3:length(data3[1,])){
-ccfvalues <- ccf(data3$infliacija,data3[,i]) #aiskinames laga
-print(names2[i-2])
-print(ccfvalues)
-}
-
-# TEST KINT MODELIS:
-mod_infliacija = lm( infliacija ~ lag(SP350,0)+ lag(kk,0) + lag(dll,0) + lag(nedarbas,0) + lag(mhope,0) + lag(phope,1) + lag(pramhope,0) + lag(shope,0) + lag(ul,0) + lag(vhope,0) + lag(vp,0) + lag(mp,0) + lag(gkl,5) + lag(ip,0)  + lag(kursas,0), data=data3)
-
-stepAIC(mod_infliacija)
-
-mod_po_aic_infliacija = lm(infliacija ~ lag(SP350, 0) + lag(kk, 0) + lag(nedarbas, 0) + lag(phope, 1) + lag(shope, 0) + lag(vhope, 0) + lag(gkl, 5) + lag(ip, 0) + lag(kursas, 0), data=data3)
-
-mod_po_aic_infliacija_maxccf = lm(infliacija ~ lag(SP350, 12) + lag(nedarbas, 5) + lag(pramhope, 15) + lag(shope, 13) + lag(vhope, 15) + lag(vp, 15) + lag(gkl, 5) + lag(kursas, 9), data=data3)  # max ccf lagai
-
-ncvTest(mod_po_aic_infliacija)
-# Kadangi p-value > 0.05, tai H0 hipotezė priimama - duomenys homoskedastiški.
-
-coeftest(mod_po_aic_infliacija, vcov=vcovHC)
-# kk - 0.15965; phope - 0.14763;
-summary(mod_po_aic_infliacija)
-# pramhope - 0.10411, kai max ccf
-
-# PAGR MOD PLIUS PAPILDOMI KINTAMIEJI:
-modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 1) + lag(infliacija, 2) + lag(mhope, 3) + lag(phope,12) + lag(ul, 10) + lag(gkl, 9) + lag(ip, 4) + lag(kursas,2) 
-                     +
-                      lag(kk, 2) + lag(nedarbas, 2) + lag(shope, 2) + lag(vhope, 2) # +2 lago, nes infliacija lag(2)
-                     , data = data3)
-
-ncvTest(modelis_po_aic)
-# Kadangi p-value > 0.05, tai H0 hipotezė priimama - duomenys homoskedastiški.
-
-coeftest(modelis_po_aic, vcov=vcovHC)
-
-summary(modelis_po_aic)
-```
-
-```{r, + mazmenines prekybos pasitikejimas,  0.013390->0.012702}
+```{r, + mazmenines prekybos pasitikejimas,  0.1876504(0.061922) -> 0.3163326(0.036232)}
 # KORELIACIJA:
 names2=c("SP350","SP500","kk","dll","nedarbas","infliacija","mhope","phope","pramhope","shope","ta","ul","vhope","vp","mp","palukanos","gkl","ip","kursas")
 
@@ -583,9 +566,9 @@ coeftest(mod_po_aic_mhope, vcov=vcovHC)
 summary(mod_po_aic_mhope)
 
 # PAGR MOD PLIUS PAPILDOMI KINTAMIEJI:
-modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 0) + lag(mhope, 3) + lag(phope, 12) + lag(pramhope, 3) + lag(ul, 10) + lag(gkl, 9) + lag(ip, 1)+ lag(kursas,2)  
+modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 0) + lag(mhope, 3) + lag(phope, 12) + lag(pramhope, 0) + lag(ul, 10) + lag(mp, 1) + lag(gkl, 9) + lag(kursas, 2)    
                      +
-                     lag(nedarbas, 3) + lag(ul, 3) + lag(vhope, 4) + lag(vp, 3) # +3 lago, nes mhope lag(3)
+                      lag(nedarbas, 3) + lag(ul, 3) + lag(vhope, 4) + lag(vp, 3) + lag(ip, 11) # +3 lago, nes mhope lag(3)
                      , data = data3)
 
 ncvTest(modelis_po_aic)
@@ -595,7 +578,7 @@ coeftest(modelis_po_aic, vcov=vcovHC)
 summary(modelis_po_aic)
 ```
 
-```{r, +- paslaugu pasitikejimas, 0.052423->0.09776}
+```{r, + paslaugu pasitikejimas,  0.1055229(0.222011) -> 0.175638(0.04838)}
 # KORELIACIJA:
 names2=c("SP350","SP500","kk","dll","nedarbas","infliacija","mhope","phope","pramhope","shope","ta","ul","vhope","vp","mp","palukanos","gkl","ip","kursas")
 
@@ -621,9 +604,9 @@ coeftest(mod_po_aic_phope, vcov=vcovHC)
 summary(mod_po_aic_phope)
 
 # PAGR MOD PLIUS PAPILDOMI KINTAMIEJI:
-modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 0) + lag(mhope, 3) + lag(phope, 12) + lag(pramhope, 3) + lag(ul, 10) + lag(gkl, 9) + lag(ip, 1)+ lag(kursas,2)  
+modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 0) + lag(mhope, 3) + lag(phope, 12) + lag(pramhope, 0) + lag(ul, 10) + lag(mp, 1) + lag(gkl, 9) + lag(kursas, 2)    
                      +
-                      lag(dll, 12) + lag(shope, 12) + lag(ul, 23) + lag(mp, 13) # +12 lago ,nes phope uzlagintas 12
+                      lag(dll, 12) + lag(mhope, 12) + lag(pramhope, 13) + lag(shope, 12) + lag(ul, 23) + lag(mp, 13) + lag(gkl, 21) + lag(ip, 13) + lag(kursas, 12) # +12 lago ,nes phope uzlagintas 12
                      , data = data3)
 
 ncvTest(modelis_po_aic)
@@ -635,7 +618,7 @@ summary(modelis_po_aic)
 
 ```
 
-```{r, + pramones pasitikejimas, 0.107637->0.04886}
+```{r, + pramones pasitikejimas, 0.2407311(0.060074) -> 0.266491(0.022141)}
 # KORELIACIJA:
 names2=c("SP350","SP500","kk","dll","nedarbas","infliacija","mhope","phope","pramhope","shope","ta","ul","vhope","vp","mp","palukanos","gkl","ip","kursas")
 
@@ -660,9 +643,9 @@ coeftest(mod_po_aic_pramhope, vcov=vcovHC)
 summary(mod_po_aic_pramhope)
 
 # PAGR MOD PLIUS PAPILDOMI KINTAMIEJI:
-modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 0) + lag(mhope, 3) + lag(phope, 12) + lag(pramhope, 3) + lag(ul, 10) + lag(gkl, 9) + lag(ip, 1)+ lag(kursas,2)  
+modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 0) + lag(mhope, 3) + lag(phope, 12) + lag(pramhope, 0) + lag(ul, 10) + lag(mp, 1) + lag(gkl, 9) + lag(kursas, 2)    
                      +
-                      lag(kk, 14) + lag(dll, 13) + lag(shope, 3) + lag(vhope, 4) # +3 lago ,nes phope uzlagintas 3
+                       lag(kk, 11) + lag(dll, 10) + lag(shope, 0) + lag(ul, 0) + lag(vhope, 1) + lag(ip, 4) # +0 lago ,nes pramhope uzlagintas 
                      , data = data3)
 
 ncvTest(modelis_po_aic)
@@ -674,7 +657,7 @@ summary(modelis_po_aic)
 
 ```
 
-```{r, + uzsakimu lukesciai,  0.007905->0.01669}
+```{r, +- uzsakymu lukesciai,  0.0443947(0.063816) -> 0.049279(0.079453)}
 # KORELIACIJA:
 names2=c("SP350","SP500","kk","dll","nedarbas","infliacija","mhope","phope","pramhope","shope","ta","ul","vhope","vp","mp","palukanos","gkl","ip","kursas")
 
@@ -699,9 +682,9 @@ coeftest(mod_po_aic_ul, vcov=vcovHC)
 summary(mod_po_aic_ul)
 
 # PAGR MOD PLIUS PAPILDOMI KINTAMIEJI:
-modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 0) + lag(mhope, 3) + lag(phope, 12) + lag(pramhope, 3) + lag(ul, 10) + lag(gkl, 9) + lag(ip, 1)+ lag(kursas,2) 
+modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 0) + lag(mhope, 3) + lag(phope, 12) + lag(pramhope, 0) + lag(ul, 10) + lag(mp, 1) + lag(gkl, 9) + lag(kursas, 2)   
                      +
-                      lag(dll, 10) + lag(vp, 19) + lag(mp, 21) # +10 lago, nes ul lag(10)
+                      lag(dll, 10) + lag(vp, 19) + lag(ip, 14) # +10 lago, nes ul lag(10)
                      , data = data3)
 
 ncvTest(modelis_po_aic)
@@ -712,7 +695,44 @@ coeftest(modelis_po_aic, vcov=vcovHC)
 summary(modelis_po_aic)
 ```
 
-```{r, ++ gamintoju kainu lygis,  0.000174->0.00331}
+```{r, + mažmeninė prekyba,  0.1027893(0.062576) -> 0.113830(0.035405)}
+# KORELIACIJA:
+names2=c("SP350","SP500","kk","dll","nedarbas","infliacija","mhope","phope","pramhope","shope","ta","ul","vhope","vp","mp","palukanos","gkl","ip","kursas")
+
+for (i in 3:length(data3[1,])){
+ccfvalues <- ccf(data3$mp,data3[,i]) #aiskinames laga
+print(names2[i-2])
+print(ccfvalues)
+}
+
+# TEST KINT MODELIS:
+mod_mp = lm( mp ~ lag(SP350,8)+ lag(kk,0) + lag(dll,0) + lag(nedarbas,1) + lag(mhope,1) + lag(phope,1) + lag(pramhope,2) + lag(shope,2) + lag(ul,1) + lag(vhope,11) + lag(vp,11) + lag(gkl,0) + lag(ip,9) + lag(kursas,0), data=data3)
+
+stepAIC(mod_mp)
+
+mod_po_aic_mp = lm(mp ~ lag(SP350, 8) + lag(kk, 0) + lag(dll, 0) + lag(phope, 1) + lag(shope, 2) + lag(ul, 1) + lag(vhope, 11) + lag(vp, 11) + lag(gkl, 0) + lag(ip, 9) + lag(kursas, 0), data=data3)
+
+ncvTest(mod_po_aic_mp)
+# Kadangi p-value > 0.05, tai H0 hipotezė priimama - duomenys homoskedastiški.
+
+coeftest(mod_po_aic_mp, vcov=vcovHC)
+summary(mod_po_aic_mp)
+
+# PAGR MOD PLIUS PAPILDOMI KINTAMIEJI:
+modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 0) + lag(mhope, 3) + lag(phope, 12) + lag(pramhope, 0) + lag(ul, 10) + lag(mp, 1) + lag(gkl, 9) + lag(kursas, 2)   
+                     +
+                       lag(kk, 1) + lag(dll, 1) + lag(shope, 3) + lag(vhope, 12) + lag(vp, 12) + lag(ip, 10)  # +1 lago, nes mp lag(1)
+                     , data = data3)
+
+ncvTest(modelis_po_aic)
+# Kadangi p-value > 0.05, tai H0 hipotezė priimama - duomenys homoskedastiški.
+
+coeftest(modelis_po_aic, vcov=vcovHC)
+
+summary(modelis_po_aic)
+```
+
+```{r, ++ gamintoju kainu lygis,  -1.5685382(0.001381) -> -1.4211903(0.0093286)}
 # KORELIACIJA:
 names2=c("SP350","SP500","kk","dll","nedarbas","infliacija","mhope","phope","pramhope","shope","ta","ul","vhope","vp","mp","palukanos","gkl","ip","kursas")
 
@@ -737,9 +757,9 @@ summary(mod_po_aic_gkl)
 # mp - 0.11474
 
 # PAGR MOD PLIUS PAPILDOMI KINTAMIEJI:
-modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 0) + lag(mhope, 3) + lag(phope, 12) + lag(pramhope, 3) + lag(ul, 10) + lag(gkl, 9) + lag(ip, 1)+ lag(kursas,2)
+modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 0) + lag(mhope, 3) + lag(phope, 12) + lag(pramhope, 0) + lag(ul, 10) + lag(mp, 1) + lag(gkl, 9) + lag(kursas, 2)  
                      +
-                      lag(kk, 19) + lag(nedarbas, 11) + lag(vhope, 21) + lag(vp, 10) + lag(mp, 9) # +9 lago, nes gkl lag(9)
+                      lag(kk, 19) + lag(nedarbas, 11) + lag(vhope, 21) + lag(vp, 10) # +9 lago, nes gkl lag(9)
                      , data = data3)
 
 ncvTest(modelis_po_aic)
@@ -750,46 +770,7 @@ coeftest(modelis_po_aic, vcov=vcovHC)
 summary(modelis_po_aic)
 ```
 
-```{r, +- industrine produkcija,  0.127604->0.142865}
-# KORELIACIJA:
-names2=c("SP350","SP500","kk","dll","nedarbas","infliacija","mhope","phope","pramhope","shope","ta","ul","vhope","vp","mp","palukanos","gkl","ip","kursas")
-
-for (i in 3:length(data3[1,])){
-ccfvalues <- ccf(data3$ip,data3[,i]) #aiskinames laga
-print(names2[i-2])
-print(ccfvalues)
-}
-
-# TEST KINT MODELIS:
-mod_ip = lm( ip ~ lag(SP350,8)+ lag(kk,0) + lag(dll,5) + lag(nedarbas,1) + lag(mhope,4) + lag(phope,8) + lag(pramhope,8) + lag(shope,6) + lag(ul,4) + lag(vhope,5) + lag(vp,6) + lag(mp,0) + lag(gkl,0) + lag(kursas,0), na.action=na.omit, data=data3)
-# ccf: kk - 0.750; 
-
-stepAIC(mod_ip)
-
-mod_po_aic_ip = lm(ip ~ lag(SP350, 8) + lag(kk, 0) + lag(phope, 8) + lag(shope, 6) + lag(ul, 4) + lag(vp, 6) + lag(mp, 0) + lag(gkl, 0), data=data3)
-
-ncvTest(mod_po_aic_ip)
-# Kadangi p-value > 0.05, tai H0 hipotezė priimama - duomenys homoskedastiški.
-
-coeftest(mod_po_aic_ip, vcov=vcovHC)
-summary(mod_po_aic_ip)
-
-
-# PAGR MOD PLIUS PAPILDOMI KINTAMIEJI:
-modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 0) + lag(mhope, 3) + lag(phope, 12) + lag(pramhope, 3) + lag(ul, 10) + lag(gkl, 9) + lag(ip, 1)+ lag(kursas,2)
-                     +
-                      lag(kk, 1) + lag(shope, 7) + lag(vp, 7) + lag(mp, 1) # +1 lago, nes ip lag(1)
-                     , data = data3)
-
-ncvTest(modelis_po_aic)
-# Kadangi p-value > 0.05, tai H0 hipotezė priimama - duomenys homoskedastiški.
-
-coeftest(modelis_po_aic, vcov=vcovHC)
-
-summary(modelis_po_aic)
-```
-
-```{r, + kursas,  0.005209->0.016644}
+```{r, + kursas,  0.3456334(0.006201) -> 0.2778098(0.0321269)}
 # KORELIACIJA:
 names2=c("SP350","SP500","kk","dll","nedarbas","infliacija","mhope","phope","pramhope","shope","ta","ul","vhope","vp","mp","palukanos","gkl","ip","kursas")
 
@@ -814,9 +795,9 @@ coeftest(mod_po_aic_ip, vcov=vcovHC)
 summary(mod_po_aic_ip)
 
 # PAGR MOD PLIUS PAPILDOMI KINTAMIEJI:
-modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 0) + lag(mhope, 3) + lag(phope, 12) + lag(pramhope, 3) + lag(ul, 10) + lag(gkl, 9) + lag(ip, 1)+ lag(kursas,2) 
+modelis_po_aic <- lm(formula = OMX ~ lag(SP350, 0) + lag(mhope, 3) + lag(phope, 12) + lag(pramhope, 0) + lag(ul, 10) + lag(mp, 1) + lag(gkl, 9) + lag(kursas, 2)   
                      +
-                      lag(kk, 14) + lag(nedarbas, 10) + lag(shope, 13) # +2 lago, nes kursas lag(2)
+                      lag(kk, 14) + lag(nedarbas, 10) + lag(shope, 13) + lag(ip, 4) # +2 lago, nes kursas lag(2)
                      , data = data3)
 
 ncvTest(modelis_po_aic)
