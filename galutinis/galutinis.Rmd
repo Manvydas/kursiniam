@@ -280,16 +280,15 @@ ${OMX}_t - {rf}_t = {\beta}_0 + {SP350}_t {\beta}_1 + \textit{kasyba ir karjerų
 
 ${OMX}_t - {rf}_t = {\beta}_0 + {SP350}_t {\beta}_1 + \textit{mažmeninės prekybos pasitikėjimas}_{t-3} {\beta}_2 + \textit{paslaugų sektoriaus pasitikėjimas}_{t-12} {\beta}_3 + \textit{pramonės pasitikėjimas}_t {\beta}_4 + \textit{užsakymų lūkesčiai}_{t-10} {\beta}_5 + \textit{mažmeninė prekyba}_{t-1} {\beta}_6 + \textit{gamintojų kainų lygis}_{t-9} {\beta}_7 + \textit{EUR/DOL kursas}_{t-2} {\beta}_8 + {u}_t$
 
-\newpage
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Atliktas paklaidų homoskedastiškumo testas - paklaidų homoskedastiškumo prielaida pažeista - paklaidų dispersija nėra konstanta. Tai gali iškreipti modelio statistines išvadas, todėl taikoma stabilizuotų liekamųjų paklaidų regresija. Pritaikyta HC3 pataisa. Rezultatai pateikti 3 lentelėje.
 
 ```{r, message=FALSE, echo=FALSE, results='asis'}
 modelis=lm(OMX ~ SP350  + lag(mhope, 3) + lag(phope,12) + lag(pramhope,0) + lag(ul,10) + lag(mp,1) + lag(gkl, 9) + lag(kursas,2),data=data3) 
-a<-pander::pander(coeftest(modelis, vcov=vcovHC(modelis,type="HC3"))[,], split.cell = 80, split.table = Inf, caption="Regresijos rezultatai")
+pander::pander(coeftest(modelis, vcov=vcovHC(modelis,type="HC3"))[,], split.cell = 80, split.table = Inf, caption="Regresijos rezultatai")
 r2<-kable(summary(modelis)[9])
 ```
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Didelė dalis turimų makroekonominių duomenų yra nereikšmingi, tačiau keletas kietų ir minkštų makroekonominių rodiklių reikšmingai veikia OMX Vilnius grąžas. Modelis paaiškina apie 40 procentų OMX Vilnius indekso grąžos pokyčių. \ref{Regresijos rezultatai}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Didelė dalis turimų makroekonominių duomenų yra nereikšmingi, tačiau keletas kietų ir minkštų makroekonominių rodiklių reikšmingai veikia OMX Vilnius grąžas. Modelis paaiškina apie 40 procentų OMX Vilnius indekso grąžos pokyčių. 
 
 # Dvigubos atrankos metodas
 
@@ -407,7 +406,8 @@ akc = melt(a, id=c("menesiai"))
 ggplot(akc) + geom_line(aes(x=menesiai, y=value*100, colour=variable)) +
   scale_colour_manual(values=c(1:2))+ylab("% pokytis")+
   guides(col=guide_legend(title="Kintamieji")) +
-  geom_hline(yintercept = 2) + geom_hline(yintercept =-2)
+  geom_hline(yintercept = 2) + geom_hline(yintercept =-2) +
+  ggtitle("Prognozuojamų ir realių rizikų premijinės OMX Vilniaus indekso grąžos")
 
 ```
 
@@ -496,7 +496,7 @@ colnames(lentele) = c("pradinės imties dydis","pirkimo strategijos grąža %","
 \newpage
 
 ```{r, echo=FALSE}
-pander::pander(lentele, split.cell = 80, split.table = Inf, cation="Strategijų tikrinimas")
+pander::pander(lentele, split.cell = 80, split.table = Inf, caption="Strategijų tikrinimas")
 ```
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Pradinis imties dydis arba kaip anksčiau buvo vadintas *k*-tuoju mėnesiu strategijos apraše, yra mėnesis nuo kurio pradedama naudotis strategijomis. Svarbias rodiklis yra tikimybė, kad geriau už atsitiktinį pirkimą arba pardavimą, nes jis parodo kokia dalis Monte Carlo metodu generuotų atsitiktinių pirkimų arba pardavivimų buvo aplenktos su strategijomis. Jei yra aplenkiama 0,5 dalis generuotų atsitiktinių pirkimų ar pardavimų, tai reikštų geresnį nei vidutinis investavimas rezultatą.
