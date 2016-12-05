@@ -384,7 +384,7 @@ formula(modprog)
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Prognozuojamų ir realių rizikų premijinės OMX Vilniaus indekso grąžos:
 
-```{r, warning=F, echo=FALSE}
+```{r, warning=F, echo=FALSE, dev='quartz_pdf'}
 progn=numeric()
  for(i in 12:168){
    modelis = lm(OMX ~ lag(SP350,1)  + lag(phope,12)  + lag(ul,10)+lag(mhope, 3)+ lag(gkl, 9)+  lag(ip,11)+lag(kursas,1),data=data3)  
