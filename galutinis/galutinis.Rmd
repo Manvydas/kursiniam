@@ -240,7 +240,7 @@ p[,1] = round(p[,1], digits = 2)
 p=t(p)
 p=data.frame(p)
 kable(p[,1:10])
-kable(p[,11:20])
+kable(p[,11:20],caption="ąčęėįšųū90-ž")
 data3$OMX=data3$OMX-data3$palukanos
 data3$SP350=data3$SP350-data3$palukanos
 data3$SP500=data3$SP500-data3$palukanos
