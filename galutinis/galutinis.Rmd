@@ -13,6 +13,8 @@ header-includes:
 - \usepackage{graphicx}
 - \usepackage{lmodern}
 - \pagestyle{plain}
+- \usepackage{setspace}
+- \linespread{1.5}
 output:
   pdf_document:
     latex_engine: xelatex
@@ -94,7 +96,7 @@ Atidavimo į Katedrą data \underline{\hskip 94pt} }
 
 \section*{Santrauka}
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Makroekonomiai rodikliai gali padėti nuspėti ateities verslo ciklą, kuris turi įtakos akcijų pelningumui. Naudojant Lietuvos makroekonominius duomenis, matuojamos  rizikos premijos, kurios gaunamos už riziką investuojant Lietuvos rinkoje. Šie duomenys iliustruoja Lietuvos ekonominę būklę.  Sudarytas „OMX Vilnius“ indekso grąžos įkainojimo ir prognozavimo modelis remiantis arbitražo įkainojimo teoremą (angl. APT) siekiant išsiaiškinti, kokie Lietuvos makroekonominiai rodikliai veikia „OMX Vilnius“ indekso grąžas. Sukurta prekybos strategija naudojant sukurtą prognozavimo modelį. Strategija palyginta su atsitiktiniu investavimu. Tirti mėnesiniai duomenys nuo 2002 iki 2016 metų. Dalis makroekonominių rodiklių yra reikšmingi vertinant indekso kainos pokyčius. Jų reikšmingumas tirtas dvigubos atrankos metodu. Sukurta strategija ir prognozavimo modelis padeda geriau investuoti lyginant su atsitiktiniu investavimu.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Makroekonomiai rodikliai gali padėti nuspėti ateities verslo ciklą, kuris turi įtakos akcijų pelningumui. Naudojant Lietuvos makroekonominius duomenis, matuojamos  rizikos premijos, kurios gaunamos už riziką investuojant Lietuvos rinkoje. Šie duomenys iliustruoja Lietuvos ekonominę būklę.  Sudarytas „OMX Vilnius“ indekso grąžos įkainojimo ir prognozavimo modelis remiantis arbitražo įkainojimo teoremą (angl. APT) siekiant išsiaiškinti, kurie Lietuvos makroekonominiai rodikliai veikia „OMX Vilnius“ indekso grąžas. Sukurta prekybos strategija naudojant sukurtą prognozavimo modelį. Strategija palyginta su atsitiktiniu investavimu. Tirti mėnesiniai duomenys nuo 2002 iki 2016 metų. Dalis makroekonominių rodiklių yra reikšmingi vertinant indekso kainos pokyčius. Jų reikšmingumas tirtas dvigubos atrankos metodu. Sukurta strategija ir prognozavimo modelis padeda geriau investuoti lyginant su atsitiktiniu investavimu.
 
 \newpage
 \tableofcontents
@@ -102,11 +104,11 @@ Atidavimo į Katedrą data \underline{\hskip 94pt} }
 
 # Įvadas
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Akcijų pokyčiams yra reikšminga ekonomikos būsena. Ekonominis ciklas turi tendenciją kilti, tačiau jos plėtra vyksta tai sparčiau, tai lėčiau ir galimas nuosmukis. Jei ekonomika auga, tuomet dauguma įmonių padidina savo pelną ir gamybą. Priešingas procesas, kai ekonomika traukiasi. Egzistuoja makroekonominiai rodikliai tokie kaip infliacija, valiutos kursas, palūkanų dydis, kurie padeda įvertinti ekonominę būklę, kuri yra svarbi pelningumui iš aktyvų. Todėl galima būtų manyti, jog makroekonominiai rodikliai koreliuoja su aktyvų grąžomis. Tačiau markoekonominių rodiklių poveikis akcijų rinkoms yra nevienareikšmis. Pavyzdžiui, yra atliktas tyrimas Rusijos rinkoje\cite{rusija}, remiantis arbitražo įkainojimo teorija, kurio tyrimo autorius nesugebėjo rasti reikšmingos makroekonominių duomenų  įtakos akcijų grąžoms. O Šri Lankos\cite{sri_lanka} ir Indijos\cite{indija} rinkoms atlikti empiriniai tyrimai parodė, jog makroekonominiai rodikliai turi įtakos akcijų grąžai. Todėl nutarta ištirti Lietuvos akcijų rinkos grąžos priklausomybę nuo makro rodiklių remiantis arbitražo įkainojimo teorija (angl. APT) iš daugelių rodiklių atrinkti svarbiausius. 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Akcijų pokyčiams yra reikšminga ekonomikos būsena. Ekonominis ciklas turi tendenciją kilti, tačiau jos plėtra vyksta tai sparčiau, tai lėčiau ir galimas nuosmukis. Jei ekonomika auga, tuomet dauguma įmonių padidina savo pelną ir gamybą. Priešingas procesas, kai ekonomika traukiasi. Egzistuoja makroekonominiai rodikliai tokie kaip infliacija, valiutos kursas, palūkanų dydis, kurie padeda įvertinti ekonominę būklę, kuri yra svarbi pelningumui iš aktyvų. Todėl galima būtų manyti, jog makroekonominiai rodikliai koreliuoja su aktyvų grąžomis. Tačiau markoekonominių rodiklių poveikis akcijų rinkoms yra nevienareikšmis. Pavyzdžiui, yra atliktas tyrimas Rusijos rinkoje\cite{rusija}, remiantis arbitražo įkainojimo teorija, kurio tyrimo autorius nesugebėjo rasti reikšmingos makroekonominių duomenų  įtakos akcijų grąžoms. O Šri Lankos\cite{sri_lanka} ir Indijos\cite{indija} rinkoms atlikti empiriniai tyrimai parodė, jog makroekonominiai rodikliai turi įtakos akcijų grąžai. Todėl nutarta ištirti Lietuvos akcijų rinkos grąžos priklausomybę nuo makroekonominių rodiklių remiantis arbitražo įkainojimo teorija (angl. APT) iš daugelių rodiklių atrinkti svarbiausius. 
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Kylančiose rinkose daug dažniau pasitaiko neteisingai įkainotų finansinių instrumentų nei išvystytose (efektyviose) rinkose. Lietuvos rinką galime priskirti besivystančiosios rinkos kategorijai ir galbūt tyrimo išvadas, naudojant APT, galima bus praktiškai pritaikyti pelningiau investuojant. Todėl kurtas prognozuojantis modelis su investavimo(tiksliau spekuliavimo) strategija ir ji palyginta su atsitiktinu investavimu.
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pirmoje dalyje bus pateikta rizikos ir diversifikavimo svarba ir šio tyrimo matuojamas objektas - rizikos premijos. Vėliau aptariamas aktyvų įkainojimo modelis (CAPM) ir arbitražinė aktyvų įkainojimo teorija (APT) bei jų pritaikymas tyrime. Kadangi jų prielaidos mažai realistiškos, darbe bus sukurtos ir naudojamos kitos prielaidos, tačiau jos sukurtos remiantis diversifikavimo teorija, CAPM ir APT.  Kitoje dalyje sudaromas įkainojimo modelis ir tikrinamas rodiklių reikšmingumas naudojant dvigubos atrankos metodologiją. Vėliau kuriamas prognozuojantis modelis, kuriuo bus bandoma nuspėti kito mėnesio OMX Vilniaus indekso grąžą ir naudojantis sukurta strategija lyginama su atsitiktiniu investavimo rezultatais, atsitiktinį investavimą simuliuojant monte carlo metodu. 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pirmoje dalyje bus pateikta rizikos ir diversifikavimo svarba ir šio tyrimo matuojamas objektas - rizikos premijos. Vėliau aptariamas aktyvų įkainojimo modelis (CAPM) ir arbitražinė aktyvų įkainojimo teorija (APT) bei jų pritaikymas tyrime. Kadangi jų prielaidos mažai realistiškos, darbe bus sukurtos ir naudojamos kitos prielaidos, tačiau jos sukurtos remiantis diversifikavimo teorija, CAPM ir APT.  Kitoje dalyje sudaromas įkainojimo modelis ir tikrinamas rodiklių reikšmingumas naudojant dvigubos atrankos metodologiją. Vėliau kuriamas prognozuojantis modelis, kuriuo bus bandoma nuspėti kito mėnesio OMX Vilniaus indekso grąžą ir naudojantis sukurta strategija lyginama su atsitiktiniu investavimo rezultatais, atsitiktinį investavimą simuliuojant Monte Carlo metodu. 
 \newpage
 
 # Aktyvų įkainojimas
@@ -152,7 +154,7 @@ Pagal CAPM, akcijos tikėtinos grąžos premija priklauso nuo rinkos rezultatų 
 
 7) kapitalo rinkos yra pusiausvyroje.
 
-Iš šių prielaidų daroma implikacija, jog kiekvienas investuotojas turi po mažą dalį visos rinkos ir tam tikrą nerizikingo aktyvo kiekį savo portfelyje, o nerizikingų aktyvo svoris portfelyje nustatomas pagal investuotojų norimą rizikos prisiėmimo kiekį.Teorijos naudojimas ir jos interpretacija aptariama pasitelkiant 2 pav.:
+Iš šių prielaidų seka, jog kiekvienas investuotojas turi po mažą dalį visos rinkos ir tam tikrą nerizikingo aktyvo kiekį savo portfelyje, o nerizikingų aktyvo svoris portfelyje nustatomas pagal investuotojų norimą rizikos prisiėmimo kiekį.Teorijos naudojimas ir jos interpretacija aptariama pasitelkiant 2 pav.:
 
 ![](CAPM.png)
 
@@ -162,10 +164,12 @@ CAPM atveju beta(rizikos veiksnys) yra pasirenkamas tos pačios rinkos indeksas,
 
 ## Arbitražinė aktyvų įkainojimo teorija (APT)
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Kadangi yra tiriamas rizikingumas investuojant Lietuvos rinkoje naudojant makroekonominius duomenis, rizikos veiksnių bus ne vienas kaip CAPM atveju, o daugiau. Tačiau CAPM yra svarbus tuo, kad jo pagrindu buvo kuriami ir tobulinami kiti aktyvų įkainojimo modeliai, kurie galėjo turėti mažiau apribojimų ir prielaidų, taip pat turėti ir daugiau darančių įtaką rodiklių. Vienas iš patobulintų CAPM yra arbitražinė aktyvų įkainojimo teorija(angl. APT).  1966 m. atsirado pirmosios arbitražo įkainojimo teorijos idėjos, kai B. F. King (1966) pradėjo finansinių aktyvų grąžos pokyčius aiškinti ekonominiais duomenimis. Tačiau APT teorijos kūrėju yra laikomas S. A. Ross (1976), kuris pateikė  teorijai reikiamas prielaidas ir matematiškai pagrindė šią teoriją. Teorijos pagrindas yra panašus, kaip ir CAPM, t. y. investuotojai reikalauja rizikos premijos už nediversifikuotos (sisteminės) rizikos prisisėmimą. Tačiau norint praktiškai pritaikyti APT, reikia: apibrėžti veiksnius, įvertinti tų veiksnių įtaką portfeliui, įvertinti veiksnių premiją. APT neatsako į klausimus apie veiksnių gausumą ir svarbumą, į kuriuos turi būti atsižvelgta vertinant laukiamas pajamas. Dažniausiai išskiriama nuo 3 iki 5 tokių
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Kadangi yra tiriamas rizikingumas investuojant Lietuvos rinkoje naudojant makroekonominius duomenis, rizikos veiksnių bus ne vienas kaip CAPM atveju, o daugiau. Tačiau CAPM yra svarbus tuo, kad jo pagrindu buvo kuriami ir tobulinami kiti aktyvų įkainojimo modeliai, kurie galėjo turėti mažiau apribojimų ir prielaidų, taip pat turėti ir daugiau darančių įtaką rodiklių. 
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Vienas iš patobulintų CAPM yra arbitražinė aktyvų įkainojimo teorija(angl. APT).  1966 m. atsirado pirmosios arbitražo įkainojimo teorijos idėjos, kai B. F. King (1966) pradėjo finansinių aktyvų grąžos pokyčius aiškinti ekonominiais duomenimis. Tačiau APT teorijos kūrėju yra laikomas S. A. Ross (1976), kuris pateikė  teorijai reikiamas prielaidas ir matematiškai pagrindė šią teoriją. Teorijos pagrindas yra panašus, kaip ir CAPM, t. y. investuotojai reikalauja rizikos premijos už nediversifikuotos (sisteminės) rizikos prisisėmimą. Tačiau norint praktiškai pritaikyti APT, reikia: apibrėžti veiksnius, įvertinti tų veiksnių įtaką portfeliui, įvertinti veiksnių premiją. APT neatsako į klausimus apie veiksnių gausumą ir svarbumą, į kuriuos turi būti atsižvelgta vertinant laukiamas pajamas. Dažniausiai išskiriama nuo 3 iki 5 tokių
 veiksnių. Jos formulė:
 
-$$E(Y) - rf = {\beta}_0 + {X}_1 {\beta}_1 + {X}_2 {\beta}_2 + {X}_3 {\beta}_3,$$
+$$E(Y) - rf = {\beta}_0 + {X} {\beta}_1 + {Z}_1 {\beta}_2 + ... + {Z}_n {\beta}_{n+1},$$
 
 čia E(*Y*) - vidutinė akcijos grąža,
 
@@ -175,9 +179,11 @@ $$E(Y) - rf = {\beta}_0 + {X}_1 {\beta}_1 + {X}_2 {\beta}_2 + {X}_3 {\beta}_3,$$
 
 $\beta$ - aktyvų rizikingumo jautrumas tam tikriems rodikliams,
 
-*X* - rodiklių rezultatai.
+*X* - rinkos grąža
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Šis aktyvų įkainojimo modelis yra grindžiamas tuo, jog aktyvo premijinį pelningumą galima numatyti naudojant analizuojamo aktyvo ir daugelio įprastų rizikos veiksnių tarpusavio ryšį. Nenurodoma kokie būtent veiksniai yra svarbūs rizikos premijai, tačiau sukurta S. Ross (1976) arbitražo įkainojimo teorija numato ryšį tarp portfelio pelningumo pasitelkiant daugelio nepriklausomų kintamųjų (makroekonominių veiksnių, tokių kaip infliacija, ekonomikos augimas, tarptautinės gamybos apimtis, palūkanų normos ir t.t.) tiesinę kombinaciją. Darbe bus tiriamas įvairių makroekonominių rodiklių reikšmingumas grąžom ir gebėjimas prognozuoti grąžas remiantis praeities duomenimis. Taigi, pasitelkiant šią įkainojimo teoriją, bus siekiama pasipelnyti iš gerai įvertintos kito mėnesio OMX Vilniaus indekso grąžos indeksą perkant arba skolinantis ir parduodant (short sell angl.) OMX Vilniaus indeksą, jei numatomas kito mėnesio neigiama grąža.
+*Z* - makroekonominiai veiksniai.
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Šis aktyvų įkainojimo modelis yra grindžiamas tuo, jog aktyvo premijinį pelningumą galima numatyti naudojant analizuojamo aktyvo ir daugelio įprastų rizikos veiksnių tarpusavio ryšį. Nenurodoma kurie būtent veiksniai yra svarbūs rizikos premijai, tačiau sukurta S. Ross (1976) arbitražo įkainojimo teorija numato ryšį tarp portfelio pelningumo pasitelkiant daugelio nepriklausomų kintamųjų (makroekonominių veiksnių, tokių kaip infliacija, ekonomikos augimas, tarptautinės gamybos apimtis, palūkanų normos ir t.t.) tiesinį derinį. Darbe bus tiriamas įvairių makroekonominių rodiklių reikšmingumas grąžoms ir gebėjimas prognozuoti grąžas remiantis praeities duomenimis. Taigi, pasitelkiant šią įkainojimo teoriją, bus siekiama pasipelnyti iš gerai įvertintos kito mėnesio OMX Vilniaus indekso grąžos indeksą perkant arba skolinantis ir parduodant (angl. short sell) OMX Vilniaus indeksą, jei numatomas kito mėnesio neigiama grąža.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Taip pat APT prielaidos yra paprastesnės už CAPM, tačiau vis tiek yra ginčytinos ir negalime teigti, jog realistiškos. 
 
@@ -193,11 +199,11 @@ $\beta$ - aktyvų rizikingumo jautrumas tam tikriems rodikliams,
 
 ![](pav.png)
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3 pav. Juoda  tiese B yra S&P 500  indekso vertybinių popierių rinkos tiesė (SML), taškas A yra portfelis, kuris yra aukščiau tiesės. Kai rinka pasiekusi pusiausvyrą, remiantis CAPM tokia situacija neįmanoma, nes galimas tik vienas visiems prieinamas optimalus portfelis. Tačiau pavaizduota situacija yra praktiškai galima. Pagal APT tokia situacija galima, kai yra daugiau rizikos veiksnių nei įskaičiuota modelyje.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Interpretuodami APT modelį grafiškai (3 pav.) pastebėsime, kad juoda  tiesė B yra S&P 500  indekso vertybinių popierių rinkos tiesė (SML), taškas A yra portfelis, kuris yra aukščiau tiesės. Kai rinka pasiekusi pusiausvyrą, remiantis CAPM tokia situacija neįmanoma, nes galimas tik vienas visiems prieinamas optimalus portfelis. Tačiau pavaizduota situacija yra praktiškai galima. Pagal APT tokia situacija galima, kai yra daugiau rizikos veiksnių nei įskaičiuota modelyje.
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Taigi investuotojai pasitelkia šią įkainojimo teoriją, siekdami pasipelnyti iš neteisingai įvertintų (dažniausiai nepakankamai įvertintų) aktyvų. Tačiau neteisingai įkainoto aktyvo kaina skirsis nuo tos, kuri nustatoma šio modelio dėka. Tokiu būdu investuotojai, norintys pasinaudoti arbitražu ir gauti faktiškai nerizikingą pelną, sieks palaikyti trumpas pervertinto aktyvo pozicijas ir kartu laikyti ilgas portfelio (kurio pagrindu yra atliekami APT skaičiavimai) pozicijas.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Taigi investuotojai pasitelkia šią įkainojimo teoriją, siekdami pasipelnyti iš neteisingai įvertintų, dažniausiai nepakankamai įvertintų, aktyvų. Tačiau neteisingai įkainoto aktyvo kaina skirsis nuo tos, kuri nustatoma šio modelio dėka. Tokiu būdu investuotojai, norintys pasinaudoti arbitražu ir gauti faktiškai nerizikingą pelną, sieks palaikyti trumpas pervertinto aktyvo pozicijas ir kartu laikyti ilgas portfelio, kurio pagrindu yra atliekami APT skaičiavimai, pozicijas.
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Jei APT prielaidos patenkinamos, tuomet laukiami pelningumai bus išsidėstę arti SML, o aktyvas turės tiek rizikos charakteristikų, kiek yra veiksnių. APT teorijos prielaidos yra artimesnės realybei negu CAPM, nes ne visi investuotojai elgiasi vienodai rinkoje, net jei jų elgsena grindžiama racionalumu, t. y. APT nereikalauja CAPM prielaidų tenkinimo dėl investuotojų naudingumo funkcijų. Be to, ne kiekvienas investuotojas yra linkęs turėti rinkos portfelį kaip vienintelę alternatyvą, t. y. APT nereikalauja CAPM prielaidos tenkinimo dėl rinkos portfelio savybių (kad jis apima visus rizikingus aktyvus ir yra efektyvus vidurkio-dispersijos prasme).
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Jei APT prielaidos patenkinamos, tuomet laukiami pelningumai bus išsidėstę arti SML, o aktyvas turės tiek rizikos charakteristikų, kiek yra veiksnių. APT teorijos prielaidos yra artimesnės realybei negu CAPM, nes ne visi investuotojai elgiasi vienodai rinkoje, net jei jų elgsena grindžiama racionalumu, t. y. APT nereikalauja CAPM prielaidų tenkinimo dėl investuotojų naudingumo funkcijų. Be to, ne kiekvienas investuotojas yra linkęs turėti rinkos portfelį kaip vienintelę alternatyvą, t. y. APT nereikalauja CAPM prielaidos tenkinimo dėl rinkos portfelio savybių, kad jis apima visus rizikingus aktyvus ir yra efektyvus vidurkio-dispersijos prasme.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Naudojant Lietuvos makroekonominius duomenis, matuojama  rizikos premijos, kurios gaunamos už riziką investuojant Lietuvos rinkoje. Makroekonominiai duomenys iliustruoja Lietuvos ekonominę būklę. 
 
@@ -205,12 +211,12 @@ $\beta$ - aktyvų rizikingumo jautrumas tam tikriems rodikliams,
 
 # Duomenų transformacijos
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OMX Vilnius indeksas transformuojamas į mėnesinius procentinius pokyčius: $$r(t) = (log(X(t)) – log(X(t-1)) )$$,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OMX Vilnius indeksas transformuojamas į mėnesinius procentinius pokyčius: $$r(t) = \log{X(t)}-\log{X(t-1)} ,$$
 čia *X(t)* - OMX indekso mėnesinė kaina nuo laiko (mėnesio) t, *r(t)* yra indekso mėnesinis pokytis procentais.
 Tokiu pačiu būdu gaunama kitų akcijų indeksų grąža logaritmuojant ir imant pokyčius  S&P350 Europe indeksų kainas, kasybos ir karjerų eksploatacijos, mažmeninės prekybos, industrinės produkcijos indeksus. Euribor buvo pateiktas metinėmis palūkanomis, transformuojami į mėnesines palūkanas. Dolerio/euro valiutų kursas, pasitikėjimo ir lūkesčių rodikliai yra imami mėnesiniai pokyčiai.
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Tikrinami duomenys po transformacijų ar turi vienetinę šaknį (stacionarumo tikrinimas), atliekamas Dickey-Fuller testas:
-```{r, message=FALSE, echo=FALSE}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Tikrinami duomenys po transformacijų ar turi vienetinę šaknį (stacionarumo tikrinimas), atliekamas Dickey-Fuller testas. Rezultatai pateikti 1 lentelėje.
+```{r, message=FALSE, echo=FALSE, options(OutDec= ",") }
 data=read.csv("rawdata.csv")
 
 data[ data == ":" ] = NA
@@ -240,7 +246,7 @@ p[,1] = round(p[,1], digits = 2)
 p=t(p)
 p=data.frame(p)
 kable(p[,1:10])
-kable(p[,11:20],caption="ąčęėįšųū90-ž")
+kable(p[,11:20], caption="Vienetinės šaknies hipotezių tikrinimas")
 data3$OMX=data3$OMX-data3$palukanos
 data3$SP350=data3$SP350-data3$palukanos
 data3$SP500=data3$SP500-data3$palukanos
@@ -252,13 +258,13 @@ Data=as.yearmon(Data, "%YM%m")
 data3=cbind.data.frame(Data, data3)
 ```
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Visų kintamųjų, išskyrus infliaciją, p - value mažiau už 0.05, galime atmesti H0, kad turi vienetinę šaknį. Visi kintamieji, išskyrus infliaciją, yra stacionarūs. Reiškia visus duomenys, išskyrus infliaciją, galima naudoti tyrime.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Visų kintamųjų, išskyrus infliaciją, p - reikšmė mažiau už 0.05, galime atmesti H0, kad turi vienetinę šaknį. Visi kintamieji, išskyrus infliaciją, yra stacionarūs. Reiškia visus duomenys, išskyrus infliaciją, galima naudoti tyrime.
 
 \newpage
 
 # Makroekonominių rodiklių reikšmingumas 
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Yra du pagrindiniai tikslai: ištirti reikšmingumą ir prognozuoti ateities grąžas naudojant makroekonominius duomenis. Remiamasi anksčiau aptarta teorija, tačiau su pakitusiomis prielaidomis. Manoma, kad CAPM ir APT prielaidos nėra realistiškos, taip pat manoma, jog griežčiausia efektyviosios rinkos hipotezė negalioja, jog vis dėlto yra viešai prieinama informacija (makroekonominiai duomenys), kuri padeda pelningiau investuoti. Tačiau remiames teorijų išvadomis apie rinkų dėsningumus. Diversifikavus portfelį lieka tik sisteminė rizika, už kurią gauname rizikos premiją. Sudarytas portfelis iš OMX Vilniaus indekso yra gan neblogai diversifikuotas, turintis dešimtis skirtingų akcijų, todėl bus manoma, jog lieka tik sisteminės rizikos. O sisteminė rizika nusako kokio dydžio turi būti premijinė grąža, t. y. kuo didesnė sisteminė rizika, tuo didesnio pelno turėtume laukti. Nustatant rizikos veiksnius vadovaujamasi CAPM ir APT logika, jog reikia įtraukti didesnės rinkos poveikį portfeliui ir makroekonominius duomenis, o jų priklausomybė su premijine portfelio grąža turėtų būti tiesinė. Todėl į prognozavimo ir reikšmingumo modelį įtraukiamas S&P 350 Europe indeksas kaip veiksnys paaškinantis portfelio, sudaryto iš OMX Vilniaus indekso, premijines grąžas, nes Europos rinką galime teigti, jog reprezentuoja S&P 350 Europe, Lietuvos rinka priklausoma nuo Europos rinkos. Tai darbo prielaidos yra tokios:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Šioje darbo dalyje tiriamas makroekonominių duomenų statistinis reikšmingumas. Remiamasi anksčiau aptarta teorija, tačiau su pakitusiomis prielaidomis. Manoma, kad CAPM ir APT prielaidos nėra realistiškos. Taip pat manoma, jog griežčiausia efektyviosios rinkos hipotezė negalioja, jog vis dėlto yra viešai prieinama informacija (makroekonominiai duomenys), kuri padeda pelningiau investuoti. Tačiau remiames teorijų išvadomis apie rinkų dėsningumus. Diversifikavus portfelį lieka tik sisteminė rizika, už kurią gauname rizikos premiją. Sudarytas portfelis iš OMX Vilniaus indekso yra gan neblogai diversifikuotas, turintis dešimtis skirtingų akcijų, todėl bus manoma, jog lieka tik sisteminės rizikos. O sisteminė rizika nusako kokio dydžio turi būti premijinė grąža, t. y. kuo didesnė sisteminė rizika, tuo didesnio pelno turėtume laukti. Nustatant rizikos veiksnius vadovaujamasi CAPM ir APT logika, jog reikia įtraukti didesnės rinkos poveikį portfeliui ir makroekonominius duomenis, o jų priklausomybė su premijine portfelio grąža turėtų būti tiesinė. Todėl į prognozavimo ir reikšmingumo modelį įtraukiamas S&P 350 Europe indeksas kaip veiksnys paaškinantis portfelio, sudaryto iš OMX Vilniaus indekso, premijines grąžas, nes Europos rinką galime teigti, jog reprezentuoja S&P 350 Europe, Lietuvos rinka priklausoma nuo Europos rinkos. Tai darbo prielaidos yra tokios:
 
 1) portfelis, sudarytas pagal OMX Vilnius indeksą, yra pakankamai diversifikuotas ir egzistuoja tik sisteminės rizikos premijos;
 
@@ -270,28 +276,28 @@ data3=cbind.data.frame(Data, data3)
 
 ${OMX}_t - {rf}_t = {\beta}_0 + {SP350}_t {\beta}_1 + \textit{kasyba ir karjerų eksploatacija}_{t-1} {\beta}_2 + \textit{darbo lygio lūkesčiai}_{t-1} {\beta}_3 + \textit{nedarbas}_t {\beta}_4 + \textit{mažmeninės prekybos pasitikėjimas}_{t-3} {\beta}_5 + \textit{paslaugų sektoriaus pasitikėjimas}_{t-12} {\beta}_6 + \textit{pramonės pasitikėjimas}_t {\beta}_7 + \textit{statybų pasitikėjimas}_{t-1} {\beta}_8 + \textit{užsakymų lūkesčiai}_{t-10} {\beta}_9 + \textit{vartotojų pasitikėjimas}_{t-4} {\beta}_{10} + \textit{verslo plėtros aktyvumas}_t {\beta}_{11} + \textit{mažmeninė prekyba}_{t-1} {\beta}_{12} + \textit{gamintojų kainų lygis}_{t-9} {\beta}_{13} + \textit{industrinė produkcija}_{t-4} {\beta}_{14} + \textit{EUR/DOL kursas}_{t-2} {\beta}_{15} + {u}_t$
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Pagal žingsninę regresiją minimizuojančia Akaike kriterijų atrinkti reikšmingi kintamieji, tada ekonometrinis modelis yra toks:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Pagal žingsninę regresiją minimizuojančia Akaike kriterijų atrinkti reikšmingi kintamieji. Į kintamųjų reikšmingumus žiūrima liberaliau. Didinami jie, kad minimizuoti sisteminės klaidos tikimybę. Tada ekonometrinis modelis yra toks:
 
 ${OMX}_t - {rf}_t = {\beta}_0 + {SP350}_t {\beta}_1 + \textit{mažmeninės prekybos pasitikėjimas}_{t-3} {\beta}_2 + \textit{paslaugų sektoriaus pasitikėjimas}_{t-12} {\beta}_3 + \textit{pramonės pasitikėjimas}_t {\beta}_4 + \textit{užsakymų lūkesčiai}_{t-10} {\beta}_5 + \textit{mažmeninė prekyba}_{t-1} {\beta}_6 + \textit{gamintojų kainų lygis}_{t-9} {\beta}_7 + \textit{EUR/DOL kursas}_{t-2} {\beta}_8 + {u}_t$
 
 \newpage
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Atliktas paklaidų homoskedastiškumo testas - paklaidų homoskedastiškumo prielaida pažeista - paklaidų dispersija nėra konstanta. Tai gali iškreipti modelio statistines išvadas, todėl taikoma stabilizuotų liekamųjų paklaidų regresija. Pritaikyta HC3 pataisa:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Atliktas paklaidų homoskedastiškumo testas - paklaidų homoskedastiškumo prielaida pažeista - paklaidų dispersija nėra konstanta. Tai gali iškreipti modelio statistines išvadas, todėl taikoma stabilizuotų liekamųjų paklaidų regresija. Pritaikyta HC3 pataisa. Rezultatai pateikti 3 lentelėje.
 
 ```{r, message=FALSE, echo=FALSE, results='asis'}
 modelis=lm(OMX ~ SP350  + lag(mhope, 3) + lag(phope,12) + lag(pramhope,0) + lag(ul,10) + lag(mp,1) + lag(gkl, 9) + lag(kursas,2),data=data3) 
-pander::pander(coeftest(modelis, vcov=vcovHC(modelis,type="HC3"))[,], split.cell = 80, split.table = Inf)
-
+a<-pander::pander(coeftest(modelis, vcov=vcovHC(modelis,type="HC3"))[,], split.cell = 80, split.table = Inf, caption="Regresijos rezultatai")
 r2<-kable(summary(modelis)[9])
 ```
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Didelė dalis turimų makroekonominių duomenų yra nereikšmingi, tačiau keletas kietų ir minkštų makroekonominių rodiklių reikšmingai veikia OMX Vilnius grąžas. Modelis paaiškina apie 40 procentų OMX Vilnius indekso grąžos pokyčių.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Didelė dalis turimų makroekonominių duomenų yra nereikšmingi, tačiau keletas kietų ir minkštų makroekonominių rodiklių reikšmingai veikia OMX Vilnius grąžas. Modelis paaiškina apie 40 procentų OMX Vilnius indekso grąžos pokyčių. \ref{Regresijos rezultatai}
 
 # Dvigubos atrankos metodas
 
 ## Teorija
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Sprendimas kuriuos kintamuosius įtraukti, o kuriuos atmesti yra ypač svarbus. Neįtraukus kintamųjų, kurie reikšmingai veikia priklausomą kintamąjį ir koreliuoja bent su vienu nepriklausomu kintamuoju, modelio parametrų skirstiniai gali būti paslinkti ir modelis netikslus. Todėl gali būti atliekamas dvigubos atrankos metodas, kuris padeda tiksliau apskaičiuoti kintamųjų reikšmingumus bei įvertinti juos. Tikslas išsiaiškinti ar pirminė atranka įtraukė tik reikšmingus kintamuosius. Pagalbinių regresijų tikslas įvertinti modelio parametrų poslinkius.
 
-\underline{1 žingsnis:} Sudarytas modelis iš visų turimų kintamųjų. Pirminiam modeliui taikant žingsninę regresiją pagal mažiausią Akaike kriterijaus reikšmę atrinkti reikšmingi kintamieji, sudarytas modelis::
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Sprendimas kuriuos kintamuosius įtraukti, o kuriuos atmesti yra ypač svarbus. Neįtraukus kintamųjų, kurie reikšmingai veikia priklausomą kintamąjį ir koreliuoja bent su vienu nepriklausomu kintamuoju, modelio parametrų skirstiniai gali būti paslinkti ir modelis netikslus. Todėl tikslinga atlikti dvigubos atrankos metodą, kuris padeda tiksliau apskaičiuoti kintamųjų reikšmingumus bei įvertinti juos. Tikslas išsiaiškinti ar pirminė atranka įtraukė tik reikšmingus kintamuosius. Pagalbinių regresijų tikslas įvertinti modelio parametrų poslinkius.
+
+\underline{1 žingsnis:} Sudarytas modelis iš visų turimų kintamųjų. Ankstiniai atrinkti pagal didžiausią kryžminę koreliaciją. Pirminiam modeliui taikant žingsninę regresiją pagal mažiausią Akaike kriterijaus reikšmę atrinkti reikšmingi kintamieji, sudarytas modelis:
 
 $$Y_t = \beta_0 + \beta_{1}X_{t1} + ... + \beta_{8}X_{t8} + u_t;$$
 $$Z := \beta_{1}X_{t1} + ... + \beta_{8}X_{t8}.$$
@@ -303,16 +309,16 @@ $$K := \alpha_{1}X_{t1} + ... + \alpha_{n}X_{tn}.$$
 
 \underline{3 žingsnis:} Sudarytas modelis iš 1 ir 2 žingsniuose atrinktų kintamųjų sąjungos:
 
-$$Y_t = \beta_0 + Z + K + u_t.$$
+$$Y_t = \beta_0 + Z\cup K + u_t.$$
 
-Tyriami atskirų kintamųjų reikšmingumai. Todėl 2 ir 3 žingniai kartojami visiems 1 žingsnyje atrinktiems regresoriams.
+Tiriami atskirų kintamųjų reikšmingumai. Todėl 2 ir 3 žingniai kartojami visiems 1 žingsnyje atrinktiems regresoriams.
 
 ## Taikymas
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Šioje skiltyje bus atliktas dvigubos atrankos metodo taikymas Lietuvos akcijų rinkos grąžos priklausomybės nuo makroekonominių duomenų regresijai. Sudarius OMX Vilnius grąžų nuo visų turimų Lietuvos makroekonominių rodiklių regresiją, pirmame žingsnyje atrinktas modelis: \newline${OMX}_t - {rf}_t = {\beta}_0 + {SP350}_t {\beta}_1 + \textit{mažmeninės prekybos pasitikėjimas}_{t-3} {\beta}_2 + \textit{paslaugų sektoriaus pasitikėjimas}_{t-12} {\beta}_3 + \textit{pramonės pasitikėjimas}_t {\beta}_4 + \textit{užsakymo lūkesčiai}_{t-10} {\beta}_5 + \textit{mažmeninė prekyba}_{t-1} {\beta}_6 + \textit{gamintojų kainų lygis}_{t-9} {\beta}_7 + \textit{EUR/DOL kursas}_{t-2} {\beta}_8 + {u}_t$.
 
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Antras ir trečias žingsniai kartojami visiems reikšmingiems kintamiesiems. Gauti pataisyti įvertiniai ir jų reikšmingumai:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Antras ir trečias žingsniai kartojami visiems reikšmingiems kintamiesiems. Gauti pataisyti įvertiniai ir jų reikšmingumai. Rezultatai pateikti 4 lentelėje.
 ```{r, message=FALSE, echo=FALSE, warning=F}
 B <- matrix(c(0.0001, 0.0001, 0.536, 0.563,
               0.062, 0.036, 0.188, 0.316,
@@ -325,15 +331,16 @@ B <- matrix(c(0.0001, 0.0001, 0.536, 0.563,
 rownames(B) <- c("SP350", "Mažmeninės prekybos pasitikėjimas", "Paslaugų pasitikėjimas", "Pramonės pasitikėjimas", "Užsakymų lūkesčiai", "Mažmeninė prekyba", "Gamintojų kainų lygis", "EUR/DOL")
 colnames(B) <- c("p-value pradiniame modelyje", "p-value po korekcijos", "koeficientas pradiniame modelyje", "koeficientas po korekcijos")
 
-pander::pander(B, split.cell = 80, split.table = Inf, label="lent:5")
+pander::pander(B, split.cell = 80, split.table = Inf, caption="Dviguba atranka")
 ```
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dvigubos atrankos metodu tikrinama ar pirmame žingsnyje nebuvo praleista kintamųjų reikšmingai veikiančių regresantą bei koreliuotų su kitais regresoriais. Kas sukelia įvertinių poslinkius. Jei atlikus papildomą regresiją testuojamo kintamojo p-reikšmė padidėjo, tai reiškia yra praleistas reikšmingas kintamasis ir testo kintamojo skirstinys buvo paslinktas teigiamai. Jei p-reikšmė sumažėjo - skirstinys buvo paslinktas neigiamai.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dvigubos atrankos metodu tikrinama ar pirmame žingsnyje nebuvo praleista kintamųjų reikšmingai veikiančių regresantą bei koreliuotų su kitais regresoriais. Kas sukelia įvertinių poslinkius. Jei atlikus papildomą regresiją testuojamo kintamojo p-reikšmė padidėjo, tai reiškia yra praleistas reikšmingas kintamasis ir testo kintamojo parametras buvo paslinktas teigiamai. Jei p-reikšmė sumažėjo - skirstinys buvo paslinktas neigiamai.
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Anksčiau minėtai regresijai atlikus dvigubą atranką galima teigti, kad visi pirmame žingsnyje atrinkti makroekonominiai rodikliai reikšmingai įtakoja Lietuvos akcijų rinkos grąžas. Tačiau pagrindinis modelis greičausiai neįtraukia svarbių kintamųjų, kuriuos atmetus daroma klaidinga reikšmingumo interpretacija. Pataisyti modelio įvertiniai ir jų reikšmingumai.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Anksčiau minėtai regresijai atlikus dvigubą atranką galima teigti, kad visi pirmame žingsnyje atrinkti makroekonominiai rodikliai reikšmingai veikia Lietuvos akcijų rinkos grąžas. Tačiau pagrindinis modelis greičausiai neįtraukia svarbių kintamųjų, kuriuos atmetus daroma klaidinga reikšmingumo interpretacija. Pataisyti modelio įvertiniai ir jų reikšmingumai.
 
 
 \newpage
+
 
 # Premijinių grąžų prognozavimas
 
@@ -411,18 +418,21 @@ ggplot(akc) + geom_line(aes(x=menesiai, y=value*100, colour=variable)) +
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Prognozuojančio modelio praktiniam naudojimui būtina strategija, kuri nustatytų kaip pasinaudoti prognozuojamomis premijinėmis grąžomis. Kadangi mes norėtume kuo pelningiau ir kuo mažesne rizika investuoti, bus investuojama tik tada, kai prognozuojama grąža viršija subjektyviai užsibrėžtą ribą. Kuo didesnė riba užbrėžta, tuo mažiau investavimo galimybių aptinkama, tačiau kuo mažesnė riba, tuo mažesnė grąža per sandorį. Apibrėžiamos investavimo strategijos žemiau.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Strategijos: 
+
 1) perkamas portfelis, reprezentuojantis OMX Vilnius indeksą, *t* laiko momentu, jei *t+1* laiko momentu prognozuojama didesnė negu 2% premijinė grąža ir portfelis yra parduodamas kitą mėnesį, kai jau žinoma premijinė grąža ir matomas investavimo rezultatas.
 Taigi jei $\widehat{R(t+1)}>2$, perkamas portfelis, lygiai toks pat kaip OMX Vilnius indeksas, ir fiksuojam mėnesio grąžą.
+
 2) Kad išnaudoti prognozuojamą kritimą, pasiskolinamas ir parduodamas (angl. short sell) portfelis, sudarytas pagal OMX Vilniaus indeksą. Kitaip tariant, jei $\widehat{R(t+1)}<2$, tai pasiskolinamas ir parduodamas (angl. short sell) portfelis, sudarytas pagal OMX Vilniaus indeksą, ir kitą mėnesį atperkamas portfelis ir grąžinama skola, fiksuojama sandorio grąža. Šiuo atveju grąža bus teigiama jei bus akcijų indekso kritimas.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Taigi, turint *t* mėnesių duomenis, gaunamas įvertis $\widehat{R(t+1)}$ pagal įvertinį:
-$R(t+1) = {\beta}_0 + {SP350}_t {\beta}_1 + \textit{mažmeninės prekybos pasitikėjimas}_{t-3} {\beta}_2 + \textit{paslaugų sektoriaus pasitikėjimas}_{t-12} {\beta}_3 + \textit{pramonės pasitikėjimas}_t {\beta}_4 + \textit{užsakymų lūkesčiai}_{t-10} {\beta}_5 + \textit{mažmeninė prekyba}_{t-1} {\beta}_6 + \textit{gamintojų kainų lygis}_{t-9} {\beta}_7 + \textit{EUR/DOL kursas}_{t-2} {\beta}_8 + {u}_{t+1}.$
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$R(t+1) = {\beta}_0 + {SP350}_t {\beta}_1 + \textit{mažmeninės prekybos pasitikėjimas}_{t-3} {\beta}_2 + \textit{paslaugų sektoriaus pasitikėjimas}_{t-12} {\beta}_3 + \textit{pramonės pasitikėjimas}_t {\beta}_4 + \textit{užsakymų lūkesčiai}_{t-10} {\beta}_5 + \textit{mažmeninė prekyba}_{t-1} {\beta}_6 + \textit{gamintojų kainų lygis}_{t-9} {\beta}_7 + \textit{EUR/DOL kursas}_{t-2} {\beta}_8 + {u}_{t+1}.$
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Kai $\widehat{R(t+1)} > 2$, bus perkama ir po mėnesio parduodama. Kita strategija: kai $\widehat{R(t+1)} < 2$ bus pasiskolinama ir parduodama, kitą mėnesį atperkamos ir grąžinamos akcijos, fiksuojama grąža (mėnesio short sell'as).
 
 ## Prognozuojančio modelio testavimas
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Strategijos pratestuojamos su atsitiktiniu investavimu, kuris yra generuotas monte carlo metodu. Atsitiktinio investavimo sąlygos tokios pačios: tiek pat pirkimų kaip ir su strategija, jei buvo galimybė tą mėnesį investuoti su strategija, tai su atsitiktiniu investavimu taip pat. Galimi mokesčiai į skaičiavimus neįtraukiami.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Strategijos pratestuojamos su atsitiktiniu investavimu, kuris yra generuotas Monte Carlo metodu. Atsitiktinio investavimo sąlygos tokios pačios: tiek pat pirkimų kaip ir su strategija, jei buvo galimybė tą mėnesį investuoti su strategija, tai su atsitiktiniu investavimu taip pat. Galimi mokesčiai į skaičiavimus neįtraukiami.
 
 ```{r, message=FALSE, echo=FALSE, include=FALSE}
 
@@ -477,24 +487,25 @@ for(i in c(30,70,100,130,140,150)){
   lentele=rbind(lentele,validation(i,formula_prog))
 }
 
-colnames(lentele) = c("pradinės imties dydis","pirkimo strategijos grąža %","vidutinė atsitiktinio pirkimo grąža %","tikimybė, kad geriau uz atsiktiktinį pirkimą","pirkimų skaičius","vidutinė grąža per pirkimą","pardavimo strategijos grąžą %","vidutinė atsitiktinio pardavimo grąža %","tikimybė, kad geriau uz atsiktiktinį pardavimą","vidutinė grąža per pardavimą","pardavimų skaičius")
+colnames(lentele) = c("pradinės imties dydis","pirkimo strategijos grąža %","vidutinė atsitiktinio pirkimo grąža %","tikimybė, kad geriau uz atsiktiktinį pirkimą","vidutinė grąža per pirkimą","pirkimų skaičius","pardavimo strategijos grąžą %","vidutinė atsitiktinio pardavimo grąža %","tikimybė, kad geriau uz atsiktiktinį pardavimą","vidutinė grąža per pardavimą","pardavimų skaičius")
 
 ```
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Pagal griežčiausios efektyviosios rinkos hipetezę jokia viešai prieinama informacija nepadidins investavimo pelningumo. Taigi pagal tokia prielaidą strategijos turėtų nesiskirti nuo atsitiktinio investavimo. Lentelėje žemiau pateikiami simuliacijos rezultatai, kokią premijinę grąžą sugeneravo strategijų naudojimai ir kokią vidutiniškai grąžą generuoja atsitiktinis investavimas į portfelį, sudarytą pagal OMX Vilnius indeksą. Apskaičiuojamas atsitiktinio investavimo grąžų skirtinys generuojant atsitiktinius investavimus monte carlo metodu. Tai leidžia apskaičiuoti apytikslę tikimybę, kad investavimas su strategija geriau nei su atsitiktinis investavimas.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Pagal griežčiausios efektyviosios rinkos hipetezę jokia viešai prieinama informacija nepadidins investavimo pelningumo. Taigi pagal tokia prielaidą strategijos turėtų nesiskirti nuo atsitiktinio investavimo. Lentelėje žemiau pateikiami simuliacijos rezultatai, kokią premijinę grąžą sugeneravo strategijų naudojimai ir kokią vidutiniškai grąžą generuoja atsitiktinis investavimas į portfelį, sudarytą pagal OMX Vilnius indeksą. Apskaičiuojamas atsitiktinio investavimo grąžų skirtinys generuojant atsitiktinius investavimus Monte Carlo metodu. Tai leidžia apskaičiuoti apytikslę tikimybę, kad investavimas su strategija geriau nei su atsitiktinis investavimas.
 
+\newpage
 
 ```{r, echo=FALSE}
-pander::pander(lentele, split.cell = 80, split.table = Inf)
+pander::pander(lentele, split.cell = 80, split.table = Inf, cation="Strategijų tikrinimas")
 ```
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Pradinis imties dydis arba kaip anksčiau buvo vadintas *k*-tuoju mėnesiu strategijos apraše, yra mėnesis nuo kurio pradedama naudotis strategijomis. Svarbias rodiklis yra tikimybė, kad geriau už atsitiktinį pirkimą arba pardavimą, nes jis parodo kokia dalis monte carlo metodu generuotų atsitiktinių pirkimų arba pardavivimų buvo aplenktos su strategijomis. Jei yra aplenkiama 0,5 dalis generuotų atsitiktinių pirkimų ar pardavimų, tai reikštų geresnį nei vidutinis investavimas rezultatą.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Pradinis imties dydis arba kaip anksčiau buvo vadintas *k*-tuoju mėnesiu strategijos apraše, yra mėnesis nuo kurio pradedama naudotis strategijomis. Svarbias rodiklis yra tikimybė, kad geriau už atsitiktinį pirkimą arba pardavimą, nes jis parodo kokia dalis Monte Carlo metodu generuotų atsitiktinių pirkimų arba pardavivimų buvo aplenktos su strategijomis. Jei yra aplenkiama 0,5 dalis generuotų atsitiktinių pirkimų ar pardavimų, tai reikštų geresnį nei vidutinis investavimas rezultatą.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Pagal simuliaciją, naudojant praeities duomenis, kai pradinė imtis yra 30, visos atsitiktinių investavimų situacijos yra aplenktos investavimu su strategijomis. Tai reiškia, jei šis prognozuojantis modelis būtų turėtas 2005 metais ir būtų įvertinami tik modelio koeficientai iš turimų duomenų, tai su šiomis strategijomis būtų beveik garantuotai didesnė grąža nei atsitiktinai investavus. Tačiau 2005 metais galbūt nebūtų išvestas toks prognozuojantis modelis iš tuo metu turimais duomenimis. Gal būtų modelis su kitais pavėlinimais ir galbūt naudojami kiti makroekonominiai rodikliai, kas lemtų ne tokį geresnį rezultatą prieš atsitiktinį investavimą. Todėl reikia tikrinti algoritminį investavimą, ar sudarytas modelis pagal algoritmą iš turimų duomenų, gali būti naudingas investuojant.
 
 ##Tikrinamas algoritminis investavimas
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Nėra nustatyto modelio, kiekvienam mėnesiui didėjant gali keistis modelis ir modelio koeficientai. Modelis sudaromas pagal tokį algoritmą: nustatomas geriausias vėlinimas kiekvienam rodikliui pagal kryžminę koreliaciją, reikšmingiausi kintamieji atrinkami pagal žingsninę regresiją AIC. Tikrinamas algoritmu gautas prognozuojantis modelis investuojant anksčiau aprašytomis strategijomis.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Nėra nustatyto modelio, kiekvienam mėnesiui didėjant gali keistis modelis ir modelio koeficientai. Modelis sudaromas pagal tokį algoritmą: nustatomas geriausias vėlinimas kiekvienam rodikliui pagal kryžminę koreliaciją, reikšmingiausi kintamieji atrinkami pagal žingsninę regresiją mažinant AIC. Tikrinamas algoritmu gautas prognozuojantis modelis investuojant anksčiau aprašytomis strategijomis.
 
 ```{r,include=F}
 
@@ -569,39 +580,53 @@ for(i in c(100,110,120,130,140,150,160)){
   lentele2=rbind(lentele2,validation(i))
 }
 
-colnames(lentele2) = c("pradinės imties dydis","pirkimo strategijos grąža %","vidutinė atsitiktinio pirkimo grąža %","tikimybė, kad geriau uz atsiktiktinį pirkimą","pirkimų skaičius","vidutinė grąža per pirkimą","pardavimo strategijos grąžą %","vidutinė atsitiktinio pardavimo grąža %","tikimybė, kad geriau uz atsiktiktinį pardavimą","vidutinė grąža per pardavimą","pardavimų skaičius")
+colnames(lentele2) = c("pradinės imties dydis","pirkimo strategijos grąža %","vidutinė atsitiktinio pirkimo grąža %","tikimybė, kad geriau už atsiktiktinį pirkimą","pirkimų skaičius","vidutinė grąža per pirkimą","pardavimo strategijos grąžą %","vidutinė atsitiktinio pardavimo grąža %","tikimybė, kad geriau uz atsiktiktinį pardavimą","vidutinė grąža per pardavimą","pardavimų skaičius")
 
 ```
+
+Pirma strategija:
 
 ```{r,echo=F}
-pander::pander(lentele2, split.cell = 80, split.table = Inf)
+pander::pander(lentele2[,c("pradinės imties dydis","pirkimo strategijos grąža %","vidutinė atsitiktinio pirkimo grąža %","tikimybė, kad geriau už atsiktiktinį pirkimą","pirkimų skaičius","vidutinė grąža per pirkimą")], split.cell = 80, split.table = Inf, caption="pirma strategija")
 ```
 
-Strategija geriau pasirodė nei atsitiktinis investavimas.
+Antra strategija:
+
+```{r,echo=F}
+pander::pander(lentele2[,c("pradinės imties dydis","pardavimo strategijos grąžą %","vidutinė atsitiktinio pardavimo grąža %","tikimybė, kad geriau uz atsiktiktinį pardavimą","vidutinė grąža per pardavimą","pardavimų skaičius")], split.cell = 80, split.table = Inf,caption="antra strategija")
+```
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Makroekonominiai rodikliai dažniausiai leidžia pelningiau investuoti negu atsitiktinai investavus, ypač papididintos rizikos laikotarpiais. 
+
 \newpage
 
 # Išvados
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Naudojant CAPM ir APT idėjas, rasta tiesinė priklausomybė tarp makroekonominių rodiklių pokyčių ir Lietuvos akcijų rinką reprezentuojančio OMX Vilnius indekso pokyčių. Pagal CAPM įtrauktas didesnę rinką reprezentuojantis indeksas S&P 350 Europe. Jo pokyčiai padeda reikšmingai paaiškinti OMX Vilnius indekso pokyčius. Pagal APT įtraukti Lietuvos makroekonominiai rodikliai.
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Sudarytas modelis iš visų turimų kintamųjų. Ankstiniai atrinkti pagal didžiausią kryžminę koreliaciją. Dvigubos atrankos metodu minimizuojant Akaike kriterijų rasti reikšmingi makroekonominiai rodikliai, kurie iš tikrųjų veikia OMX Vilnius indekso pokyčius. Taip pat įvertinti parametrų poslinkiai, pataisyti reikšmingumai. Atradus reikšmingumą sukurtas prognozuojantis modelis gali padėti pelningiau investuoti nei atsitiktinai investuojant. Taigi viešai prieinami makroekonominiai duomenys gali būti panaudoti pelningiau investuojant.
 
 \newpage
 
 \begin{thebibliography}{00}
 \bibitem{rusija}
-  Mauri Paavola, Tests of the Arbitage Pricing Theory using Macroeconomic Variables in the Russian Equity Market.
+  Mauri Paavola. Tests of the Arbitage Pricing Theory using Macroeconomic Variables in the Russian Equity Market. Department of Business Administration Section of Accounting and Finance, 2006.
 
 \bibitem{brooks}
   Chris Brooks, Introductory Econometrics for Finance.
  
  \bibitem{sri_lanka}
-   Prabath Suranga Morawakage, Relationship between Macro – Economic Variables and Stock Market Performance of Colombo Stock Exchange.
+   Prabath Suranga Morawakage. Relationship between Macro – Economic Variables and Stock Market Performance of Colombo Stock Exchange. Lecturer (Probationary) Department of Finance Faculty of Commerce and Management Studies
+University of Kelaniya, 2013.
  
  \bibitem{indija}
-   Sagarika Mishra, Do Macro - Economic Variables explain Stock - Market Returns? Evidence using a Semi-Parametric Approach.
+   Sagarika Mishra. Do Macro - Economic Variables explain Stock - Market Returns? Evidence using a Semi-Parametric Approach. Journal of Asset Management, 2011.
  
  \bibitem{capm} 
-   University of Pennsylvania, The Capital Asset Pricing Model: An Aplication of Bivariate Regression Analysis.
+   The Capital Asset Pricing Model: An Aplication of Bivariate Regression Analysis. University of Pennsylvania.
 
  \bibitem{apt_capm}
-   Aistė Launagaitė, Vertybinių popierių rizikos ir pelningumo modelių įvertinimas.
+   Aistė Launagaitė, Vertybinių popierių rizikos ir pelningumo modelių įvertinimas. Vilniaus Universitetas, Kauno Humanitarinis Fakultetas, Finansų ir Apskaitos Katedra, 2007.
  
   \bibitem{duomenys}
    \url{http://ec.europa.eu/eurostat/data/database}
@@ -697,13 +722,12 @@ panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor,...)    #ši funkci
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; S&P350 Europe indeksas yra įtraukiamas, remiantis CAPM. Galima teigti, jog OMX Vilniaus indeksas yra stipriai susijęs su S&P350 indeksu ir šis indeksas gerai apibūdina sisteminę riziką kaip ir kitoms Europos rinkoje esančiomis akcijoms. 
 Pagal CAPM turėtų matytis koreliacija tarp OMX Vilniaus indekso ir S&P 350 Europe. Koreliacija aiškiai matoma grafike. Tai patvirtina, jog reikėtų bandyti įtrauki Europos indeksą aiškinant grąžų premijos riziką.
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Akcijų indeksų mėnesiniai procentiniai pokyčiai:
-
 ```{r, message=FALSE, echo=FALSE, warning=F, dev='quartz_pdf'}
 akc = melt(data3[,c("OMX","SP350","SP500","Data")], id=c("Data"))
 ggplot(akc) + geom_line(aes(x=Data, y=value, colour=variable)) +
   scale_colour_manual(values=c(1:4))+ylab("% pokytis")+
-  guides(col=guide_legend(title="Kintamieji"))
+  guides(col=guide_legend(title="Kintamieji"))+
+  ggtitle("Akcijų indeksų mėnesiniai procentiniai pokyčiai")
 ```
 
 \newpage
