@@ -333,7 +333,7 @@ colnames(B) <- c("p-value pradiniame modelyje", "p-value po korekcijos", "koefic
 pander::pander(B, split.cell = 80, split.table = Inf, caption="Dviguba atranka")
 ```
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dvigubos atrankos metodu tikrinama ar pirmame žingsnyje nebuvo praleista kintamųjų reikšmingai veikiančių regresantą bei koreliuotų su kitais regresoriais. Kas sukelia įvertinių poslinkius. Jei atlikus papildomą regresiją testuojamo kintamojo p-reikšmė padidėjo, tai reiškia yra praleistas reikšmingas kintamasis ir testo kintamojo parametras buvo paslinktas teigiamai. Jei p-reikšmė sumažėjo - skirstinys buvo paslinktas neigiamai.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dvigubos atrankos metodu tikrinama ar pirmame žingsnyje nebuvo praleista kintamųjų reikšmingai veikiančių regresantą bei koreliuotų su kitais regresoriais. Kas sukelia įvertinių poslinkius. Jei atlikus papildomą regresiją testuojamo kintamojo p-reikšmė padidėjo, tai reiškia yra praleistas reikšmingas kintamasis ir testo kintamojo parametras buvo paslinktas neigiamai. Jei p-reikšmė sumažėjo - parametras buvo paslinktas teigiamai.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Anksčiau minėtai regresijai atlikus dvigubą atranką galima teigti, kad visi pirmame žingsnyje atrinkti makroekonominiai rodikliai reikšmingai veikia Lietuvos akcijų rinkos grąžas. Tačiau pagrindinis modelis greičausiai neįtraukia svarbių kintamųjų, kuriuos atmetus daroma klaidinga reikšmingumo interpretacija. Pataisyti modelio įvertiniai ir jų reikšmingumai.
 
